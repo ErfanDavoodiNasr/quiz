@@ -38,4 +38,7 @@ public class Course extends BaseModel<Long> {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    private Principal principal;
 }
