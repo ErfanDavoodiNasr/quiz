@@ -19,7 +19,7 @@ import static ir.quiz.quiz.model.Student.TABLE_NAME;
 @AllArgsConstructor
 @Entity
 @Table(name = TABLE_NAME)
-public class Student extends Person<Long> {
+public class Student extends Person {
     public static final String TABLE_NAME = "students";
 
     @ManyToMany(cascade = CascadeType.REMOVE)

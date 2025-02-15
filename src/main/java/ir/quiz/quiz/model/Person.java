@@ -2,6 +2,7 @@ package ir.quiz.quiz.model;
 
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +18,9 @@ import static jakarta.persistence.InheritanceType.TABLE_PER_CLASS;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Inheritance(strategy = TABLE_PER_CLASS)
-public class Person<ID extends Number> extends BaseModel<ID> {
+public abstract class Person extends BaseModel {
 
     @Column(name = "first_name", length = 50)
     private String firstName;

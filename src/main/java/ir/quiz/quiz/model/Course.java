@@ -20,7 +20,7 @@ import static ir.quiz.quiz.model.Course.TABLE_NAME;
 @AllArgsConstructor
 @Entity
 @Table(name = TABLE_NAME)
-public class Course extends BaseModel<Long> {
+public class Course extends BaseModel {
     public static final String TABLE_NAME = "courses";
 
     @Column(length = 50)
@@ -36,7 +36,6 @@ public class Course extends BaseModel<Long> {
     private List<Student> students;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
