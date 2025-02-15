@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.yaml.snakeyaml.events.Event;
 
 import static jakarta.persistence.InheritanceType.TABLE_PER_CLASS;
 
