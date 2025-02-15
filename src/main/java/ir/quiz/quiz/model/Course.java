@@ -1,9 +1,8 @@
 package ir.quiz.quiz.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jdk.dynalink.linker.LinkerServices;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static ir.quiz.quiz.model.Course.TABLE_NAME;
 
@@ -32,4 +32,7 @@ public class Course extends BaseModel<Long> {
 
     @Column(name = "end_at", nullable = false)
     private LocalDateTime endAt;
+
+    @ManyToMany(cascade = CascadeType.REMOVE, mappedBy = "courses")
+    private List<Student> students;
 }
