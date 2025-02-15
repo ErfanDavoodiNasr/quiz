@@ -2,7 +2,6 @@ package ir.quiz.quiz.model;
 
 
 import jakarta.persistence.*;
-import jdk.dynalink.linker.LinkerServices;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,4 +34,8 @@ public class Course extends BaseModel<Long> {
 
     @ManyToMany(cascade = CascadeType.REMOVE, mappedBy = "courses")
     private List<Student> students;
+
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 }
