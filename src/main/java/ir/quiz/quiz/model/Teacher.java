@@ -19,10 +19,9 @@ import static ir.quiz.quiz.model.Teacher.TABLE_NAME;
 @AllArgsConstructor
 @Entity
 @Table(name = TABLE_NAME)
-public class Teacher extends Person<Long> {
+public class Teacher extends Person {
     public static final String TABLE_NAME = "teachers";
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "teacher")
-    @JoinColumn(name = "course_id")
     private List<Course> courses;
 }
