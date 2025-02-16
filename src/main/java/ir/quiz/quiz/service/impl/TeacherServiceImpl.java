@@ -35,7 +35,6 @@ public class TeacherServiceImpl implements TeacherService {
             throw new NullPointerException("teacher can't be null");
         }
         return teacherRepository.save(teacher);
-
     }
 
 }
