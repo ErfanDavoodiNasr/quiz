@@ -1,18 +1,20 @@
 package ir.quiz.quiz.controller;
 
-import ir.quiz.quiz.model.Principal;
-import ir.quiz.quiz.model.Status;
-import ir.quiz.quiz.model.StudentRegister;
-import ir.quiz.quiz.model.TeacherRegister;
+import ir.quiz.quiz.model.*;
 import ir.quiz.quiz.model.dto.PersonRequest;
 import ir.quiz.quiz.model.dto.PrincipalUpdateRequest;
 import ir.quiz.quiz.service.PrincipalService;
 import ir.quiz.quiz.service.StudentRegisterService;
 import ir.quiz.quiz.service.TeacherRegisterService;
 import ir.quiz.quiz.util.ValidatorProvider;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,8 +49,8 @@ public class PrincipalController {
     }
 
 
-    @PostMapping("/all_student_registers/principal_id={id}")
-    public ResponseEntity<?> getStudentRegisters(@PathVariable("id") Long id) {
+    @PostMapping("/all_student_registers")
+    public ResponseEntity<?> getStudentRegisters(@RequestBody Long id) {
         Optional<List<StudentRegister>> result = studentRegisterService.findAllByPrincipal_IdAndStatusIsLike(id, Status.AWAITING_CONFIRMATION);
         if (result.isEmpty()) {
             return ResponseEntity.status(404).body("no request found");
@@ -57,13 +59,39 @@ public class PrincipalController {
     }
 
 
-    @PostMapping("/all_teacher_registers/principal_id={id}")
-    public ResponseEntity<?> getTeacherRegisters(@PathVariable("id") Long id) {
-        Optional<List<TeacherRegister>> result = teacherRegisterService.findAllByPrincipal_IdAndStatusIsLike(id,Status.AWAITING_CONFIRMATION);
+    @PostMapping("/all_teacher_registers")
+    public ResponseEntity<?> getTeacherRegisters(@RequestBody Long id) {
+        Optional<List<TeacherRegister>> result = teacherRegisterService.findAllByPrincipal_IdAndStatusIsLike(id, Status.AWAITING_CONFIRMATION);
         if (result.isEmpty()) {
             return ResponseEntity.status(404).body("no request found");
         }
         return ResponseEntity.ok(result.get());
     }
 
+
+    @PostMapping("/update_status")
+    public ResponseEntity<?> updateStatus(@RequestBody UpdateStatusDTO updateStatusDTO) {
+        Optional<List<String>> constraint = ValidatorProvider.validate(updateStatusDTO);
+        if (constraint.isPresent()) {
+            return ResponseEntity.status(400).body(constraint.get());
+        }
+        if (updateStatusDTO.getRole() == UserRole.STUDENT) {
+            return studentRegisterService.updateStatus(updateStatusDTO.registerId, updateStatusDTO.getStatus()) ? ResponseEntity.ok("student accept successfully") : ResponseEntity.status(500).body("there is some problem");
+        } else if (updateStatusDTO.getRole() == UserRole.TEACHER) {
+            return teacherRegisterService.updateStatus(updateStatusDTO.registerId, updateStatusDTO.getStatus()) ? ResponseEntity.ok("teacher accept successfully") : ResponseEntity.status(500).body("there is some problem");
+        } else {
+            return ResponseEntity.status(404).body("user role not found");
+        }
+    }
+
+
+    @Data
+    public static class UpdateStatusDTO {
+        @NotNull
+        private Long registerId;
+        @NotNull
+        private Status status;
+        @NotNull
+        private UserRole role;
+    }
 }

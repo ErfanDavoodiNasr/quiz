@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface StudentRegisterService {
     Boolean save(StudentRegisterRequest studentRegisterRequest);
 
+    Boolean updateStatus(Long id, Status status);
+
     Optional<List<StudentRegister>> findAllByPrincipal_IdAndStatusIsLike(Long principalId, Status status);
 }

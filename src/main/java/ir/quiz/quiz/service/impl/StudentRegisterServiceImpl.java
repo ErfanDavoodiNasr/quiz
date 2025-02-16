@@ -35,6 +35,16 @@ public class StudentRegisterServiceImpl implements StudentRegisterService {
     }
 
     @Override
+    public Boolean updateStatus(Long id, Status status) {
+        if (id == null || status == null) {
+            throw new NullPointerException("id or status is null");
+        }
+        Optional<StudentRegister> result = studentRegisterRepository.findById(id);
+        result.get().setStatus(status);
+        return studentRegisterRepository.save(result.get()).equals(result.get()) ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
     public Optional<List<StudentRegister>> findAllByPrincipal_IdAndStatusIsLike(Long principalId, Status status) {
         return studentRegisterRepository.findAllByPrincipal_IdAndStatusIsLike(principalId, status);
     }

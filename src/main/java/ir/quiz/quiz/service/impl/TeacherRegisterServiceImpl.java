@@ -35,8 +35,18 @@ public class TeacherRegisterServiceImpl implements TeacherRegisterService {
     }
 
     @Override
+    public Boolean updateStatus(Long id, Status status) {
+        if (id == null || status == null) {
+            throw new NullPointerException("id or status is null");
+        }
+        Optional<TeacherRegister> result = teacherRegisterRepository.findById(id);
+        result.get().setStatus(status);
+        return teacherRegisterRepository.save(result.get()).equals(result.get()) ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
     public Optional<List<TeacherRegister>> findAllByPrincipal_IdAndStatusIsLike(Long principalId, Status status) {
-        return teacherRegisterRepository.findAllByPrincipal_IdAndStatusIsLike(principalId,status);
+        return teacherRegisterRepository.findAllByPrincipal_IdAndStatusIsLike(principalId, status);
     }
 
 }

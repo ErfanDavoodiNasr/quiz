@@ -1,7 +1,6 @@
 package ir.quiz.quiz.repository;
 
 import ir.quiz.quiz.model.Status;
-import ir.quiz.quiz.model.StudentRegister;
 import ir.quiz.quiz.model.TeacherRegister;
 import org.springframework.data.jpa.repository.JpaRepository;
 
