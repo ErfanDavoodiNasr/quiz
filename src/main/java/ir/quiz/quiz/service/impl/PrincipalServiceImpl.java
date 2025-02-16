@@ -23,6 +23,17 @@ public class PrincipalServiceImpl implements PrincipalService {
                 .build();
     }
 
+    private static Principal principalUpdateRequestToPrincipal(PrincipalUpdateRequest principalUpdateRequest) {
+        return Principal.builder()
+                .id(principalUpdateRequest.getId())
+                .firstName(principalUpdateRequest.getFirstName())
+                .lastName(principalUpdateRequest.getLastName())
+                .nationalCode(principalUpdateRequest.getNationalCode())
+                .phoneNumber(principalUpdateRequest.getPhoneNumber())
+                .courses(principalUpdateRequest.getCourses())
+                .build();
+    }
+
     @Override
     public Boolean save(PersonRequest personRequest) {
         Principal principal = personRequestToPrincipal(personRequest);
@@ -37,16 +48,5 @@ public class PrincipalServiceImpl implements PrincipalService {
         }
         Principal principal = principalUpdateRequestToPrincipal(principalUpdateRequest);
         return principalRepository.save(principal);
-    }
-
-    private static Principal principalUpdateRequestToPrincipal(PrincipalUpdateRequest principalUpdateRequest) {
-        return Principal.builder()
-                .id(principalUpdateRequest.getId())
-                .firstName(principalUpdateRequest.getFirstName())
-                .lastName(principalUpdateRequest.getLastName())
-                .nationalCode(principalUpdateRequest.getNationalCode())
-                .phoneNumber(principalUpdateRequest.getPhoneNumber())
-                .courses(principalUpdateRequest.getCourses())
-                .build();
     }
 }

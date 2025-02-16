@@ -26,4 +26,10 @@ public class Principal extends Person {
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "principal")
     private List<Course> courses;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "student")
+    private List<StudentRegister> studentRegisters;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "teacher")
+    private List<TeacherRegister> teacherRegisters;
 }

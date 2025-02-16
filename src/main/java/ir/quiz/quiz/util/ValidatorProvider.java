@@ -1,11 +1,9 @@
 package ir.quiz.quiz.util;
 
 import jakarta.validation.ConstraintViolation;
-
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import lombok.experimental.UtilityClass;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,7 @@ public class ValidatorProvider {
 
     private static void initValidator() {
         if (validator == null) synchronized (ValidatorProvider.class) {
-            if (validator == null){
+            if (validator == null) {
                 validator = Validation.buildDefaultValidatorFactory().getValidator();
             }
         }
