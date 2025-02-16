@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 public class PrincipalUpdateRequest {
 
-
     @NotNull
     private Long id;
 

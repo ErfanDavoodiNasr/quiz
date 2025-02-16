@@ -20,7 +20,4 @@ public class CourseRequest {
 
     @NotNull
     private LocalDateTime endAt;
-
-    @NotNull
-    private Long principalId;
 }

@@ -1,15 +1,14 @@
 package ir.quiz.quiz.model.dto;
 
+
+import ir.quiz.quiz.model.Status;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-
 @Data
-public class TeacherRegisterRequest {
-
+public class UpdateTeacherStatusRequest {
     @NotNull
-    private Long teacherId;
-
+    private Long id;
     @NotNull
-    private Long principalId;
+    private Status status;
 }

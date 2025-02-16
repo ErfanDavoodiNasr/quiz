@@ -37,7 +37,4 @@ public class Course extends BaseModel {
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     private Teacher teacher;
-
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    private Principal principal;
 }

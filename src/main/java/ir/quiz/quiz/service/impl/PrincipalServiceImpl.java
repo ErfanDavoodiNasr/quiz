@@ -30,7 +30,6 @@ public class PrincipalServiceImpl implements PrincipalService {
                 .lastName(principalUpdateRequest.getLastName())
                 .nationalCode(principalUpdateRequest.getNationalCode())
                 .phoneNumber(principalUpdateRequest.getPhoneNumber())
-                .courses(principalUpdateRequest.getCourses())
                 .build();
     }
 

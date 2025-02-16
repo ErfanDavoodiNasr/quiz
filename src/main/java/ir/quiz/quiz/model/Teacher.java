@@ -1,10 +1,7 @@
 package ir.quiz.quiz.model;
 
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,4 +24,7 @@ public class Teacher extends Person {
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "teacher")
     private List<Course> courses;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

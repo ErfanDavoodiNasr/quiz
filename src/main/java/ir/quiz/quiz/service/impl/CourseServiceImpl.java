@@ -2,7 +2,6 @@ package ir.quiz.quiz.service.impl;
 
 
 import ir.quiz.quiz.model.Course;
-import ir.quiz.quiz.model.Principal;
 import ir.quiz.quiz.model.dto.CourseRequest;
 import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.service.CourseService;
@@ -20,7 +19,6 @@ public class CourseServiceImpl implements CourseService {
                 .name(courseRequest.getName())
                 .startAt(courseRequest.getStartAt())
                 .endAt(courseRequest.getEndAt())
-                .principal(Principal.builder().id(courseRequest.getPrincipalId()).build())
                 .build();
     }
 
