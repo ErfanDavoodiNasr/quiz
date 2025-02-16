@@ -1,6 +1,7 @@
 package ir.quiz.quiz.service.impl;
 
 import ir.quiz.quiz.model.Principal;
+import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.TeacherRegister;
 import ir.quiz.quiz.model.dto.TeacherRegisterRequest;
@@ -34,7 +35,8 @@ public class TeacherRegisterServiceImpl implements TeacherRegisterService {
     }
 
     @Override
-    public Optional<List<TeacherRegister>> findAllByPrincipalId(Long id) {
-        return teacherRegisterRepository.findAllByPrincipal_Id(id);
+    public Optional<List<TeacherRegister>> findAllByPrincipal_IdAndStatusIsLike(Long principalId, Status status) {
+        return teacherRegisterRepository.findAllByPrincipal_IdAndStatusIsLike(principalId,status);
     }
+
 }

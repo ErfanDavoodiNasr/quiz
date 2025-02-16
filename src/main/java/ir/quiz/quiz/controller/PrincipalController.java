@@ -1,6 +1,7 @@
 package ir.quiz.quiz.controller;
 
 import ir.quiz.quiz.model.Principal;
+import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.StudentRegister;
 import ir.quiz.quiz.model.TeacherRegister;
 import ir.quiz.quiz.model.dto.PersonRequest;
@@ -48,7 +49,7 @@ public class PrincipalController {
 
     @PostMapping("/all_student_registers/principal_id={id}")
     public ResponseEntity<?> getStudentRegisters(@PathVariable("id") Long id) {
-        Optional<List<StudentRegister>> result = studentRegisterService.findAllByPrincipalId(id);
+        Optional<List<StudentRegister>> result = studentRegisterService.findAllByPrincipal_IdAndStatusIsLike(id, Status.AWAITING_CONFIRMATION);
         if (result.isEmpty()) {
             return ResponseEntity.status(404).body("no request found");
         }
@@ -58,7 +59,7 @@ public class PrincipalController {
 
     @PostMapping("/all_teacher_registers/principal_id={id}")
     public ResponseEntity<?> getTeacherRegisters(@PathVariable("id") Long id) {
-        Optional<List<TeacherRegister>> result = teacherRegisterService.findAllByPrincipalId(id);
+        Optional<List<TeacherRegister>> result = teacherRegisterService.findAllByPrincipal_IdAndStatusIsLike(id,Status.AWAITING_CONFIRMATION);
         if (result.isEmpty()) {
             return ResponseEntity.status(404).body("no request found");
         }
