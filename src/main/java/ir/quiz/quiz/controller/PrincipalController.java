@@ -49,7 +49,7 @@ public class PrincipalController {
     @PostMapping("/all_student_registers/principal_id={id}")
     public ResponseEntity<?> getStudentRegisters(@PathVariable("id") Long id) {
         Optional<List<StudentRegister>> result = studentRegisterService.findAllByPrincipalId(id);
-        if (result.isPresent()) {
+        if (result.isEmpty()) {
             return ResponseEntity.status(404).body("no request found");
         }
         return ResponseEntity.ok(result.get());
@@ -59,7 +59,7 @@ public class PrincipalController {
     @PostMapping("/all_teacher_registers/principal_id={id}")
     public ResponseEntity<?> getTeacherRegisters(@PathVariable("id") Long id) {
         Optional<List<TeacherRegister>> result = teacherRegisterService.findAllByPrincipalId(id);
-        if (result.isPresent()) {
+        if (result.isEmpty()) {
             return ResponseEntity.status(404).body("no request found");
         }
         return ResponseEntity.ok(result.get());
