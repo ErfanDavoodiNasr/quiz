@@ -1,6 +1,6 @@
 package ir.quiz.quiz.model;
 
-public enum Role {
+public enum UserRole {
     STUDENT,
     TEACHER,
     PRINCIPAL
