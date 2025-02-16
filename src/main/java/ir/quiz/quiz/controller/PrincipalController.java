@@ -29,7 +29,7 @@ public class PrincipalController {
     public ResponseEntity<?> save(@RequestBody PersonRequest personRequest) {
         Optional<List<String>> constraint = ValidatorProvider.validate(personRequest);
         if (constraint.isPresent()) {
-            return ResponseEntity.status(500).body(constraint.get());
+            return ResponseEntity.status(400).body(constraint.get());
         }
         Boolean result = principalService.save(personRequest);
         return result ? ResponseEntity.ok("principal saved successfully") : ResponseEntity.status(500).body("there is some problem please try again later");
@@ -39,7 +39,7 @@ public class PrincipalController {
     public ResponseEntity<?> update(@RequestBody PrincipalUpdateRequest principalUpdateRequest) {
         Optional<List<String>> constraint = ValidatorProvider.validate(principalUpdateRequest);
         if (constraint.isPresent()) {
-            return ResponseEntity.status(500).body(constraint.get());
+            return ResponseEntity.status(400).body(constraint.get());
         }
         Principal result = principalService.update(principalUpdateRequest);
         return ResponseEntity.ok(result);
@@ -49,7 +49,7 @@ public class PrincipalController {
     @PostMapping("/all_student_registers/principal_id={id}")
     public ResponseEntity<?> getStudentRegisters(@PathVariable("id") Long id) {
         Optional<List<StudentRegister>> result = studentRegisterService.findAllByPrincipalId(id);
-        if (result.isEmpty()) {
+        if (result.isPresent()) {
             return ResponseEntity.status(404).body("no request found");
         }
         return ResponseEntity.ok(result.get());
@@ -59,7 +59,7 @@ public class PrincipalController {
     @PostMapping("/all_teacher_registers/principal_id={id}")
     public ResponseEntity<?> getTeacherRegisters(@PathVariable("id") Long id) {
         Optional<List<TeacherRegister>> result = teacherRegisterService.findAllByPrincipalId(id);
-        if (result.isEmpty()) {
+        if (result.isPresent()) {
             return ResponseEntity.status(404).body("no request found");
         }
         return ResponseEntity.ok(result.get());
