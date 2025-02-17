@@ -1,7 +1,6 @@
 package ir.quiz.quiz.config;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -42,7 +41,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         UserDetails user = User.builder().username("admin").password("admin").roles("OWNER").build();
         return new InMemoryUserDetailsManager(user);
     }

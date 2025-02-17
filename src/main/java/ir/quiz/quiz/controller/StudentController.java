@@ -1,5 +1,6 @@
 package ir.quiz.quiz.controller;
 
+import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.dto.PersonRequest;
 import ir.quiz.quiz.service.StudentService;
 import ir.quiz.quiz.util.ValidatorProvider;
@@ -28,6 +29,12 @@ public class StudentController {
         }
         Boolean result = studentService.save(personRequest);
         return result ? ResponseEntity.ok("student saved successfully") : ResponseEntity.status(500).body("there is some problem please try again later");
+    }
+
+
+    @PostMapping("/update")
+    public ResponseEntity<?> update(@RequestBody Student student) {
+        return ResponseEntity.ok(studentService.update(student));
     }
 
 }

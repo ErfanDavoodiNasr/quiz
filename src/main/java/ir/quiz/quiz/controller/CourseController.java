@@ -10,7 +10,6 @@ import ir.quiz.quiz.service.TeacherService;
 import ir.quiz.quiz.util.ValidatorProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,9 +36,19 @@ public class CourseController {
 
 
     @GetMapping("/find_all_courses")
-    public ResponseEntity<?> findAll(){
+    public ResponseEntity<?> findAll() {
         Optional<List<Course>> result = courseService.findAll();
-        if (result.isEmpty()){
+        if (result.isEmpty()) {
+            return ResponseEntity.status(404).body("no course found");
+        }
+        return ResponseEntity.ok(result.get());
+    }
+
+
+    @GetMapping("/find_course_by_id")
+    public ResponseEntity<?> findById(@RequestParam Long id) {
+        Optional<Course> result = courseService.findById(id);
+        if (result.isEmpty()) {
             return ResponseEntity.status(404).body("no course found");
         }
         return ResponseEntity.ok(result.get());
@@ -57,8 +66,35 @@ public class CourseController {
         return ResponseEntity.ok(courseService.update(course.get()));
     }
 
+    @PostMapping("/remove_teacher_from_course")
+    public ResponseEntity<?> removeTeacherFromCourse(@RequestParam Long courseId) {
+        Optional<Course> course = courseService.findById(courseId);
+        if (course.isEmpty()) {
+            return ResponseEntity.status(404).body("no course found");
+        }
+        course.get().setTeacher(null);
+        return ResponseEntity.ok(courseService.update(course.get()));
+    }
+
     @PostMapping("/add_student_to_course")
     public ResponseEntity<?> addStudentToCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
+        Optional<Course> course = courseService.findById(courseId);
+        if (course.isEmpty()) {
+            return ResponseEntity.status(404).body("no course found");
+        }
+        Optional<Student> student = studentService.findById(studentId);
+        List<Student> students = course.get().getStudents();
+        students.add(student.get());
+        List<Course> courses = student.get().getCourses();
+        courses.add(course.get());
+        student.get().setCourses(courses);
+        course.get().setStudents(students);
+        return ResponseEntity.ok(courseService.update(course.get()));
+    }
+
+
+    @PostMapping("/remove_student_from_course")
+    public ResponseEntity<?> removeStudentFromCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
         Optional<Course> course = courseService.findById(courseId);
         if (course.isEmpty()) {
             return ResponseEntity.status(404).body("no course found");

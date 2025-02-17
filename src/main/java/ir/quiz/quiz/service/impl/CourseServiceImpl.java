@@ -17,8 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
-    private final CourseRepository courseRepository;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final CourseRepository courseRepository;
 
     private static Course courseRequestToCourse(CourseRequest courseRequest) {
         return Course.builder()

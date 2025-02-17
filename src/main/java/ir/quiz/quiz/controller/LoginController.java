@@ -5,7 +5,6 @@ import ir.quiz.quiz.model.Owner;
 import ir.quiz.quiz.model.UserRole;
 import ir.quiz.quiz.model.dto.LoginRequest;
 import ir.quiz.quiz.service.OwnerService;
-import ir.quiz.quiz.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

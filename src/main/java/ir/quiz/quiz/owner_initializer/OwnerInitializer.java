@@ -15,7 +15,7 @@ public class OwnerInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        try{
+        try {
             Owner owner = Owner.builder()
                     .username("admin")
                     .password("admin")
@@ -24,7 +24,7 @@ public class OwnerInitializer implements ApplicationRunner {
             if (!ownerService.save(owner)) {
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
