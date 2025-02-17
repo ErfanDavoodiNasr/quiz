@@ -15,4 +15,6 @@ public interface TeacherService {
     Teacher update(Teacher teacher);
 
     Teacher updateStatus(Long id, Status status);
+
+    Optional<Teacher> findById(Long id);
 }

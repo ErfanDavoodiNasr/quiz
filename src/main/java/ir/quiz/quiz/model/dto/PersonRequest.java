@@ -4,6 +4,7 @@ package ir.quiz.quiz.model.dto;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 
 @Builder

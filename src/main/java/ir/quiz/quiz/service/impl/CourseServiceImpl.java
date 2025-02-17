@@ -8,6 +8,9 @@ import ir.quiz.quiz.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,12 +18,13 @@ import java.util.Optional;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private static Course courseRequestToCourse(CourseRequest courseRequest) {
         return Course.builder()
                 .name(courseRequest.getName())
-                .startAt(courseRequest.getStartAt())
-                .endAt(courseRequest.getEndAt())
+                .startAt(LocalDateTime.parse(courseRequest.getStartAt(), formatter))
+                .endAt(LocalDateTime.parse(courseRequest.getEndAt(), formatter))
                 .build();
     }
 
@@ -36,7 +40,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course update(Course course) {
-        if (course == null | course.getId() != null) {
+        if (course == null || course.getId() == null) {
             throw new NullPointerException("course can't be null");
         }
         return courseRepository.save(course);
@@ -45,5 +49,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Optional<Course> findById(Long id) {
         return courseRepository.findById(id);
+    }
+
+    @Override
+    public Optional<List<Course>> findAll() {
+        return Optional.ofNullable(courseRepository.findAll());
     }
 }

@@ -41,7 +41,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student update(Student student) {
-        if (student == null | student.getId() != null) {
+        if (student == null | student.getId() == null) {
             throw new NullPointerException("student can't be null");
         }
         return studentRepository.save(student);
@@ -55,5 +55,10 @@ public class StudentServiceImpl implements StudentService {
         }
         student.get().setStatus(status);
         return studentRepository.save(student.get());
+    }
+
+    @Override
+    public Optional<Student> findById(Long id) {
+        return studentRepository.findById(id);
     }
 }

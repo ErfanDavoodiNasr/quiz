@@ -3,6 +3,7 @@ package ir.quiz.quiz.service;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.dto.CourseRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CourseService {
@@ -11,4 +12,6 @@ public interface CourseService {
     Course update(Course course);
 
     Optional<Course> findById(Long id);
+
+    Optional<List<Course>> findAll();
 }

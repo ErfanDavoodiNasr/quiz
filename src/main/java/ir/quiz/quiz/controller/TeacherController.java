@@ -1,7 +1,7 @@
 package ir.quiz.quiz.controller;
 
 import ir.quiz.quiz.model.dto.PersonRequest;
-import ir.quiz.quiz.service.StudentService;
+import ir.quiz.quiz.service.TeacherService;
 import ir.quiz.quiz.util.ValidatorProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/student")
+@RequestMapping("/api/teacher")
 @RequiredArgsConstructor
-public class StudentController {
+public class TeacherController {
 
-    private final StudentService studentService;
+    private final TeacherService teacherService;
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody PersonRequest personRequest) {
@@ -26,8 +26,9 @@ public class StudentController {
         if (constraint.isPresent()) {
             return ResponseEntity.status(400).body(constraint.get());
         }
-        Boolean result = studentService.save(personRequest);
-        return result ? ResponseEntity.ok("student saved successfully") : ResponseEntity.status(500).body("there is some problem please try again later");
+        Boolean result = teacherService.save(personRequest);
+        return result ? ResponseEntity.ok("teacher saved successfully") : ResponseEntity.status(500).body("there is some problem please try again later");
     }
 
 }
+

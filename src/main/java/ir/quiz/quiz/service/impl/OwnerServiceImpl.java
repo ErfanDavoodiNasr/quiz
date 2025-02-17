@@ -36,7 +36,7 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public Owner update(OwnerUpdateRequest ownerUpdateRequest) {
-        if (ownerUpdateRequest == null | ownerUpdateRequest.getId() != null) {
+        if (ownerUpdateRequest == null | ownerUpdateRequest.getId() == null) {
             throw new NullPointerException("owner can't be null");
         }
         Owner owner = ownerUpdateRequestToOwner(ownerUpdateRequest);

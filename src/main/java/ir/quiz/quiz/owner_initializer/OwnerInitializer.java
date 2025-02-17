@@ -15,13 +15,17 @@ public class OwnerInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Owner owner = Owner.builder()
-                .username("admin")
-                .password("admin")
-                .build();
+        try{
+            Owner owner = Owner.builder()
+                    .username("admin")
+                    .password("admin")
+                    .build();
 
-        if (!ownerService.save(owner)) {
-            System.exit(0);
+            if (!ownerService.save(owner)) {
+
+            }
+        }catch (Exception e){
+
         }
     }
 }

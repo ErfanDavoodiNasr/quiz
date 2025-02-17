@@ -42,7 +42,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Teacher update(Teacher teacher) {
-        if (teacher == null || teacher.getId() != null) {
+        if (teacher == null || teacher.getId() == null) {
             throw new NullPointerException("teacher can't be null");
         }
         return teacherRepository.save(teacher);
@@ -56,6 +56,11 @@ public class TeacherServiceImpl implements TeacherService {
         }
         teacher.get().setStatus(status);
         return teacherRepository.save(teacher.get());
+    }
+
+    @Override
+    public Optional<Teacher> findById(Long id) {
+        return teacherRepository.findById(id);
     }
 
 }

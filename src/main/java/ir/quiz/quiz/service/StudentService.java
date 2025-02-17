@@ -15,4 +15,6 @@ public interface StudentService {
     Student update(Student student);
 
     Student updateStatus(Long id, Status status);
+
+    Optional<Student> findById(Long id);
 }
