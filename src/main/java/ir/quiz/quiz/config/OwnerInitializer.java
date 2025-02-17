@@ -1,4 +1,4 @@
-package ir.quiz.quiz.owner_initializer;
+package ir.quiz.quiz.config;
 
 import ir.quiz.quiz.model.Owner;
 import ir.quiz.quiz.service.OwnerService;
@@ -14,7 +14,7 @@ public class OwnerInitializer implements ApplicationRunner {
     private final OwnerService ownerService;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         try {
             Owner owner = Owner.builder()
                     .username("admin")
@@ -22,7 +22,6 @@ public class OwnerInitializer implements ApplicationRunner {
                     .build();
 
             if (!ownerService.save(owner)) {
-
             }
         } catch (Exception e) {
 

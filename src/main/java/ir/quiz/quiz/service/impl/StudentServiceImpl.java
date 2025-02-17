@@ -28,6 +28,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public Optional<Student> findByUsernameAndPassword(String username, String password) {
+        return studentRepository.findByUsernameAndPassword(username, password);
+    }
+
+    @Override
     public Boolean save(PersonRequest studentRequest) {
         Student student = personRequestToStudent(studentRequest);
         Student result = studentRepository.save(student);

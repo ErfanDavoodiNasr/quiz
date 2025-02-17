@@ -4,6 +4,7 @@ import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.dto.PersonRequest;
+import ir.quiz.quiz.repository.StudentRepository;
 import ir.quiz.quiz.repository.TeacherRepository;
 import ir.quiz.quiz.service.TeacherService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
 
     private static Teacher personRequestToTeacher(PersonRequest personRequest) {
         return Teacher.builder()
@@ -61,6 +63,11 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Optional<Teacher> findById(Long id) {
         return teacherRepository.findById(id);
+    }
+
+    @Override
+    public Optional<Teacher> findByUsernameAndPassword(String username, String password) {
+        return teacherRepository.findByUsernameAndPassword(username, password);
     }
 
 }

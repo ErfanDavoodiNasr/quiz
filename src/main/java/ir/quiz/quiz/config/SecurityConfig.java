@@ -1,17 +1,10 @@
 package ir.quiz.quiz.config;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -19,30 +12,37 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final String[] PUBLIC_URLS = {
+            "/login",
+            "/"
+    };
+    private static final String[] OWNER_URLS = {
+            "/api/course/**",
+            "/api/owner/**",
+            "/api/register/**",
+            "/api/student/**",
+            "/api/teacher/**"
+    };
+    private static final String[] TEACHER_URLS = {
+            "/api/teacher/save"
+    };
+    private static final String[] STUDENT_URLS = {
+            "/api/student/save"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)  // غیرفعال کردن CSRF برای API
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()  // اجازه دسترسی به لاگین
-                        .anyRequest().authenticated())  // سایر درخواست‌ها نیاز به احراز هویت دارند
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))  // استفاده از سشن
-                .exceptionHandling(ex ->
-                        ex.authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"error\": \"Unauthorized\"}");
-                        }))
-                .formLogin(AbstractHttpConfigurer::disable)  // غیرفعال کردن فرم‌لاگین
-                .httpBasic(Customizer.withDefaults());  // فعال‌سازی Basic Authentication
+                        .requestMatchers(OWNER_URLS).hasRole("ADMIN")
+                        .requestMatchers(TEACHER_URLS).hasRole("TEACHER")
+                        .requestMatchers(STUDENT_URLS).hasRole("STUDENT")
+                        .requestMatchers(PUBLIC_URLS).permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable);
 
         return http.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.builder().username("admin").password("admin").roles("OWNER").build();
-        return new InMemoryUserDetailsManager(user);
     }
 }

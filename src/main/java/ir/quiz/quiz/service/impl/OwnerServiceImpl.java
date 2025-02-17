@@ -29,7 +29,6 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public Boolean save(Owner owner) {
-        owner.setPassword(passwordHashing.hash(owner.getPassword()));
         Owner result = ownerRepository.save(owner);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }
