@@ -16,9 +16,9 @@ public class PersonRequest {
     @Size(min = 2, max = 50)
     private String lastName;
 
-    @Size(min = 10, max = 10)
-    private String nationalCode;
+    @Size(min = 3, max = 50)
+    private String username;
 
-    @Size(min = 11, max = 11)
-    private String phoneNumber;
+    @Size(min = 8, max = 50)
+    private String password;
 }

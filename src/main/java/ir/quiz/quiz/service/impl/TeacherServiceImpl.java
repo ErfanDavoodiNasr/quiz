@@ -22,8 +22,8 @@ public class TeacherServiceImpl implements TeacherService {
         return Teacher.builder()
                 .firstName(personRequest.getFirstName())
                 .lastName(personRequest.getLastName())
-                .phoneNumber(personRequest.getPhoneNumber())
-                .nationalCode(personRequest.getNationalCode())
+                .username(personRequest.getUsername())
+                .password(personRequest.getPassword())
                 .status(Status.AWAITING_CONFIRMATION)
                 .build();
     }

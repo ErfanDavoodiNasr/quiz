@@ -8,6 +8,8 @@ import ir.quiz.quiz.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
@@ -38,5 +40,10 @@ public class CourseServiceImpl implements CourseService {
             throw new NullPointerException("course can't be null");
         }
         return courseRepository.save(course);
+    }
+
+    @Override
+    public Optional<Course> findById(Long id) {
+        return courseRepository.findById(id);
     }
 }

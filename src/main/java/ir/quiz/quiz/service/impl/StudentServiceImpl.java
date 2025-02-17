@@ -21,8 +21,8 @@ public class StudentServiceImpl implements StudentService {
         return Student.builder()
                 .firstName(personRequest.getFirstName())
                 .lastName(personRequest.getLastName())
-                .phoneNumber(personRequest.getPhoneNumber())
-                .nationalCode(personRequest.getNationalCode())
+                .password(personRequest.getPassword())
+                .username(personRequest.getUsername())
                 .status(Status.AWAITING_CONFIRMATION)
                 .build();
     }

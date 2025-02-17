@@ -28,9 +28,9 @@ public abstract class Person extends BaseModel {
     @Column(name = "last_name", length = 50)
     private String lastName;
 
-    @Column(name = "national_code", unique = true, nullable = false, length = 10)
-    private String nationalCode;
+    @Column(unique = true, nullable = false, length = 50)
+    private String username;
 
-    @Column(name = "phone_number", unique = true, nullable = false, length = 11)
-    private String phoneNumber;
+    @Column(nullable = false)
+    private String password;
 }
