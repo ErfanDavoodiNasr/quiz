@@ -1,13 +1,16 @@
 package ir.quiz.quiz.service.impl;
 
+import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.dto.PersonRequest;
+import ir.quiz.quiz.model.dto.response.TeacherResponse;
 import ir.quiz.quiz.repository.StudentRepository;
 import ir.quiz.quiz.repository.TeacherRepository;
 import ir.quiz.quiz.service.TeacherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +22,24 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private static Teacher personRequestToTeacher(PersonRequest personRequest) {
+    private static Optional<TeacherResponse> teacherToTeacherResponse(Optional<Teacher> teacherOptional) {
+        return Optional.ofNullable(TeacherResponse.builder()
+                .firstName(teacherOptional.get().getFirstName())
+                .lastName(teacherOptional.get().getLastName())
+                .username(teacherOptional.get().getUsername())
+                .courses(teacherOptional.get().getCourses())
+                .status(teacherOptional.get().getStatus())
+                .build());
+    }
+
+    private Teacher personRequestToTeacher(PersonRequest personRequest) {
         return Teacher.builder()
                 .firstName(personRequest.getFirstName())
                 .lastName(personRequest.getLastName())
                 .username(personRequest.getUsername())
-                .password(personRequest.getPassword())
+                .password(bCryptPasswordEncoder.encode(personRequest.getPassword()))
                 .status(Status.AWAITING_CONFIRMATION)
                 .build();
     }
@@ -66,8 +80,16 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Optional<Teacher> findByUsernameAndPassword(String username, String password) {
-        return teacherRepository.findByUsernameAndPassword(username, password);
+    public Optional<TeacherResponse> findByUsernameAndPassword(String username, String password) {
+        Optional<Teacher> teacherOptional = teacherRepository.findByUsername(username);
+        if (teacherOptional.isEmpty()) {
+            throw new TeacherNotFoundException("teacher not found");
+        }
+        if (bCryptPasswordEncoder.matches(password, teacherOptional.get().getPassword())) {
+            return teacherToTeacherResponse(teacherOptional);
+        } else {
+            throw new OwnerNotFoundException("your username or password is wrong");
+        }
     }
 
 }

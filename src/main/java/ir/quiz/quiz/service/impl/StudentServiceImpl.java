@@ -1,12 +1,15 @@
 package ir.quiz.quiz.service.impl;
 
+import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.dto.PersonRequest;
+import ir.quiz.quiz.model.dto.response.StudentResponse;
 import ir.quiz.quiz.repository.StudentRepository;
 import ir.quiz.quiz.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,20 +19,39 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private static Student personRequestToStudent(PersonRequest personRequest) {
+    private static Optional<StudentResponse> studentToStudentResponse(Optional<Student> studentOptional) {
+        return Optional.ofNullable(StudentResponse.builder()
+                .firstName(studentOptional.get().getFirstName())
+                .lastName(studentOptional.get().getLastName())
+                .username(studentOptional.get().getUsername())
+                .courses(studentOptional.get().getCourses())
+                .status(studentOptional.get().getStatus())
+                .build());
+    }
+
+    private Student personRequestToStudent(PersonRequest personRequest) {
         return Student.builder()
                 .firstName(personRequest.getFirstName())
                 .lastName(personRequest.getLastName())
-                .password(personRequest.getPassword())
+                .password(bCryptPasswordEncoder.encode(personRequest.getPassword()))
                 .username(personRequest.getUsername())
                 .status(Status.AWAITING_CONFIRMATION)
                 .build();
     }
 
     @Override
-    public Optional<Student> findByUsernameAndPassword(String username, String password) {
-        return studentRepository.findByUsernameAndPassword(username, password);
+    public Optional<StudentResponse> findByUsernameAndPassword(String username, String password) {
+        Optional<Student> studentOptional = studentRepository.findByUsername(username);
+        if (studentOptional.isEmpty()) {
+            throw new StudentNotFoundException("student not found");
+        }
+        if (bCryptPasswordEncoder.matches(password, studentOptional.get().getPassword())) {
+            return studentToStudentResponse(studentOptional);
+        } else {
+            throw new OwnerNotFoundException("your username or password is wrong");
+        }
     }
 
     @Override
@@ -49,6 +71,7 @@ public class StudentServiceImpl implements StudentService {
         if (student == null | student.getId() == null) {
             throw new NullPointerException("student can't be null");
         }
+        student.setPassword(bCryptPasswordEncoder.encode(student.getPassword()));
         return studentRepository.save(student);
     }
 

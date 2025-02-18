@@ -33,6 +33,9 @@ public class TeacherController {
 
     @PostMapping("/update")
     public ResponseEntity<?> update(@RequestBody Teacher teacher) {
+        if (teacher == null) {
+            return ResponseEntity.status(400).body("teacher is null");
+        }
         return ResponseEntity.ok(teacherService.update(teacher));
     }
 

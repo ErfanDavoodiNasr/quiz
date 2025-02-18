@@ -3,6 +3,7 @@ package ir.quiz.quiz.service;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.dto.PersonRequest;
+import ir.quiz.quiz.model.dto.response.TeacherResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,5 +19,5 @@ public interface TeacherService {
 
     Optional<Teacher> findById(Long id);
 
-    Optional<Teacher> findByUsernameAndPassword(String username, String password);
+    Optional<TeacherResponse> findByUsernameAndPassword(String username, String password);
 }

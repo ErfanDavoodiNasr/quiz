@@ -22,7 +22,7 @@ import static ir.quiz.quiz.model.Student.TABLE_NAME;
 public class Student extends Person {
     public static final String TABLE_NAME = "students";
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     @JoinTable(
             name = "fk_students_courses",
             joinColumns = @JoinColumn(name = "student_id"),

@@ -14,6 +14,8 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_URLS = {
             "/login",
+            "/api/student/save",
+            "/api/teacher/save",
             "/"
     };
     private static final String[] OWNER_URLS = {
@@ -24,10 +26,8 @@ public class SecurityConfig {
             "/api/teacher/**"
     };
     private static final String[] TEACHER_URLS = {
-            "/api/teacher/save"
     };
     private static final String[] STUDENT_URLS = {
-            "/api/student/save"
     };
 
     @Bean
@@ -35,7 +35,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(OWNER_URLS).hasRole("ADMIN")
+                        .requestMatchers(OWNER_URLS).hasRole("OWNER")
                         .requestMatchers(TEACHER_URLS).hasRole("TEACHER")
                         .requestMatchers(STUDENT_URLS).hasRole("STUDENT")
                         .requestMatchers(PUBLIC_URLS).permitAll()

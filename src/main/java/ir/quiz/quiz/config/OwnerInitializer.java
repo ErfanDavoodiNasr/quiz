@@ -1,10 +1,12 @@
 package ir.quiz.quiz.config;
 
 import ir.quiz.quiz.model.Owner;
+import ir.quiz.quiz.model.dto.OwnerUpdateRequest;
 import ir.quiz.quiz.service.OwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,19 +14,14 @@ import org.springframework.stereotype.Component;
 public class OwnerInitializer implements ApplicationRunner {
 
     private final OwnerService ownerService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public void run(ApplicationArguments args) {
-        try {
-            Owner owner = Owner.builder()
-                    .username("admin")
-                    .password("admin")
-                    .build();
-
-            if (!ownerService.save(owner)) {
-            }
-        } catch (Exception e) {
-
-        }
+        Owner owner = Owner.builder()
+                .username("admin")
+                .password(bCryptPasswordEncoder.encode("admin"))
+                .build();
+        ownerService.save(owner);
     }
 }

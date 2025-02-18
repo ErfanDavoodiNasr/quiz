@@ -32,9 +32,9 @@ public class Course extends BaseModel {
     @Column(name = "end_at", nullable = false)
     private LocalDateTime endAt;
 
-    @ManyToMany(cascade = CascadeType.REMOVE, mappedBy = "courses")
+    @ManyToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "courses")
     private List<Student> students;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     private Teacher teacher;
 }

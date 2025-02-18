@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     Optional<List<Teacher>> findAllByStatusIsLike(Status status);
 
-    Optional<Teacher> findByUsernameAndPassword(String username, String password);
+    Optional<Teacher> findByUsername(String username);
 }

@@ -1,11 +1,13 @@
 package ir.quiz.quiz.service.impl;
 
+import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.model.Owner;
 import ir.quiz.quiz.model.dto.OwnerUpdateRequest;
+import ir.quiz.quiz.model.dto.response.OwnerResponse;
 import ir.quiz.quiz.repository.OwnerRepository;
-import ir.quiz.quiz.security.PasswordHashing;
 import ir.quiz.quiz.service.OwnerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,15 +17,23 @@ import java.util.Optional;
 public class OwnerServiceImpl implements OwnerService {
 
     private final OwnerRepository ownerRepository;
-    private final PasswordHashing passwordHashing;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private static Owner ownerUpdateRequestToOwner(OwnerUpdateRequest ownerUpdateRequest) {
+    private static Optional<OwnerResponse> OwnerToOwnerResponse(Optional<Owner> ownerOptional) {
+        return Optional.ofNullable(OwnerResponse.builder()
+                .username(ownerOptional.get().getUsername())
+                .firstName(ownerOptional.get().getFirstName())
+                .lastName(ownerOptional.get().getLastName())
+                .build());
+    }
+
+    private Owner ownerUpdateRequestToOwner(OwnerUpdateRequest ownerUpdateRequest) {
         return Owner.builder()
                 .id(ownerUpdateRequest.getId())
                 .firstName(ownerUpdateRequest.getFirstName())
                 .lastName(ownerUpdateRequest.getLastName())
                 .username(ownerUpdateRequest.getUsername())
-                .password(ownerUpdateRequest.getPassword())
+                .password(bCryptPasswordEncoder.encode(ownerUpdateRequest.getPassword()))
                 .build();
     }
 
@@ -43,7 +53,15 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public Optional<Owner> findByUsernameAndPassword(String username, String password) {
-        return ownerRepository.findByUsernameAndPassword(username, password);
+    public Optional<OwnerResponse> findByUsernameAndPassword(String username, String password) {
+        Optional<Owner> ownerOptional = ownerRepository.findByUsername(username);
+        if (ownerOptional.isEmpty()) {
+            throw new OwnerNotFoundException("owner not found");
+        }
+        if (bCryptPasswordEncoder.matches(password, ownerOptional.get().getPassword())) {
+            return OwnerToOwnerResponse(ownerOptional);
+        } else {
+            throw new OwnerNotFoundException("your username or password is wrong");
+        }
     }
 }

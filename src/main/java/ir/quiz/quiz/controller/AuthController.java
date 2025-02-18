@@ -1,8 +1,12 @@
 package ir.quiz.quiz.controller;
 
 
-import ir.quiz.quiz.model.*;
+import ir.quiz.quiz.model.UserRole;
 import ir.quiz.quiz.model.dto.LoginRequest;
+import ir.quiz.quiz.model.dto.response.OwnerResponse;
+import ir.quiz.quiz.model.dto.response.StudentResponse;
+import ir.quiz.quiz.model.dto.response.TeacherResponse;
+import ir.quiz.quiz.model.dto.response.UserResponse;
 import ir.quiz.quiz.service.OwnerService;
 import ir.quiz.quiz.service.StudentService;
 import ir.quiz.quiz.service.TeacherService;
@@ -29,7 +33,7 @@ public class AuthController {
     private final StudentService studentService;
     private final TeacherService teacherService;
 
-    private static <T extends Person> void authentication(HttpServletRequest request, T person, String role) {
+    private static <T extends UserResponse> void authentication(HttpServletRequest request, T person, String role) {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 person.getUsername(),
                 null,
@@ -43,21 +47,21 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         if (loginRequest.getUserRole() == UserRole.OWNER) {
-            Optional<Owner> result = ownerService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+            Optional<OwnerResponse> result = ownerService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
             if (result.isEmpty()) {
                 return ResponseEntity.status(404).body("Owner not found");
             } else {
                 authentication(request, result.get(), "OWNER");
             }
         } else if (loginRequest.getUserRole() == UserRole.STUDENT) {
-            Optional<Student> result = studentService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+            Optional<StudentResponse> result = studentService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
             if (result.isEmpty()) {
                 return ResponseEntity.status(404).body("Student not found");
             } else {
                 authentication(request, result.get(), "STUDENT");
             }
         } else if (loginRequest.getUserRole() == UserRole.TEACHER) {
-            Optional<Teacher> result = teacherService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+            Optional<TeacherResponse> result = teacherService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
             if (result.isEmpty()) {
                 return ResponseEntity.status(404).body("Teacher not found");
             } else {
