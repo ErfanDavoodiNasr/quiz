@@ -2,14 +2,12 @@ package ir.quiz.quiz.controller;
 
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.dto.PersonRequest;
+import ir.quiz.quiz.model.dto.search.StudentSearch;
 import ir.quiz.quiz.service.StudentService;
 import ir.quiz.quiz.util.ValidatorProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,4 +35,12 @@ public class StudentController {
         return ResponseEntity.ok(studentService.update(student));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestBody StudentSearch studentSearch){
+        List<Student> students = studentService.findAll(studentSearch);
+        if (students.isEmpty()){
+            return ResponseEntity.status(404).body("student not found");
+        }
+        return ResponseEntity.ok(students);
+    }
 }

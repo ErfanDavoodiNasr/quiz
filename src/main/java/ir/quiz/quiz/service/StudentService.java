@@ -4,6 +4,7 @@ import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.dto.PersonRequest;
 import ir.quiz.quiz.model.dto.response.StudentResponse;
+import ir.quiz.quiz.model.dto.search.StudentSearch;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +21,6 @@ public interface StudentService {
     Optional<Student> findById(Long id);
 
     Optional<StudentResponse> findByUsernameAndPassword(String username, String password);
+
+    List<Student> findAll(StudentSearch search);
 }

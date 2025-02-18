@@ -6,13 +6,19 @@ import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.dto.PersonRequest;
 import ir.quiz.quiz.model.dto.response.TeacherResponse;
-import ir.quiz.quiz.repository.StudentRepository;
+import ir.quiz.quiz.model.dto.search.StudentSearch;
+import ir.quiz.quiz.model.dto.search.TeacherSearch;
 import ir.quiz.quiz.repository.TeacherRepository;
 import ir.quiz.quiz.service.TeacherService;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +27,6 @@ import java.util.Optional;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
-    private final StudentRepository studentRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private static Optional<TeacherResponse> teacherToTeacherResponse(Optional<Teacher> teacherOptional) {
@@ -89,6 +94,46 @@ public class TeacherServiceImpl implements TeacherService {
             return teacherToTeacherResponse(teacherOptional);
         } else {
             throw new OwnerNotFoundException("your username or password is wrong");
+        }
+    }
+
+    @Override
+    public List<Teacher> findAll(TeacherSearch search) {
+        return teacherRepository.findAll(
+                (root, query, cb) -> {
+                    List<Predicate> predicates = new ArrayList<>();
+                    fillFirstNamePredicates(predicates, root, cb, search.getFirstName());
+                    fillLastNamePredicates(predicates, root, cb, search.getLastName());
+                    fillUsernamePredicates(predicates, root, cb, search.getUsername());
+                    return predicates.isEmpty() ? null : cb.and(predicates.toArray(new Predicate[0]));
+                }
+        );
+    }
+
+    private void fillUsernamePredicates(List<Predicate> predicates, Root<Teacher> root, CriteriaBuilder cb, String username) {
+        if (StringUtils.isNoneBlank(username)) {
+            predicates.add(cb.like(
+                    root.get("username"),
+                    "%" + username + "%"
+            ));
+        }
+    }
+
+    private void fillLastNamePredicates(List<Predicate> predicates, Root<Teacher> root, CriteriaBuilder cb, String lastName) {
+        if (StringUtils.isNoneBlank(lastName)) {
+            predicates.add(cb.like(
+                    root.get("lastname"),
+                    "%" + lastName + "%"
+            ));
+        }
+    }
+
+    private void fillFirstNamePredicates(List<Predicate> predicates, Root<Teacher> root, CriteriaBuilder cb, String firstName) {
+        if (StringUtils.isNoneBlank(firstName)) {
+            predicates.add(cb.like(
+                    root.get("firstname"),
+                    "%" + firstName + "%"
+            ));
         }
     }
 

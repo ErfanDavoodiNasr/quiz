@@ -14,4 +14,6 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
     Optional<List<Student>> findAllByStatusIsLike(Status status);
 
     Optional<Student> findByUsername(String username);
+
+
 }

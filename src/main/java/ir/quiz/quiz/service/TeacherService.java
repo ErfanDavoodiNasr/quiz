@@ -4,6 +4,8 @@ import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.dto.PersonRequest;
 import ir.quiz.quiz.model.dto.response.TeacherResponse;
+import ir.quiz.quiz.model.dto.search.StudentSearch;
+import ir.quiz.quiz.model.dto.search.TeacherSearch;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +22,5 @@ public interface TeacherService {
     Optional<Teacher> findById(Long id);
 
     Optional<TeacherResponse> findByUsernameAndPassword(String username, String password);
+    List<Teacher> findAll(TeacherSearch search);
 }
