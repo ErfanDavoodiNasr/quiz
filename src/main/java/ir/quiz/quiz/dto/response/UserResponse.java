@@ -1,4 +1,4 @@
-package ir.quiz.quiz.model.dto.response;
+package ir.quiz.quiz.dto.response;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;

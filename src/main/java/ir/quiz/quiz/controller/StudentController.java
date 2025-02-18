@@ -1,8 +1,8 @@
 package ir.quiz.quiz.controller;
 
 import ir.quiz.quiz.model.Student;
-import ir.quiz.quiz.model.dto.request.PersonRequest;
-import ir.quiz.quiz.model.dto.search.StudentSearch;
+import ir.quiz.quiz.dto.request.PersonRequest;
+import ir.quiz.quiz.dto.search.StudentSearch;
 import ir.quiz.quiz.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

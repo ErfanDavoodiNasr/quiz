@@ -1,4 +1,4 @@
-package ir.quiz.quiz.model.dto.request;
+package ir.quiz.quiz.dto.request;
 
 
 import ir.quiz.quiz.model.UserRole;

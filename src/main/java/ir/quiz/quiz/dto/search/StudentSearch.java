@@ -1,4 +1,4 @@
-package ir.quiz.quiz.model.dto.search;
+package ir.quiz.quiz.dto.search;
 
 
 import lombok.Builder;

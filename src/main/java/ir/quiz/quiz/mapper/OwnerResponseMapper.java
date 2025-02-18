@@ -1,7 +1,7 @@
 package ir.quiz.quiz.mapper;
 
 import ir.quiz.quiz.model.Owner;
-import ir.quiz.quiz.model.dto.response.OwnerResponse;
+import ir.quiz.quiz.dto.response.OwnerResponse;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

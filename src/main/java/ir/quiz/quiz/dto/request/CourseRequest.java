@@ -1,4 +1,4 @@
-package ir.quiz.quiz.model.dto.request;
+package ir.quiz.quiz.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

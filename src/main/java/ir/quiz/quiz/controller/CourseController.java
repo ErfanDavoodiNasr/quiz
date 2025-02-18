@@ -3,7 +3,7 @@ package ir.quiz.quiz.controller;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.Teacher;
-import ir.quiz.quiz.model.dto.request.CourseRequest;
+import ir.quiz.quiz.dto.request.CourseRequest;
 import ir.quiz.quiz.service.CourseService;
 import ir.quiz.quiz.service.StudentService;
 import ir.quiz.quiz.service.TeacherService;

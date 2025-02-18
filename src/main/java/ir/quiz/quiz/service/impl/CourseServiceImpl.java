@@ -3,7 +3,7 @@ package ir.quiz.quiz.service.impl;
 
 import ir.quiz.quiz.mapper.CourseRequestMapper;
 import ir.quiz.quiz.model.Course;
-import ir.quiz.quiz.model.dto.request.CourseRequest;
+import ir.quiz.quiz.dto.request.CourseRequest;
 import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.service.CourseService;
 import lombok.RequiredArgsConstructor;

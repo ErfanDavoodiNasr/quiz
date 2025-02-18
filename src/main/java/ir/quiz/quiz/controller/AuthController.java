@@ -2,11 +2,11 @@ package ir.quiz.quiz.controller;
 
 
 import ir.quiz.quiz.model.UserRole;
-import ir.quiz.quiz.model.dto.request.LoginRequest;
-import ir.quiz.quiz.model.dto.response.OwnerResponse;
-import ir.quiz.quiz.model.dto.response.StudentResponse;
-import ir.quiz.quiz.model.dto.response.TeacherResponse;
-import ir.quiz.quiz.model.dto.response.UserResponse;
+import ir.quiz.quiz.dto.request.LoginRequest;
+import ir.quiz.quiz.dto.response.OwnerResponse;
+import ir.quiz.quiz.dto.response.StudentResponse;
+import ir.quiz.quiz.dto.response.TeacherResponse;
+import ir.quiz.quiz.dto.response.UserResponse;
 import ir.quiz.quiz.service.OwnerService;
 import ir.quiz.quiz.service.StudentService;
 import ir.quiz.quiz.service.TeacherService;

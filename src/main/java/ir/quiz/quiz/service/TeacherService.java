@@ -2,9 +2,9 @@ package ir.quiz.quiz.service;
 
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
-import ir.quiz.quiz.model.dto.request.PersonRequest;
-import ir.quiz.quiz.model.dto.response.TeacherResponse;
-import ir.quiz.quiz.model.dto.search.TeacherSearch;
+import ir.quiz.quiz.dto.request.PersonRequest;
+import ir.quiz.quiz.dto.response.TeacherResponse;
+import ir.quiz.quiz.dto.search.TeacherSearch;
 
 import java.util.List;
 import java.util.Optional;

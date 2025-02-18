@@ -1,4 +1,4 @@
-package ir.quiz.quiz.model.dto.response;
+package ir.quiz.quiz.dto.response;
 
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Status;
@@ -12,7 +12,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @Data
-public class TeacherResponse extends UserResponse {
+public class StudentResponse extends UserResponse {
     private List<Course> courses;
     private Status status;
 }
