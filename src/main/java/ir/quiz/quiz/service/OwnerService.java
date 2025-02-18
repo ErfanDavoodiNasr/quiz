@@ -10,6 +10,8 @@ public interface OwnerService {
 
     Boolean save(Owner owner);
 
+    OwnerResponse find();
+
     void remove(Long id);
 
     Owner update(OwnerUpdateRequest ownerUpdateRequest);

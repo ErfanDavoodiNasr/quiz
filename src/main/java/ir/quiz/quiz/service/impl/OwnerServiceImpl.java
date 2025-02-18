@@ -31,6 +31,11 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
+    public OwnerResponse find() {
+        return ownerResponseMapper.convertEntityToDto(ownerRepository.findAll().getFirst());
+    }
+
+    @Override
     public void remove(Long id) {
         ownerRepository.deleteById(id);
     }

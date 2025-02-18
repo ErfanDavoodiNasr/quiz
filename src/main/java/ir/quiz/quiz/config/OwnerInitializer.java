@@ -28,7 +28,7 @@ public class OwnerInitializer {
     @PreDestroy
     public void onShutdown() {
         try {
-            ownerService.remove(1L);
+            ownerService.remove(ownerService.find().getId());
         } catch (Exception e) {
             System.exit(0);
         }
