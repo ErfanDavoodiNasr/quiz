@@ -1,7 +1,7 @@
 package ir.quiz.quiz.controller;
 
 import ir.quiz.quiz.model.Student;
-import ir.quiz.quiz.model.dto.PersonRequest;
+import ir.quiz.quiz.model.dto.request.PersonRequest;
 import ir.quiz.quiz.model.dto.search.StudentSearch;
 import ir.quiz.quiz.service.StudentService;
 import ir.quiz.quiz.util.ValidatorProvider;

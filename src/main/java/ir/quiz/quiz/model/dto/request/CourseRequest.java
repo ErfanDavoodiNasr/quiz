@@ -1,9 +1,11 @@
-package ir.quiz.quiz.model.dto;
+package ir.quiz.quiz.model.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 
 @Builder
@@ -14,8 +16,8 @@ public class CourseRequest {
     private String name;
 
     @NotNull
-    private String startAt;
+    private LocalDateTime startAt;
 
     @NotNull
-    private String endAt;
+    private LocalDateTime endAt;
 }

@@ -1,4 +1,4 @@
-package ir.quiz.quiz.model.dto;
+package ir.quiz.quiz.model.dto.request;
 
 
 import ir.quiz.quiz.model.Status;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class UpdateTeacherStatusRequest {
+public class UpdateStudentStatusRequest {
     @NotNull
     private Long id;
     @NotNull

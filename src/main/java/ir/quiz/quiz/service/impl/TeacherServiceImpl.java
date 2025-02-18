@@ -2,9 +2,11 @@ package ir.quiz.quiz.service.impl;
 
 import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
+import ir.quiz.quiz.mapper.TeacherRequestMapper;
+import ir.quiz.quiz.mapper.TeacherResponseMapper;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
-import ir.quiz.quiz.model.dto.PersonRequest;
+import ir.quiz.quiz.model.dto.request.PersonRequest;
 import ir.quiz.quiz.model.dto.response.TeacherResponse;
 import ir.quiz.quiz.model.dto.search.TeacherSearch;
 import ir.quiz.quiz.repository.TeacherRepository;
@@ -27,30 +29,12 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    private static Optional<TeacherResponse> teacherToTeacherResponse(Optional<Teacher> teacherOptional) {
-        return Optional.ofNullable(TeacherResponse.builder()
-                .firstName(teacherOptional.get().getFirstName())
-                .lastName(teacherOptional.get().getLastName())
-                .username(teacherOptional.get().getUsername())
-                .courses(teacherOptional.get().getCourses())
-                .status(teacherOptional.get().getStatus())
-                .build());
-    }
-
-    private Teacher personRequestToTeacher(PersonRequest personRequest) {
-        return Teacher.builder()
-                .firstName(personRequest.getFirstName())
-                .lastName(personRequest.getLastName())
-                .username(personRequest.getUsername())
-                .password(bCryptPasswordEncoder.encode(personRequest.getPassword()))
-                .status(Status.AWAITING_CONFIRMATION)
-                .build();
-    }
+    private final TeacherResponseMapper teacherResponseMapper;
+    private final TeacherRequestMapper teacherRequestMapper;
 
     @Override
     public Boolean save(PersonRequest teacherRequest) {
-        Teacher teacher = personRequestToTeacher(teacherRequest);
+        Teacher teacher = teacherRequestMapper.convertDtoToEntity(teacherRequest);
         Teacher result = teacherRepository.save(teacher);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }
@@ -90,7 +74,7 @@ public class TeacherServiceImpl implements TeacherService {
             throw new TeacherNotFoundException("teacher not found");
         }
         if (bCryptPasswordEncoder.matches(password, teacherOptional.get().getPassword())) {
-            return teacherToTeacherResponse(teacherOptional);
+            return Optional.ofNullable(teacherResponseMapper.convertEntityToDto(teacherOptional.get()));
         } else {
             throw new OwnerNotFoundException("your username or password is wrong");
         }

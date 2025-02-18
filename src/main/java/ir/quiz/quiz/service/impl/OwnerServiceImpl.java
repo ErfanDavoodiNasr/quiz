@@ -1,8 +1,10 @@
 package ir.quiz.quiz.service.impl;
 
 import ir.quiz.quiz.exception.OwnerNotFoundException;
+import ir.quiz.quiz.mapper.OwnerResponseMapper;
+import ir.quiz.quiz.mapper.OwnerUpdateRequestMapper;
 import ir.quiz.quiz.model.Owner;
-import ir.quiz.quiz.model.dto.OwnerUpdateRequest;
+import ir.quiz.quiz.model.dto.request.OwnerUpdateRequest;
 import ir.quiz.quiz.model.dto.response.OwnerResponse;
 import ir.quiz.quiz.repository.OwnerRepository;
 import ir.quiz.quiz.service.OwnerService;
@@ -18,24 +20,8 @@ public class OwnerServiceImpl implements OwnerService {
 
     private final OwnerRepository ownerRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    private static Optional<OwnerResponse> OwnerToOwnerResponse(Optional<Owner> ownerOptional) {
-        return Optional.ofNullable(OwnerResponse.builder()
-                .username(ownerOptional.get().getUsername())
-                .firstName(ownerOptional.get().getFirstName())
-                .lastName(ownerOptional.get().getLastName())
-                .build());
-    }
-
-    private Owner ownerUpdateRequestToOwner(OwnerUpdateRequest ownerUpdateRequest) {
-        return Owner.builder()
-                .id(ownerUpdateRequest.getId())
-                .firstName(ownerUpdateRequest.getFirstName())
-                .lastName(ownerUpdateRequest.getLastName())
-                .username(ownerUpdateRequest.getUsername())
-                .password(bCryptPasswordEncoder.encode(ownerUpdateRequest.getPassword()))
-                .build();
-    }
+    private final OwnerResponseMapper ownerResponseMapper;
+    private final OwnerUpdateRequestMapper ownerUpdateRequestMapper;
 
     @Override
     public Boolean save(Owner owner) {
@@ -48,7 +34,7 @@ public class OwnerServiceImpl implements OwnerService {
         if (ownerUpdateRequest == null | ownerUpdateRequest.getId() == null) {
             throw new NullPointerException("owner can't be null");
         }
-        Owner owner = ownerUpdateRequestToOwner(ownerUpdateRequest);
+        Owner owner = ownerUpdateRequestMapper.convertDtoToEntity(ownerUpdateRequest);
         return ownerRepository.save(owner);
     }
 
@@ -59,7 +45,7 @@ public class OwnerServiceImpl implements OwnerService {
             throw new OwnerNotFoundException("owner not found");
         }
         if (bCryptPasswordEncoder.matches(password, ownerOptional.get().getPassword())) {
-            return OwnerToOwnerResponse(ownerOptional);
+            return Optional.ofNullable(ownerResponseMapper.convertEntityToDto(ownerOptional.get()));
         } else {
             throw new OwnerNotFoundException("your username or password is wrong");
         }

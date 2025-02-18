@@ -2,9 +2,11 @@ package ir.quiz.quiz.service.impl;
 
 import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.exception.StudentNotFoundException;
+import ir.quiz.quiz.mapper.StudentRequestMapper;
+import ir.quiz.quiz.mapper.StudentResponseMapper;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Student;
-import ir.quiz.quiz.model.dto.PersonRequest;
+import ir.quiz.quiz.model.dto.request.PersonRequest;
 import ir.quiz.quiz.model.dto.response.StudentResponse;
 import ir.quiz.quiz.model.dto.search.StudentSearch;
 import ir.quiz.quiz.repository.StudentRepository;
@@ -26,26 +28,8 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    private static Optional<StudentResponse> studentToStudentResponse(Optional<Student> studentOptional) {
-        return Optional.ofNullable(StudentResponse.builder()
-                .firstName(studentOptional.get().getFirstName())
-                .lastName(studentOptional.get().getLastName())
-                .username(studentOptional.get().getUsername())
-                .courses(studentOptional.get().getCourses())
-                .status(studentOptional.get().getStatus())
-                .build());
-    }
-
-    private Student personRequestToStudent(PersonRequest personRequest) {
-        return Student.builder()
-                .firstName(personRequest.getFirstName())
-                .lastName(personRequest.getLastName())
-                .password(bCryptPasswordEncoder.encode(personRequest.getPassword()))
-                .username(personRequest.getUsername())
-                .status(Status.AWAITING_CONFIRMATION)
-                .build();
-    }
+    private final StudentResponseMapper studentResponseMapper;
+    private final StudentRequestMapper studentRequestMapper;
 
     @Override
     public Optional<StudentResponse> findByUsernameAndPassword(String username, String password) {
@@ -54,7 +38,7 @@ public class StudentServiceImpl implements StudentService {
             throw new StudentNotFoundException("student not found");
         }
         if (bCryptPasswordEncoder.matches(password, studentOptional.get().getPassword())) {
-            return studentToStudentResponse(studentOptional);
+            return Optional.ofNullable(studentResponseMapper.convertEntityToDto(studentOptional.get()));
         } else {
             throw new OwnerNotFoundException("your username or password is wrong");
         }
@@ -104,7 +88,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Boolean save(PersonRequest studentRequest) {
-        Student student = personRequestToStudent(studentRequest);
+        Student student = studentRequestMapper.convertDtoToEntity(studentRequest);
         Student result = studentRepository.save(student);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }

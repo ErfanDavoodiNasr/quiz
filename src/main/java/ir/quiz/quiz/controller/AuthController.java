@@ -2,7 +2,7 @@ package ir.quiz.quiz.controller;
 
 
 import ir.quiz.quiz.model.UserRole;
-import ir.quiz.quiz.model.dto.LoginRequest;
+import ir.quiz.quiz.model.dto.request.LoginRequest;
 import ir.quiz.quiz.model.dto.response.OwnerResponse;
 import ir.quiz.quiz.model.dto.response.StudentResponse;
 import ir.quiz.quiz.model.dto.response.TeacherResponse;

@@ -1,8 +1,9 @@
 package ir.quiz.quiz.service.impl;
 
 
+import ir.quiz.quiz.mapper.CourseRequestMapper;
 import ir.quiz.quiz.model.Course;
-import ir.quiz.quiz.model.dto.CourseRequest;
+import ir.quiz.quiz.model.dto.request.CourseRequest;
 import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -17,23 +18,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final CourseRepository courseRepository;
-
-    private static Course courseRequestToCourse(CourseRequest courseRequest) {
-        return Course.builder()
-                .name(courseRequest.getName())
-                .startAt(LocalDateTime.parse(courseRequest.getStartAt(), formatter))
-                .endAt(LocalDateTime.parse(courseRequest.getEndAt(), formatter))
-                .build();
-    }
+    private final CourseRequestMapper courseRequestMapper;
 
     @Override
     public Boolean save(CourseRequest courseRequest) {
         if (courseRequest == null) {
             throw new NullPointerException("course request can't be null");
         }
-        Course mappedCourse = courseRequestToCourse(courseRequest);
+        Course mappedCourse = courseRequestMapper.convertDtoToEntity(courseRequest);
         Course result = courseRepository.save(mappedCourse);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }

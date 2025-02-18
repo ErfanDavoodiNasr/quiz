@@ -2,7 +2,7 @@ package ir.quiz.quiz.service;
 
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Student;
-import ir.quiz.quiz.model.dto.PersonRequest;
+import ir.quiz.quiz.model.dto.request.PersonRequest;
 import ir.quiz.quiz.model.dto.response.StudentResponse;
 import ir.quiz.quiz.model.dto.search.StudentSearch;
 
