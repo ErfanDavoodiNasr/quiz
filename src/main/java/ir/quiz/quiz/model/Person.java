@@ -22,15 +22,20 @@ import static jakarta.persistence.InheritanceType.TABLE_PER_CLASS;
 @Inheritance(strategy = TABLE_PER_CLASS)
 public abstract class Person extends BaseModel {
 
-    @Column(name = "first_name", length = 50)
+    public static final String FIRST_NAME = "first_name";
+    public static final String LAST_NAME = "last_name";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+
+    @Column(name = FIRST_NAME, length = 50)
     private String firstName;
 
-    @Column(name = "last_name", length = 50)
+    @Column(name = LAST_NAME, length = 50)
     private String lastName;
 
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(name = USERNAME, unique = true, nullable = false, length = 50)
     private String username;
 
-    @Column(nullable = false)
+    @Column(name = PASSWORD, nullable = false)
     private String password;
 }

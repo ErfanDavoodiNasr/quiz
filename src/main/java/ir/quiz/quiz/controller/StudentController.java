@@ -4,33 +4,28 @@ import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.dto.request.PersonRequest;
 import ir.quiz.quiz.model.dto.search.StudentSearch;
 import ir.quiz.quiz.service.StudentService;
-import ir.quiz.quiz.util.ValidatorProvider;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/student")
+@RequestMapping("/api/students")
 @RequiredArgsConstructor
 public class StudentController {
 
     private final StudentService studentService;
 
-    @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody PersonRequest personRequest) {
-        Optional<List<String>> constraint = ValidatorProvider.validate(personRequest);
-        if (constraint.isPresent()) {
-            return ResponseEntity.status(400).body(constraint.get());
-        }
+    @PostMapping
+    public ResponseEntity<?> save(@RequestBody @Valid PersonRequest personRequest) {
         Boolean result = studentService.save(personRequest);
         return result ? ResponseEntity.ok("student saved successfully") : ResponseEntity.status(500).body("there is some problem please try again later");
     }
 
 
-    @PostMapping("/update")
+    @PutMapping
     public ResponseEntity<?> update(@RequestBody Student student) {
         return ResponseEntity.ok(studentService.update(student));
     }
