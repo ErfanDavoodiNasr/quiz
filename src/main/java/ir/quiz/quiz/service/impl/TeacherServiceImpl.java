@@ -122,7 +122,7 @@ public class TeacherServiceImpl implements TeacherService {
     private void fillLastNamePredicates(List<Predicate> predicates, Root<Teacher> root, CriteriaBuilder cb, String lastName) {
         if (StringUtils.isNoneBlank(lastName)) {
             predicates.add(cb.like(
-                    root.get("lastname"),
+                    root.get("lastName"),
                     "%" + lastName + "%"
             ));
         }
@@ -131,7 +131,7 @@ public class TeacherServiceImpl implements TeacherService {
     private void fillFirstNamePredicates(List<Predicate> predicates, Root<Teacher> root, CriteriaBuilder cb, String firstName) {
         if (StringUtils.isNoneBlank(firstName)) {
             predicates.add(cb.like(
-                    root.get("firstname"),
+                    root.get("firstName"),
                     "%" + firstName + "%"
             ));
         }
