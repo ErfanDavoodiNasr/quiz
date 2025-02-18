@@ -1,9 +1,7 @@
 package ir.quiz.quiz.controller;
 
-import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.dto.PersonRequest;
-import ir.quiz.quiz.model.dto.search.StudentSearch;
 import ir.quiz.quiz.model.dto.search.TeacherSearch;
 import ir.quiz.quiz.service.TeacherService;
 import ir.quiz.quiz.util.ValidatorProvider;
@@ -40,9 +38,9 @@ public class TeacherController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestBody TeacherSearch teacherSearch){
+    public ResponseEntity<?> search(@RequestBody TeacherSearch teacherSearch) {
         List<Teacher> teachers = teacherService.findAll(teacherSearch);
-        if (teachers.isEmpty()){
+        if (teachers.isEmpty()) {
             return ResponseEntity.status(404).body("teacher not found");
         }
         return ResponseEntity.ok(teachers);

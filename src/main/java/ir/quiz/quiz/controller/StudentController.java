@@ -36,9 +36,9 @@ public class StudentController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestBody StudentSearch studentSearch){
+    public ResponseEntity<?> search(@RequestBody StudentSearch studentSearch) {
         List<Student> students = studentService.findAll(studentSearch);
-        if (students.isEmpty()){
+        if (students.isEmpty()) {
             return ResponseEntity.status(404).body("student not found");
         }
         return ResponseEntity.ok(students);

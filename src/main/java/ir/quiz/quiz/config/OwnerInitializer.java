@@ -1,7 +1,6 @@
 package ir.quiz.quiz.config;
 
 import ir.quiz.quiz.model.Owner;
-import ir.quiz.quiz.model.dto.OwnerUpdateRequest;
 import ir.quiz.quiz.service.OwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;

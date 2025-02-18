@@ -6,7 +6,6 @@ import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.dto.PersonRequest;
 import ir.quiz.quiz.model.dto.response.TeacherResponse;
-import ir.quiz.quiz.model.dto.search.StudentSearch;
 import ir.quiz.quiz.model.dto.search.TeacherSearch;
 import ir.quiz.quiz.repository.TeacherRepository;
 import ir.quiz.quiz.service.TeacherService;

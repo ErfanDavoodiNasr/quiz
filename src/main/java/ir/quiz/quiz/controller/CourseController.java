@@ -83,12 +83,7 @@ public class CourseController {
             return ResponseEntity.status(404).body("no course found");
         }
         Optional<Student> student = studentService.findById(studentId);
-        List<Student> students = course.get().getStudents();
-        students.add(student.get());
-        List<Course> courses = student.get().getCourses();
-        courses.add(course.get());
-        student.get().setCourses(courses);
-        course.get().setStudents(students);
+        course.get().getStudents().add(student.get());
         return ResponseEntity.ok(courseService.update(course.get()));
     }
 
@@ -100,12 +95,7 @@ public class CourseController {
             return ResponseEntity.status(404).body("no course found");
         }
         Optional<Student> student = studentService.findById(studentId);
-        List<Student> students = course.get().getStudents();
-        students.add(student.get());
-        List<Course> courses = student.get().getCourses();
-        courses.add(course.get());
-        student.get().setCourses(courses);
-        course.get().setStudents(students);
+        course.get().getStudents().remove(student.get());
         return ResponseEntity.ok(courseService.update(course.get()));
     }
 }
