@@ -25,8 +25,14 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public Boolean save(Owner owner) {
+        owner.setPassword(bCryptPasswordEncoder.encode(owner.getPassword()));
         Owner result = ownerRepository.save(owner);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    public void remove(Long id) {
+        ownerRepository.deleteById(id);
     }
 
     @Override
@@ -34,8 +40,8 @@ public class OwnerServiceImpl implements OwnerService {
         if (ownerUpdateRequest == null | ownerUpdateRequest.getId() == null) {
             throw new NullPointerException("owner can't be null");
         }
-        Owner owner = ownerUpdateRequestMapper.convertDtoToEntity(ownerUpdateRequest);
-        return ownerRepository.save(owner);
+        ownerUpdateRequest.setPassword(bCryptPasswordEncoder.encode(ownerUpdateRequest.getPassword()));
+        return ownerRepository.save(ownerUpdateRequestMapper.convertDtoToEntity(ownerUpdateRequest));
     }
 
     @Override

@@ -91,6 +91,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Boolean save(PersonRequest studentRequest) {
+        studentRequest.setPassword(bCryptPasswordEncoder.encode(studentRequest.getPassword()));
         Student student = studentRequestMapper.convertDtoToEntity(studentRequest);
         Student result = studentRepository.save(student);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;

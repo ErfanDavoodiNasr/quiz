@@ -10,6 +10,8 @@ public interface OwnerService {
 
     Boolean save(Owner owner);
 
+    void remove(Long id);
+
     Owner update(OwnerUpdateRequest ownerUpdateRequest);
 
     Optional<OwnerResponse> findByUsernameAndPassword(String username, String password);
