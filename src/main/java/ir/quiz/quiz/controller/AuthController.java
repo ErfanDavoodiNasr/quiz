@@ -1,16 +1,17 @@
 package ir.quiz.quiz.controller;
 
 
-import ir.quiz.quiz.model.UserRole;
 import ir.quiz.quiz.dto.request.LoginRequest;
 import ir.quiz.quiz.dto.response.OwnerResponse;
 import ir.quiz.quiz.dto.response.StudentResponse;
 import ir.quiz.quiz.dto.response.TeacherResponse;
 import ir.quiz.quiz.dto.response.UserResponse;
+import ir.quiz.quiz.model.UserRole;
 import ir.quiz.quiz.service.OwnerService;
 import ir.quiz.quiz.service.StudentService;
 import ir.quiz.quiz.service.TeacherService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest, HttpServletRequest request) {
         if (loginRequest.getUserRole() == UserRole.OWNER) {
             Optional<OwnerResponse> result = ownerService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
             if (result.isEmpty()) {

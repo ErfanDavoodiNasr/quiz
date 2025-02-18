@@ -1,14 +1,16 @@
 package ir.quiz.quiz.service.impl;
 
+import ir.quiz.quiz.dto.request.PersonRequest;
+import ir.quiz.quiz.dto.request.TeacherUpdateRequest;
+import ir.quiz.quiz.dto.response.TeacherResponse;
+import ir.quiz.quiz.dto.search.TeacherSearch;
 import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.mapper.TeacherRequestMapper;
 import ir.quiz.quiz.mapper.TeacherResponseMapper;
+import ir.quiz.quiz.mapper.TeacherUpdateRequestMapper;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
-import ir.quiz.quiz.dto.request.PersonRequest;
-import ir.quiz.quiz.dto.response.TeacherResponse;
-import ir.quiz.quiz.dto.search.TeacherSearch;
 import ir.quiz.quiz.repository.TeacherRepository;
 import ir.quiz.quiz.service.TeacherService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -31,6 +33,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TeacherResponseMapper teacherResponseMapper;
     private final TeacherRequestMapper teacherRequestMapper;
+    private final TeacherUpdateRequestMapper teacherUpdateRequestMapper;
 
     @Override
     public Boolean save(PersonRequest teacherRequest) {
@@ -45,11 +48,12 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Teacher update(Teacher teacher) {
-        if (teacher == null || teacher.getId() == null) {
+    public Teacher update(TeacherUpdateRequest teacherUpdateRequest) {
+        if (teacherUpdateRequest == null || teacherUpdateRequest.getId() == null) {
             throw new NullPointerException("teacher can't be null");
         }
-        return teacherRepository.save(teacher);
+        teacherUpdateRequest.setPassword(bCryptPasswordEncoder.encode(teacherUpdateRequest.getPassword()));
+        return teacherRepository.save(teacherUpdateRequestMapper.convertDtoToEntity(teacherUpdateRequest));
     }
 
     @Override

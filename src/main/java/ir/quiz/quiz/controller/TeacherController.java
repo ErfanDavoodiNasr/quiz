@@ -1,8 +1,9 @@
 package ir.quiz.quiz.controller;
 
-import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.dto.request.PersonRequest;
+import ir.quiz.quiz.dto.request.TeacherUpdateRequest;
 import ir.quiz.quiz.dto.search.TeacherSearch;
+import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.service.TeacherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +26,8 @@ public class TeacherController {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody Teacher teacher) {
-        if (teacher == null) {
-            return ResponseEntity.status(400).body("teacher is null");
-        }
-        return ResponseEntity.ok(teacherService.update(teacher));
+    public ResponseEntity<?> update(@RequestBody @Valid TeacherUpdateRequest teacherUpdateRequest) {
+        return ResponseEntity.ok(teacherService.update(teacherUpdateRequest));
     }
 
     @GetMapping("/search")

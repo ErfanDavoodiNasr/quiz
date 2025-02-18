@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class UpdateStudentStatusRequest {
+public class TeacherUpdateStatusRequest {
     @NotNull
     private Long id;
     @NotNull

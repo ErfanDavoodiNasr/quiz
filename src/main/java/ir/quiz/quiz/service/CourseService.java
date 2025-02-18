@@ -1,7 +1,7 @@
 package ir.quiz.quiz.service;
 
-import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.dto.request.CourseRequest;
+import ir.quiz.quiz.model.Course;
 
 import java.util.List;
 import java.util.Optional;

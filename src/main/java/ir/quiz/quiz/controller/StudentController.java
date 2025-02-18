@@ -1,8 +1,9 @@
 package ir.quiz.quiz.controller;
 
-import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.dto.request.PersonRequest;
+import ir.quiz.quiz.dto.request.StudentUpdateRequest;
 import ir.quiz.quiz.dto.search.StudentSearch;
+import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,8 @@ public class StudentController {
 
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody Student student) {
-        return ResponseEntity.ok(studentService.update(student));
+    public ResponseEntity<?> update(@RequestBody StudentUpdateRequest studentUpdateRequest) {
+        return ResponseEntity.ok(studentService.update(studentUpdateRequest));
     }
 
     @GetMapping("/search")

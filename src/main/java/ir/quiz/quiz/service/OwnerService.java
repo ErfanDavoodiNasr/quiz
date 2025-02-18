@@ -1,8 +1,8 @@
 package ir.quiz.quiz.service;
 
-import ir.quiz.quiz.model.Owner;
 import ir.quiz.quiz.dto.request.OwnerUpdateRequest;
 import ir.quiz.quiz.dto.response.OwnerResponse;
+import ir.quiz.quiz.model.Owner;
 
 import java.util.Optional;
 

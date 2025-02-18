@@ -1,14 +1,16 @@
 package ir.quiz.quiz.service.impl;
 
+import ir.quiz.quiz.dto.request.PersonRequest;
+import ir.quiz.quiz.dto.request.StudentUpdateRequest;
+import ir.quiz.quiz.dto.response.StudentResponse;
+import ir.quiz.quiz.dto.search.StudentSearch;
 import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.mapper.StudentRequestMapper;
 import ir.quiz.quiz.mapper.StudentResponseMapper;
+import ir.quiz.quiz.mapper.StudentUpdateRequestMapper;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Student;
-import ir.quiz.quiz.dto.request.PersonRequest;
-import ir.quiz.quiz.dto.response.StudentResponse;
-import ir.quiz.quiz.dto.search.StudentSearch;
 import ir.quiz.quiz.repository.StudentRepository;
 import ir.quiz.quiz.service.StudentService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -30,6 +32,7 @@ public class StudentServiceImpl implements StudentService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final StudentResponseMapper studentResponseMapper;
     private final StudentRequestMapper studentRequestMapper;
+    private final StudentUpdateRequestMapper studentUpdateRequestMapper;
 
     @Override
     public Optional<StudentResponse> findByUsernameAndPassword(String username, String password) {
@@ -99,12 +102,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student update(Student student) {
-        if (student == null | student.getId() == null) {
+    public Student update(StudentUpdateRequest studentUpdateRequest) {
+        if (studentUpdateRequest == null | studentUpdateRequest.getId() == null) {
             throw new NullPointerException("student can't be null");
         }
-        student.setPassword(bCryptPasswordEncoder.encode(student.getPassword()));
-        return studentRepository.save(student);
+        studentUpdateRequest.setPassword(bCryptPasswordEncoder.encode(studentUpdateRequest.getPassword()));
+        return studentRepository.save(studentUpdateRequestMapper.convertDtoToEntity(studentUpdateRequest));
     }
 
     @Override

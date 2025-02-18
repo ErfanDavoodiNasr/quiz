@@ -5,8 +5,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 
 @Builder
 @Data
@@ -16,8 +14,8 @@ public class CourseRequest {
     private String name;
 
     @NotNull
-    private LocalDateTime startAt;
+    private String startAt;
 
     @NotNull
-    private LocalDateTime endAt;
+    private String endAt;
 }
