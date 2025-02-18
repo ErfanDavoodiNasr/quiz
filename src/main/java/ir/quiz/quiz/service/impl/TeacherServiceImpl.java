@@ -39,6 +39,7 @@ public class TeacherServiceImpl implements TeacherService {
     public Boolean save(PersonRequest teacherRequest) {
         teacherRequest.setPassword(bCryptPasswordEncoder.encode(teacherRequest.getPassword()));
         Teacher teacher = teacherRequestMapper.convertDtoToEntity(teacherRequest);
+        teacher.setStatus(Status.AWAITING_CONFIRMATION);
         Teacher result = teacherRepository.save(teacher);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }

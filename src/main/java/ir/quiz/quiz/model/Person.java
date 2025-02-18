@@ -4,10 +4,7 @@ package ir.quiz.quiz.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import static jakarta.persistence.InheritanceType.TABLE_PER_CLASS;
@@ -15,7 +12,8 @@ import static jakarta.persistence.InheritanceType.TABLE_PER_CLASS;
 
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

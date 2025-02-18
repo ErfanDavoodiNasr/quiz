@@ -14,16 +14,15 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_URLS = {
             "/login",
-            "/api/student/save",
-            "/api/teacher/save",
+            "/api/students",
+            "/api/teachers",
             "/"
     };
     private static final String[] OWNER_URLS = {
-            "/api/course/**",
-            "/api/owner/**",
-            "/api/register/**",
-            "/api/student/**",
-            "/api/teacher/**"
+            "/api/courses/**",
+            "/api/registers/**",
+            "/api/students/**",
+            "/api/teachers/**"
     };
     private static final String[] TEACHER_URLS = {
     };

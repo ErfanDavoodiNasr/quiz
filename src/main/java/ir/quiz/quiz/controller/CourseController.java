@@ -42,7 +42,7 @@ public class CourseController {
 
 
     @GetMapping("/find_course_by_id")
-    public ResponseEntity<?> findById(@RequestParam(required = true) Long id) {
+    public ResponseEntity<?> findById(@RequestParam Long id) {
         Optional<Course> result = courseService.findById(id);
         if (result.isEmpty()) {
             return ResponseEntity.status(404).body("no course found");
@@ -52,7 +52,7 @@ public class CourseController {
 
 
     @PutMapping("/add_teacher_to_course")
-    public ResponseEntity<?> addTeacherToCourse(@RequestParam(required = true) Long teacherId, @RequestParam(required = true) Long courseId) {
+    public ResponseEntity<?> addTeacherToCourse(@RequestParam Long teacherId, @RequestParam Long courseId) {
         Optional<Course> course = courseService.findById(courseId);
         if (course.isEmpty()) {
             return ResponseEntity.status(404).body("no course found");
@@ -63,7 +63,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/remove_teacher_from_course")
-    public ResponseEntity<?> removeTeacherFromCourse(@RequestParam(required = true) Long courseId) {
+    public ResponseEntity<?> removeTeacherFromCourse(@RequestParam Long courseId) {
         Optional<Course> course = courseService.findById(courseId);
         if (course.isEmpty()) {
             return ResponseEntity.status(404).body("no course found");
@@ -73,19 +73,20 @@ public class CourseController {
     }
 
     @PutMapping("/add_student_to_course")
-    public ResponseEntity<?> addStudentToCourse(@RequestParam(required = true) Long studentId, @RequestParam(required = true) Long courseId) {
+    public ResponseEntity<?> addStudentToCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
         Optional<Course> course = courseService.findById(courseId);
         if (course.isEmpty()) {
             return ResponseEntity.status(404).body("no course found");
         }
         Optional<Student> student = studentService.findById(studentId);
         course.get().getStudents().add(student.get());
+        student.get().getCourses().add(course.get());
         return ResponseEntity.ok(courseService.update(course.get()));
     }
 
 
     @DeleteMapping("/remove_student_from_course")
-    public ResponseEntity<?> removeStudentFromCourse(@RequestParam(required = true) Long studentId, @RequestParam(required = true) Long courseId) {
+    public ResponseEntity<?> removeStudentFromCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
         Optional<Course> course = courseService.findById(courseId);
         if (course.isEmpty()) {
             return ResponseEntity.status(404).body("no course found");
