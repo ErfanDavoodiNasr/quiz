@@ -37,6 +37,6 @@ public class Course extends BaseModel {
     @ManyToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "courses")
     private List<Student> students;
 
-    @ManyToOne(cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private Teacher teacher;
 }
