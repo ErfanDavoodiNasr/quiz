@@ -2,10 +2,7 @@ package ir.quiz.quiz.controller;
 
 
 import ir.quiz.quiz.dto.request.LoginRequest;
-import ir.quiz.quiz.dto.response.OwnerResponse;
-import ir.quiz.quiz.dto.response.StudentResponse;
-import ir.quiz.quiz.dto.response.TeacherResponse;
-import ir.quiz.quiz.dto.response.UserResponse;
+import ir.quiz.quiz.dto.response.*;
 import ir.quiz.quiz.model.UserRole;
 import ir.quiz.quiz.service.OwnerService;
 import ir.quiz.quiz.service.StudentService;
@@ -50,27 +47,27 @@ public class AuthController {
         if (loginRequest.getUserRole() == UserRole.OWNER) {
             Optional<OwnerResponse> result = ownerService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
             if (result.isEmpty()) {
-                return ResponseEntity.status(404).body("Owner not found");
+                return ResponseEntity.status(404).body(new MessageResponse("Owner not found"));
             } else {
                 authentication(request, result.get(), "OWNER");
             }
         } else if (loginRequest.getUserRole() == UserRole.STUDENT) {
             Optional<StudentResponse> result = studentService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
             if (result.isEmpty()) {
-                return ResponseEntity.status(404).body("Student not found");
+                return ResponseEntity.status(404).body(new MessageResponse("Student not found"));
             } else {
                 authentication(request, result.get(), "STUDENT");
             }
         } else if (loginRequest.getUserRole() == UserRole.TEACHER) {
             Optional<TeacherResponse> result = teacherService.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
             if (result.isEmpty()) {
-                return ResponseEntity.status(404).body("Teacher not found");
+                return ResponseEntity.status(404).body(new MessageResponse("Teacher not found"));
             } else {
                 authentication(request, result.get(), "TEACHER");
             }
         } else {
-            return ResponseEntity.status(400).body("Role is invalid");
+            return ResponseEntity.status(400).body(new MessageResponse("Role is invalid"));
         }
-        return ResponseEntity.ok("Logged in successfully");
+        return ResponseEntity.ok(new MessageResponse("Logged in successfully"));
     }
 }

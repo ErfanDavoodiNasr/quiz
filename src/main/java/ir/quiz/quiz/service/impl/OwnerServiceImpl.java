@@ -31,16 +31,6 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public OwnerResponse find() {
-        return ownerResponseMapper.convertEntityToDto(ownerRepository.findAll().getFirst());
-    }
-
-    @Override
-    public void remove(Long id) {
-        ownerRepository.deleteById(id);
-    }
-
-    @Override
     public Owner update(OwnerUpdateRequest ownerUpdateRequest) {
         if (ownerUpdateRequest == null | ownerUpdateRequest.getId() == null) {
             throw new NullPointerException("owner can't be null");

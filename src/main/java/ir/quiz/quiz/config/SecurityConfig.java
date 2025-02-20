@@ -24,10 +24,6 @@ public class SecurityConfig {
             "/api/students/**",
             "/api/teachers/**"
     };
-    private static final String[] TEACHER_URLS = {
-    };
-    private static final String[] STUDENT_URLS = {
-    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,8 +31,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(OWNER_URLS).hasRole("OWNER")
-                        .requestMatchers(TEACHER_URLS).hasRole("TEACHER")
-                        .requestMatchers(STUDENT_URLS).hasRole("STUDENT")
                         .requestMatchers(PUBLIC_URLS).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractHttpConfigurer::disable)

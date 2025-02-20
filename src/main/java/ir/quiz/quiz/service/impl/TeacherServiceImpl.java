@@ -4,7 +4,6 @@ import ir.quiz.quiz.dto.request.PersonRequest;
 import ir.quiz.quiz.dto.request.TeacherUpdateRequest;
 import ir.quiz.quiz.dto.response.TeacherResponse;
 import ir.quiz.quiz.dto.search.TeacherSearch;
-import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.mapper.TeacherRequestMapper;
 import ir.quiz.quiz.mapper.TeacherResponseMapper;
@@ -45,11 +44,6 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Optional<List<Teacher>> findAllByStatusIsLike(Status status) {
-        return teacherRepository.findAllByStatusIsLike(status);
-    }
-
-    @Override
     public Teacher update(TeacherUpdateRequest teacherUpdateRequest) {
         if (teacherUpdateRequest == null || teacherUpdateRequest.getId() == null) {
             throw new NullPointerException("teacher can't be null");
@@ -82,7 +76,7 @@ public class TeacherServiceImpl implements TeacherService {
         if (bCryptPasswordEncoder.matches(password, teacherOptional.get().getPassword())) {
             return Optional.ofNullable(teacherResponseMapper.convertEntityToDto(teacherOptional.get()));
         } else {
-            throw new OwnerNotFoundException("your username or password is wrong");
+            throw new TeacherNotFoundException("your username or password is wrong");
         }
     }
 
@@ -94,9 +88,19 @@ public class TeacherServiceImpl implements TeacherService {
                     fillFirstNamePredicates(predicates, root, cb, search.getFirstName());
                     fillLastNamePredicates(predicates, root, cb, search.getLastName());
                     fillUsernamePredicates(predicates, root, cb, search.getUsername());
+                    fillStatusPredicates(predicates, root, cb, search.getStatus());
                     return predicates.isEmpty() ? null : cb.and(predicates.toArray(new Predicate[0]));
                 }
         );
+    }
+
+    private void fillStatusPredicates(List<Predicate> predicates, Root<Teacher> root, CriteriaBuilder cb, Status status) {
+        if (status != null) {
+            predicates.add(cb.like(
+                    root.get("status"),
+                    status + ""
+            ));
+        }
     }
 
     private void fillUsernamePredicates(List<Predicate> predicates, Root<Teacher> root, CriteriaBuilder cb, String username) {

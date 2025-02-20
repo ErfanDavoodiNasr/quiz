@@ -22,8 +22,6 @@ public abstract class Person extends BaseModel {
 
     public static final String FIRST_NAME = "first_name";
     public static final String LAST_NAME = "last_name";
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
 
     @Column(name = FIRST_NAME, length = 50)
     private String firstName;
@@ -31,9 +29,9 @@ public abstract class Person extends BaseModel {
     @Column(name = LAST_NAME, length = 50)
     private String lastName;
 
-    @Column(name = USERNAME, unique = true, nullable = false, length = 50)
+    @Column(unique = true, nullable = false, length = 50)
     private String username;
 
-    @Column(name = PASSWORD, nullable = false)
+    @Column(nullable = false)
     private String password;
 }

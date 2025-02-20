@@ -1,6 +1,7 @@
 package ir.quiz.quiz.controller;
 
 import ir.quiz.quiz.dto.request.CourseRequest;
+import ir.quiz.quiz.dto.response.MessageResponse;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.Teacher;
@@ -27,7 +28,7 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid CourseRequest courseRequest) {
         Boolean result = courseService.save(courseRequest);
-        return result ? ResponseEntity.ok("course saved successfully") : ResponseEntity.status(500).body("there is some problem please try again later");
+        return result ? ResponseEntity.ok(new MessageResponse("course saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
 
@@ -35,7 +36,7 @@ public class CourseController {
     public ResponseEntity<?> findAll() {
         Optional<List<Course>> result = courseService.findAll();
         if (result.isEmpty()) {
-            return ResponseEntity.status(404).body("no course found");
+            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
         }
         return ResponseEntity.ok(result.get());
     }
@@ -45,7 +46,7 @@ public class CourseController {
     public ResponseEntity<?> findById(@RequestParam Long id) {
         Optional<Course> result = courseService.findById(id);
         if (result.isEmpty()) {
-            return ResponseEntity.status(404).body("no course found");
+            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
         }
         return ResponseEntity.ok(result.get());
     }
@@ -55,7 +56,7 @@ public class CourseController {
     public ResponseEntity<?> addTeacherToCourse(@RequestParam Long teacherId, @RequestParam Long courseId) {
         Optional<Course> course = courseService.findById(courseId);
         if (course.isEmpty()) {
-            return ResponseEntity.status(404).body("no course found");
+            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
         }
         Optional<Teacher> teacher = teacherService.findById(teacherId);
         course.get().setTeacher(teacher.get());
@@ -66,7 +67,7 @@ public class CourseController {
     public ResponseEntity<?> removeTeacherFromCourse(@RequestParam Long courseId) {
         Optional<Course> course = courseService.findById(courseId);
         if (course.isEmpty()) {
-            return ResponseEntity.status(404).body("no course found");
+            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
         }
         course.get().setTeacher(null);
         return ResponseEntity.ok(courseService.update(course.get()));
@@ -76,7 +77,7 @@ public class CourseController {
     public ResponseEntity<?> addStudentToCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
         Optional<Course> course = courseService.findById(courseId);
         if (course.isEmpty()) {
-            return ResponseEntity.status(404).body("no course found");
+            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
         }
         Optional<Student> student = studentService.findById(studentId);
         course.get().getStudents().add(student.get());
@@ -89,7 +90,7 @@ public class CourseController {
     public ResponseEntity<?> removeStudentFromCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
         Optional<Course> course = courseService.findById(courseId);
         if (course.isEmpty()) {
-            return ResponseEntity.status(404).body("no course found");
+            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
         }
         Optional<Student> student = studentService.findById(studentId);
         course.get().getStudents().remove(student.get());

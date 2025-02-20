@@ -2,6 +2,7 @@ package ir.quiz.quiz.controller;
 
 import ir.quiz.quiz.dto.request.PersonRequest;
 import ir.quiz.quiz.dto.request.TeacherUpdateRequest;
+import ir.quiz.quiz.dto.response.MessageResponse;
 import ir.quiz.quiz.dto.search.TeacherSearch;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.service.TeacherService;
@@ -22,7 +23,7 @@ public class TeacherController {
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid PersonRequest personRequest) {
         Boolean result = teacherService.save(personRequest);
-        return result ? ResponseEntity.ok("teacher saved successfully") : ResponseEntity.status(500).body("there is some problem please try again later");
+        return result ? ResponseEntity.ok(new MessageResponse("teacher saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
     @PutMapping
@@ -34,7 +35,7 @@ public class TeacherController {
     public ResponseEntity<?> search(@RequestBody TeacherSearch teacherSearch) {
         List<Teacher> teachers = teacherService.findAll(teacherSearch);
         if (teachers.isEmpty()) {
-            return ResponseEntity.status(404).body("teacher not found");
+            return ResponseEntity.status(404).body(new MessageResponse("teacher not found"));
         }
         return ResponseEntity.ok(teachers);
     }

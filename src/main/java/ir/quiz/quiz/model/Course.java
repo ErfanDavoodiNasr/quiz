@@ -21,11 +21,10 @@ import static ir.quiz.quiz.model.Course.TABLE_NAME;
 public class Course extends BaseModel {
 
     public static final String TABLE_NAME = "courses";
-    public static final String NAME = "name";
     public static final String START_AT = "start_at";
     public static final String END_AT = "end_at";
 
-    @Column(name = NAME, length = 50)
+    @Column(length = 50)
     private String name;
 
     @Column(name = START_AT, nullable = false)

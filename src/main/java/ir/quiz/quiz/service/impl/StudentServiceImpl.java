@@ -4,7 +4,6 @@ import ir.quiz.quiz.dto.request.PersonRequest;
 import ir.quiz.quiz.dto.request.StudentUpdateRequest;
 import ir.quiz.quiz.dto.response.StudentResponse;
 import ir.quiz.quiz.dto.search.StudentSearch;
-import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.mapper.StudentRequestMapper;
 import ir.quiz.quiz.mapper.StudentResponseMapper;
@@ -43,7 +42,7 @@ public class StudentServiceImpl implements StudentService {
         if (bCryptPasswordEncoder.matches(password, studentOptional.get().getPassword())) {
             return Optional.ofNullable(studentResponseMapper.convertEntityToDto(studentOptional.get()));
         } else {
-            throw new OwnerNotFoundException("your username or password is wrong");
+            throw new StudentNotFoundException("your username or password is wrong");
         }
     }
 
@@ -55,9 +54,19 @@ public class StudentServiceImpl implements StudentService {
                     fillFirstNamePredicates(predicates, root, cb, search.getFirstName());
                     fillLastNamePredicates(predicates, root, cb, search.getLastName());
                     fillUsernamePredicates(predicates, root, cb, search.getUsername());
+                    fillStatusPredicates(predicates, root, cb, search.getStatus());
                     return predicates.isEmpty() ? null : cb.and(predicates.toArray(new Predicate[0]));
                 }
         );
+    }
+
+    private void fillStatusPredicates(List<Predicate> predicates, Root<Student> root, CriteriaBuilder cb, Status status) {
+        if (status != null) {
+            predicates.add(cb.like(
+                    root.get("status"),
+                    status + ""
+            ));
+        }
     }
 
     private void fillUsernamePredicates(List<Predicate> predicates, Root<Student> root, CriteriaBuilder cb, String username) {
@@ -96,11 +105,6 @@ public class StudentServiceImpl implements StudentService {
         student.setStatus(Status.AWAITING_CONFIRMATION);
         Student result = studentRepository.save(student);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
-    }
-
-    @Override
-    public Optional<List<Student>> findAllByStatusIsLike(Status status) {
-        return studentRepository.findAllByStatusIsLike(status);
     }
 
     @Override

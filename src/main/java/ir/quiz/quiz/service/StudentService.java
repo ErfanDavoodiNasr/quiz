@@ -13,8 +13,6 @@ import java.util.Optional;
 public interface StudentService {
     Boolean save(PersonRequest studentRequest);
 
-    Optional<List<Student>> findAllByStatusIsLike(Status status);
-
     Student update(StudentUpdateRequest studentUpdateRequest);
 
     Student updateStatus(Long id, Status status);
