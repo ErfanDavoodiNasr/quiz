@@ -62,9 +62,9 @@ public class StudentServiceImpl implements StudentService {
 
     private void fillStatusPredicates(List<Predicate> predicates, Root<Student> root, CriteriaBuilder cb, Status status) {
         if (status != null) {
-            predicates.add(cb.like(
+            predicates.add(cb.equal(
                     root.get("status"),
-                    status + ""
+                    status
             ));
         }
     }

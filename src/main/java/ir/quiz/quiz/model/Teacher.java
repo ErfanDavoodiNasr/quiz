@@ -20,7 +20,7 @@ import static ir.quiz.quiz.model.Teacher.TABLE_NAME;
 public class Teacher extends Person {
     public static final String TABLE_NAME = "teachers";
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "teacher")
+    @OneToMany(mappedBy = "teacher")
     private List<Course> courses;
 
     @Enumerated(EnumType.STRING)
