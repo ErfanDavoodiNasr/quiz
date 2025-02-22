@@ -14,25 +14,23 @@ import java.util.List;
 @Builder
 public class TeacherUpdateRequest {
 
-    @NotNull
+    @NotNull(message = "Teacher ID is required.")
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "First name is required and cannot be empty.")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "Last name is required and cannot be empty.")
     private String lastName;
 
-    @NotBlank
+    @NotBlank(message = "Username is required and cannot be empty.")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "Password is required and cannot be empty.")
     private String password;
 
-    @NotNull
-    @NotEmpty
     private List<Course> courses;
 
-    @NotNull
+    @NotNull(message = "Status is required.")
     private Status status;
 }

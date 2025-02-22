@@ -10,10 +10,13 @@ import lombok.Data;
 @Builder
 @Data
 public class LoginRequest {
-    @NotBlank
+
+    @NotBlank(message = "Username is required and cannot be empty.")
     private String username;
-    @NotBlank
+
+    @NotBlank(message = "Password is required and cannot be empty.")
     private String password;
-    @NotNull
+
+    @NotNull(message = "User role is required.")
     private UserRole userRole;
 }

@@ -7,8 +7,10 @@ import lombok.Data;
 
 @Data
 public class TeacherUpdateStatusRequest {
-    @NotNull
+
+    @NotNull(message = "Teacher ID is required.")
     private Long id;
-    @NotNull
+
+    @NotNull(message = "Status is required.")
     private Status status;
 }

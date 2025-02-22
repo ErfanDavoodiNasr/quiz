@@ -10,12 +10,12 @@ import lombok.Data;
 @Data
 public class CourseRequest {
 
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 50, message = "Course name must be between 2 and 50 characters.")
     private String name;
 
-    @NotNull
+    @NotNull(message = "Start date is required.")
     private String startAt;
 
-    @NotNull
+    @NotNull(message = "End date is required.")
     private String endAt;
 }
