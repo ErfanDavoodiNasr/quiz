@@ -18,7 +18,7 @@ import static ir.quiz.quiz.model.Course.TABLE_NAME;
 @AllArgsConstructor
 @Entity
 @Table(name = TABLE_NAME)
-public class Course extends BaseModel {
+public class Course extends BaseModel<Long> {
 
     public static final String TABLE_NAME = "courses";
     public static final String START_AT = "start_at";

@@ -52,6 +52,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Optional<Course> findReferenceById(Long id) {
+        return Optional.ofNullable(courseRepository.getReferenceById(id));
+    }
+
+    @Override
     public Optional<List<Course>> findAll() {
         return Optional.ofNullable(courseRepository.findAll());
     }

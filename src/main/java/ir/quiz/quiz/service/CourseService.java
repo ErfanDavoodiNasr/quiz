@@ -13,5 +13,7 @@ public interface CourseService {
 
     Optional<Course> findById(Long id);
 
+    Optional<Course> findReferenceById(Long id);
+
     Optional<List<Course>> findAll();
 }

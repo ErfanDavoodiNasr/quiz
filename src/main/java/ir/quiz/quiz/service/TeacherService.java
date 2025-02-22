@@ -21,5 +21,7 @@ public interface TeacherService {
 
     Optional<TeacherResponse> findByUsernameAndPassword(String username, String password);
 
+    Optional<Teacher> findReferenceById(Long id);
+
     List<Teacher> findAll(TeacherSearch search);
 }

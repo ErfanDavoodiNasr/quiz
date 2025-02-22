@@ -21,5 +21,7 @@ public interface StudentService {
 
     Optional<StudentResponse> findByUsernameAndPassword(String username, String password);
 
+    Optional<Student> findReferenceById(Long id);
+
     List<Student> findAll(StudentSearch search);
 }

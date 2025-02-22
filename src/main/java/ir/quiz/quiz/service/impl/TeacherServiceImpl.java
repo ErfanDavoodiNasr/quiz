@@ -81,6 +81,11 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    public Optional<Teacher> findReferenceById(Long id) {
+        return Optional.ofNullable(teacherRepository.getReferenceById(id));
+    }
+
+    @Override
     public List<Teacher> findAll(TeacherSearch search) {
         return teacherRepository.findAll(
                 (root, query, cb) -> {

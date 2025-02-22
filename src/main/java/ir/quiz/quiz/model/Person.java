@@ -18,7 +18,7 @@ import static jakarta.persistence.InheritanceType.TABLE_PER_CLASS;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = TABLE_PER_CLASS)
-public abstract class Person extends BaseModel {
+public abstract class Person extends BaseModel<Long> {
 
     public static final String FIRST_NAME = "first_name";
     public static final String LAST_NAME = "last_name";
