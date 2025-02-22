@@ -16,8 +16,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-public abstract class BaseModel implements Serializable {
+public abstract class BaseModel<ID extends Number> implements Serializable {
     @Id
     @GeneratedValue
-    private Long id;
+    private ID id;
 }
