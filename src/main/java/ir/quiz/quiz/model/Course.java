@@ -33,9 +33,13 @@ public class Course extends BaseModel<Long> {
     @Column(name = END_AT, nullable = false)
     private LocalDateTime endAt;
 
-    @ManyToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "courses")
+    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "courses")
     private List<Student> students;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "course")
+    private List<Quiz> quizzes;
 }

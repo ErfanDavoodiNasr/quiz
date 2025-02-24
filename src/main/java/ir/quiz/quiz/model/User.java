@@ -1,13 +1,13 @@
 package ir.quiz.quiz.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import static jakarta.persistence.InheritanceType.TABLE_PER_CLASS;
+import java.util.List;
+
+import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,8 +17,8 @@ import static jakarta.persistence.InheritanceType.TABLE_PER_CLASS;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Inheritance(strategy = TABLE_PER_CLASS)
-public abstract class Person extends BaseModel<Long> {
+@Inheritance(strategy = SINGLE_TABLE)
+public abstract class User extends BaseModel<Long> {
 
     public static final String FIRST_NAME = "first_name";
     public static final String LAST_NAME = "last_name";
@@ -34,4 +34,18 @@ public abstract class Person extends BaseModel<Long> {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @ManyToMany
+    @JoinTable(
+            name = "fk_users_permissions",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    private List<Permission> permissions;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 }

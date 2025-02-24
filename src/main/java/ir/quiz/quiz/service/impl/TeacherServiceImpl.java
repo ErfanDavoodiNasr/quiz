@@ -63,11 +63,6 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Optional<Teacher> findById(Long id) {
-        return teacherRepository.findById(id);
-    }
-
-    @Override
     public Optional<TeacherResponse> findByUsernameAndPassword(String username, String password) {
         Optional<Teacher> teacherOptional = teacherRepository.findByUsername(username);
         if (teacherOptional.isEmpty()) {

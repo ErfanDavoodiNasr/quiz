@@ -1,12 +1,11 @@
 package ir.quiz.quiz.repository;
 
-import ir.quiz.quiz.model.Owner;
-import org.springframework.data.jpa.repository.JpaRepository;
+import ir.quiz.quiz.dto.response.OwnerResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface OwnerRepository extends JpaRepository<Owner, Long> {
-    Optional<Owner> findByUsername(String username);
+public interface OwnerRepository {
+    Optional<OwnerResponse> findByUsername(String username);
 }
