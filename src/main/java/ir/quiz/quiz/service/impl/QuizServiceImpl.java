@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static ir.quiz.quiz.util.Help.checkTimeIsValid;
+
 @Service
 @RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
@@ -21,6 +23,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Boolean save(QuizRequest quizRequest) {
         Quiz quiz = quizRequestMapper.convertDtoToEntity(quizRequest);
+        checkTimeIsValid(quiz.getStartAt(),quiz.getEndAt());
         Quiz result = quizRepository.save(quiz);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }

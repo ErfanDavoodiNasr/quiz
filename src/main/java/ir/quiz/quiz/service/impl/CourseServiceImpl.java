@@ -2,6 +2,7 @@ package ir.quiz.quiz.service.impl;
 
 
 import ir.quiz.quiz.dto.request.CourseRequest;
+import ir.quiz.quiz.exception.InvalidDateException;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.service.CourseService;
@@ -12,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+
+import static ir.quiz.quiz.util.Help.checkTimeIsValid;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +29,12 @@ public class CourseServiceImpl implements CourseService {
             throw new NullPointerException("course request can't be null");
         }
         Course mappedCourse = convertDtoToEntity(courseRequest);
+        checkTimeIsValid(mappedCourse.getStartAt(),mappedCourse.getEndAt());
         Course result = courseRepository.save(mappedCourse);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }
+
+
 
     private Course convertDtoToEntity(CourseRequest courseRequest) {
         return Course.builder()
