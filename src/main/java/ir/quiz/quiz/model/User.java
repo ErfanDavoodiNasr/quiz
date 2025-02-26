@@ -2,7 +2,10 @@ package ir.quiz.quiz.model;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -14,9 +17,8 @@ import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 @SuperBuilder
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 @Inheritance(strategy = SINGLE_TABLE)
 @Table(name = "users")
 public abstract class User extends BaseModel<Long> {
@@ -47,6 +49,5 @@ public abstract class User extends BaseModel<Long> {
     private List<Permission> permissions;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
     private Role role;
 }

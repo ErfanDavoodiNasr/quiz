@@ -47,11 +47,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Optional<Student> findReferenceById(Long id) {
-        return Optional.ofNullable(studentRepository.getReferenceById(id));
-    }
-
-    @Override
     public List<Student> findAll(StudentSearch search) {
         return studentRepository.findAll(
                 (root, query, cb) -> {
@@ -131,8 +126,4 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.save(student.get());
     }
 
-    @Override
-    public Optional<Student> findById(Long id) {
-        return studentRepository.findById(id);
-    }
 }

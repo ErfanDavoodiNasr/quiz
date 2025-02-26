@@ -2,7 +2,10 @@ package ir.quiz.quiz.model;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -15,7 +18,6 @@ import static ir.quiz.quiz.model.Quiz.TABLE_NAME;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = TABLE_NAME)
 public class Quiz extends BaseModel<Long> {
@@ -39,10 +41,8 @@ public class Quiz extends BaseModel<Long> {
     private Integer duration;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(nullable = false, name = "course_id")
-    private Course course;
+    private Teacher teacher;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(nullable = false, name = "teacher_id")
-    private Teacher teacher;
+    private Course course;
 }

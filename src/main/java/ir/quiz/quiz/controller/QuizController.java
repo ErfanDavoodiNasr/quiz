@@ -46,13 +46,6 @@ public class QuizController {
         return quiz.isPresent() ? ResponseEntity.ok(quiz.get()) : ResponseEntity.status(404).body(new MessageResponse("no quiz found"));
     }
 
-    @GetMapping("/quizzes_by_course_id")
-    public ResponseEntity<?> findByCourseId(@RequestParam("id") Long id) {
-        Optional<Quiz> quiz = quizService.findById(id);
-        return quiz.isPresent() ? ResponseEntity.ok(quiz.get()) : ResponseEntity.status(404).body(new MessageResponse("no quiz found"));
-    }
-
-
     @GetMapping("/quizzes_by_teacherId_and_courseId")
     public ResponseEntity<?> quizzesByTeacherIdAndCourseId(@RequestParam("courseId") Long courseId, @RequestParam("teacherId") Long teacherId) {
         Optional<List<Quiz>> result = quizService.findAllByCourseIdAndTeacherId(courseId, teacherId);

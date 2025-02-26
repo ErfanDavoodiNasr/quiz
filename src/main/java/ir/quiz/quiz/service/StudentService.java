@@ -17,11 +17,9 @@ public interface StudentService {
 
     Student updateStatus(Long id, Status status);
 
-    Optional<Student> findById(Long id);
 
     Optional<StudentResponse> findByUsernameAndPassword(String username, String password);
 
-    Optional<Student> findReferenceById(Long id);
 
     List<Student> findAll(StudentSearch search);
 }

@@ -6,7 +6,6 @@ import ir.quiz.quiz.exception.CourseNotFoundException;
 import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.model.Course;
-import ir.quiz.quiz.model.Quiz;
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.repository.CourseRepository;
@@ -65,15 +64,15 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.findById(id);
     }
 
-
     @Override
-    public Optional<List<Quiz>> findAllQuizzesByCourseId(Long id) {
-        Optional<Course> course = courseRepository.findById(id);
-        if (course.isEmpty()) {
-            throw new CourseNotFoundException("course not found");
+    public Optional<List<Course>> findALlTeacherCourses(Long teacherId) {
+        Optional<List<Course>> courses = courseRepository.findAllByTeacher_Id(teacherId);
+        if (courses.isEmpty()) {
+            throw new CourseNotFoundException("no course found");
         }
-        return Optional.ofNullable(course.get().getQuizzes());
+        return courses;
     }
+
 
     @Override
     public Optional<List<Course>> findAll() {

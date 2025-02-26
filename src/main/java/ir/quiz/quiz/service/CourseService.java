@@ -2,7 +2,6 @@ package ir.quiz.quiz.service;
 
 import ir.quiz.quiz.dto.request.CourseRequest;
 import ir.quiz.quiz.model.Course;
-import ir.quiz.quiz.model.Quiz;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +13,7 @@ public interface CourseService {
 
     Optional<Course> findById(Long id);
 
-    Optional<List<Quiz>> findAllQuizzesByCourseId(Long id);
+    Optional<List<Course>> findALlTeacherCourses(Long teacherId);
 
     Optional<List<Course>> findAll();
 

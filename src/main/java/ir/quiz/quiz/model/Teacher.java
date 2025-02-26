@@ -1,11 +1,13 @@
 package ir.quiz.quiz.model;
 
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 import static ir.quiz.quiz.model.Teacher.TABLE_NAME;
 
@@ -14,12 +16,8 @@ import static ir.quiz.quiz.model.Teacher.TABLE_NAME;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = TABLE_NAME)
 public class Teacher extends User {
     public static final String TABLE_NAME = "teachers";
-
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "teacher", fetch = FetchType.EAGER)
-    private List<Course> courses;
 }

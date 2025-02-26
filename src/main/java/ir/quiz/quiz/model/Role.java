@@ -2,7 +2,6 @@ package ir.quiz.quiz.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import java.util.List;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = Permission.TABLE_NAME)
 public class Role extends BaseModel<Long> {
@@ -29,7 +27,4 @@ public class Role extends BaseModel<Long> {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private List<Permission> permissions;
-
-    @OneToMany(mappedBy = "role")
-    private List<User> people;
 }
