@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static ir.quiz.quiz.model.Quiz.TABLE_NAME;

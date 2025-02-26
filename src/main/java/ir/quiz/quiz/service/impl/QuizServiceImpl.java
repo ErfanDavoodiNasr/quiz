@@ -23,7 +23,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Boolean save(QuizRequest quizRequest) {
         Quiz quiz = quizRequestMapper.convertDtoToEntity(quizRequest);
-        checkTimeIsValid(quiz.getStartAt(),quiz.getEndAt());
+        checkTimeIsValid(quiz.getStartAt(), quiz.getEndAt());
         Quiz result = quizRepository.save(quiz);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }
@@ -45,6 +45,14 @@ public class QuizServiceImpl implements QuizService {
     public Optional<Quiz> findReferenceById(Long id) {
         if (id != null) {
             return Optional.ofNullable(quizRepository.getReferenceById(id));
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<List<Quiz>> findAllByCourseId(Number courseId) {
+        if (courseId != null) {
+            return quizRepository.findAllByCourse_Id(courseId);
         }
         return Optional.empty();
     }

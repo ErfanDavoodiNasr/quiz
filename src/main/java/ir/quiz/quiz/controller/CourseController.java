@@ -3,10 +3,7 @@ package ir.quiz.quiz.controller;
 import ir.quiz.quiz.dto.request.CourseRequest;
 import ir.quiz.quiz.dto.response.MessageResponse;
 import ir.quiz.quiz.model.Course;
-import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.service.CourseService;
-import ir.quiz.quiz.service.StudentService;
-import ir.quiz.quiz.service.TeacherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +19,6 @@ import java.util.Optional;
 public class CourseController {
 
     private final CourseService courseService;
-    private final StudentService studentService;
-    private final TeacherService teacherService;
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid CourseRequest courseRequest) {
@@ -52,49 +47,38 @@ public class CourseController {
     }
 
 
-    @PutMapping("/add_teacher_to_course")
-    public ResponseEntity<?> addTeacherToCourse(@RequestParam Long teacherId, @RequestParam Long courseId) {
-        Optional<Course> course = courseService.findById(courseId);
-        if (course.isEmpty()) {
+    @GetMapping("/find_my_course")
+    public ResponseEntity<?> findTeacherCourses(@RequestParam("teacherId") Long teacherId) {
+        Optional<List<Course>> result = courseService.findAllByTeacherId(teacherId);
+        if (result.isEmpty()) {
             return ResponseEntity.status(404).body(new MessageResponse("no course found"));
         }
-        course.get().setTeacher(teacherService.findReferenceById(teacherId).get());
-        courseService.update(course.get());
-        return ResponseEntity.ok(new MessageResponse("save course to teacher was successful"));
+        return ResponseEntity.ok(result.get());
+    }
+
+
+    @PutMapping("/add_teacher_to_course")
+    public ResponseEntity<?> addTeacherToCourse(@RequestParam Long teacherId, @RequestParam Long courseId) {
+        Boolean result = courseService.addTeacherToCourse(teacherId, courseId);
+        return result ? ResponseEntity.ok(new MessageResponse("remove teacher from course was successful")) : ResponseEntity.badRequest().body(new MessageResponse("there is some problem please try again"));
     }
 
     @DeleteMapping("/remove_teacher_from_course")
     public ResponseEntity<?> removeTeacherFromCourse(@RequestParam Long courseId) {
-        Optional<Course> course = courseService.findById(courseId);
-        if (course.isEmpty()) {
-            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
-        }
-        course.get().setTeacher(null);
-        courseService.update(course.get());
-        return ResponseEntity.ok(new MessageResponse("remove course from teacher was successful"));
+        Boolean result = courseService.removeTeacherFromCourse(courseId);
+        return result ? ResponseEntity.ok(new MessageResponse("remove teacher from course was successful")) : ResponseEntity.badRequest().body(new MessageResponse("there is some problem please try again"));
     }
 
     @PutMapping("/add_student_to_course")
     public ResponseEntity<?> addStudentToCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
-        Optional<Student> student = studentService.findById(studentId);
-        if (student.isEmpty()) {
-            return ResponseEntity.status(404).body(new MessageResponse("no student found"));
-        }
-        Optional<Course> course = courseService.findReferenceById(courseId);
-        student.get().getCourses().add(course.get());
-        courseService.update(course.get());
-        return ResponseEntity.ok(new MessageResponse("save course to student was successful"));
+        Boolean result = courseService.addStudentToCourse(studentId, courseId);
+        return result ? ResponseEntity.ok(new MessageResponse("add student to course was successful")) : ResponseEntity.badRequest().body(new MessageResponse("there is some problem please try again"));
     }
 
 
     @DeleteMapping("/remove_student_from_course")
     public ResponseEntity<?> removeStudentFromCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
-        Optional<Course> course = courseService.findById(courseId);
-        if (course.isEmpty()) {
-            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
-        }
-        course.get().getStudents().remove(studentService.findReferenceById(studentId).get());
-        courseService.update(course.get());
-        return ResponseEntity.ok(new MessageResponse("remove course from student was successful"));
+        Boolean result = courseService.removeStudentFromCourse(studentId, courseId);
+        return result ? ResponseEntity.ok(new MessageResponse("remove student from course was successful")) : ResponseEntity.badRequest().body(new MessageResponse("there is some problem please try again"));
     }
 }

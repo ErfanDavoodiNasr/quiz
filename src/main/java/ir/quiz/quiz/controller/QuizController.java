@@ -46,5 +46,11 @@ public class QuizController {
         return quiz.isPresent() ? ResponseEntity.ok(quiz.get()) : ResponseEntity.status(404).body(new MessageResponse("no quiz found"));
     }
 
+    @GetMapping("/quizzes_by_course_id")
+    public ResponseEntity<?> findBy(@RequestParam("id") Long id) {
+        Optional<Quiz> quiz = quizService.findById(id);
+        return quiz.isPresent() ? ResponseEntity.ok(quiz.get()) : ResponseEntity.status(404).body(new MessageResponse("no quiz found"));
+    }
+
 
 }

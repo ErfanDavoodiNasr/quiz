@@ -2,6 +2,7 @@ package ir.quiz.quiz.controller;
 
 
 import ir.quiz.quiz.dto.response.MessageResponse;
+import ir.quiz.quiz.exception.InvalidDateException;
 import ir.quiz.quiz.exception.OwnerNotFoundException;
 import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
@@ -36,6 +37,11 @@ public class ExceptionController {
         return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(value = InvalidDateException.class)
+    public ResponseEntity<MessageResponse> invalidDateException(InvalidDateException e) {
+        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<MessageResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         List<String> errors = new ArrayList<>();
@@ -43,5 +49,11 @@ public class ExceptionController {
                 errors.add(error.getField() + " " + error.getDefaultMessage())
         );
         return ResponseEntity.badRequest().body(new MessageResponse(errors.toString()));
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<MessageResponse> exception(Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.badRequest().body(new MessageResponse("there is some problem please try again later"));
     }
 }

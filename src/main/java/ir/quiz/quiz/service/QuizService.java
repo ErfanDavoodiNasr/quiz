@@ -15,5 +15,7 @@ public interface QuizService {
 
     Optional<Quiz> findReferenceById(Long id);
 
+    Optional<List<Quiz>> findAllByCourseId(Number courseId);
+
     Optional<List<Quiz>> findAll();
 }
