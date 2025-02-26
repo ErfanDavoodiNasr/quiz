@@ -4,7 +4,6 @@ import ir.quiz.quiz.dto.request.PersonRequest;
 import ir.quiz.quiz.dto.request.TeacherUpdateRequest;
 import ir.quiz.quiz.dto.response.TeacherResponse;
 import ir.quiz.quiz.dto.search.TeacherSearch;
-import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
 
@@ -19,10 +18,6 @@ public interface TeacherService {
     Teacher updateStatus(Long id, Status status);
 
     Optional<TeacherResponse> findByUsernameAndPassword(String username, String password);
-
-    Optional<Teacher> findReferenceById(Long id);
-
-    Optional<List<Course>> findTeacherCourses(Long teacherId);
 
     List<Teacher> findAll(TeacherSearch search);
 }

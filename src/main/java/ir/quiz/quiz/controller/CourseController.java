@@ -47,17 +47,6 @@ public class CourseController {
         return ResponseEntity.ok(result.get());
     }
 
-
-    @GetMapping("/find_my_course")
-    public ResponseEntity<?> findTeacherCourses(@RequestParam("teacherId") Long teacherId) {
-        Optional<List<Course>> result = courseService.findAllByTeacherId(teacherId);
-        if (result.isEmpty()) {
-            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
-        }
-        return ResponseEntity.ok(result.get());
-    }
-
-
     @PutMapping("/add_teacher_to_course")
     public ResponseEntity<?> addTeacherToCourse(@RequestParam Long teacherId, @RequestParam Long courseId) {
         Boolean result = courseService.addTeacherToCourse(teacherId, courseId);
@@ -84,9 +73,9 @@ public class CourseController {
     }
 
     @GetMapping("/find_all_course_quizzes")
-    public ResponseEntity<?> findAllCourseQuizzes(@RequestParam("courseId") Long courseId){
+    public ResponseEntity<?> findAllCourseQuizzes(@RequestParam("courseId") Long courseId) {
         Optional<List<Quiz>> courseQuizzes = courseService.findAllQuizzesByCourseId(courseId);
-        if (courseQuizzes.isEmpty()){
+        if (courseQuizzes.isEmpty()) {
             return ResponseEntity.status(404).body(new MessageResponse("no quiz found"));
         }
         return ResponseEntity.ok(courseQuizzes.get());

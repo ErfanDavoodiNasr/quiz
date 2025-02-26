@@ -5,7 +5,6 @@ import ir.quiz.quiz.dto.request.QuizUpdateRequest;
 import ir.quiz.quiz.exception.QuizNotFoundException;
 import ir.quiz.quiz.mapper.QuizRequestMapper;
 import ir.quiz.quiz.model.Quiz;
-import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.repository.QuizRepository;
 import ir.quiz.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Optional<List<Quiz>> findAllByCourseIdAndTeacherId(Long courseId, Long teacherId) {
         Optional<List<Quiz>> quizzes = quizRepository.findAllByCourse_IdAndTeacher_Id(courseId, teacherId);
-        if (quizzes.isEmpty()){
+        if (quizzes.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
         }
         return quizzes;
@@ -67,7 +66,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Quiz update(QuizUpdateRequest quizUpdateRequest) {
         Optional<Quiz> quiz = quizRepository.findById(quizUpdateRequest.getId());
-        if (quiz.isEmpty()){
+        if (quiz.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
         }
         Quiz finalQuiz = convertDtoToEntity(quizUpdateRequest, quiz);

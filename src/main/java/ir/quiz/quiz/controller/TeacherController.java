@@ -4,7 +4,6 @@ import ir.quiz.quiz.dto.request.PersonRequest;
 import ir.quiz.quiz.dto.request.TeacherUpdateRequest;
 import ir.quiz.quiz.dto.response.MessageResponse;
 import ir.quiz.quiz.dto.search.TeacherSearch;
-import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.service.TeacherService;
 import jakarta.validation.Valid;
@@ -32,15 +31,6 @@ public class TeacherController {
     @PutMapping
     public ResponseEntity<?> update(@RequestBody @Valid TeacherUpdateRequest teacherUpdateRequest) {
         return ResponseEntity.ok(teacherService.update(teacherUpdateRequest));
-    }
-
-    @GetMapping("/teacher_courses")
-    public ResponseEntity<?> findTeacherCourses(@RequestParam("teacherId") Long teacherId){
-        Optional<List<Course>> teacherCourses = teacherService.findTeacherCourses(teacherId);
-        if (teacherCourses.isEmpty()){
-            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
-        }
-        return ResponseEntity.ok(teacherCourses.get());
     }
 
     @GetMapping("/search")

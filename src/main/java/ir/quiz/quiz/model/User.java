@@ -18,6 +18,7 @@ import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = SINGLE_TABLE)
+@Table(name = "users")
 public abstract class User extends BaseModel<Long> {
 
     public static final String FIRST_NAME = "first_name";

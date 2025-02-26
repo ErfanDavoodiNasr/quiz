@@ -36,7 +36,7 @@ public class Quiz extends BaseModel<Long> {
     private LocalDateTime endAt;
 
     @Transient
-    private Integer duration = endAt.getNano() - startAt.getNano();
+    private Integer duration;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(nullable = false, name = "course_id")

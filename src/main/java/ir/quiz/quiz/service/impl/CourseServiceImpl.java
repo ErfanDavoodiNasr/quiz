@@ -65,15 +65,11 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.findById(id);
     }
 
-    @Override
-    public Optional<Course> findReferenceById(Long id) {
-        return Optional.ofNullable(courseRepository.getReferenceById(id));
-    }
 
     @Override
     public Optional<List<Quiz>> findAllQuizzesByCourseId(Long id) {
         Optional<Course> course = courseRepository.findById(id);
-        if (course.isEmpty()){
+        if (course.isEmpty()) {
             throw new CourseNotFoundException("course not found");
         }
         return Optional.ofNullable(course.get().getQuizzes());
@@ -84,13 +80,6 @@ public class CourseServiceImpl implements CourseService {
         return Optional.ofNullable(courseRepository.findAll());
     }
 
-    @Override
-    public Optional<List<Course>> findAllByTeacherId(Number teacherId) {
-        if (teacherId != null) {
-            courseRepository.findAllByTeacher_Id(teacherId);
-        }
-        return Optional.empty();
-    }
 
     @Override
     public Boolean removeStudentFromCourse(Long studentId, Long courseId) {

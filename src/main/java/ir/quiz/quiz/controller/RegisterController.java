@@ -21,6 +21,7 @@ public class RegisterController {
     private final StudentService studentService;
     private final TeacherService teacherService;
 
+
     @PutMapping("/update_student_status")
     public ResponseEntity<?> updateStudentStatus(@RequestBody @Valid StudentUpdateStatusRequest req) {
         return ResponseEntity.ok(studentService.updateStatus(req.getId(), req.getStatus()));

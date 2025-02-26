@@ -1,10 +1,7 @@
 package ir.quiz.quiz.model;
 
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -23,6 +20,6 @@ import static ir.quiz.quiz.model.Teacher.TABLE_NAME;
 public class Teacher extends User {
     public static final String TABLE_NAME = "teachers";
 
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "teacher")
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "teacher", fetch = FetchType.EAGER)
     private List<Course> courses;
 }

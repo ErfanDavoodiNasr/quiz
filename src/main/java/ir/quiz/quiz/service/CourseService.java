@@ -14,14 +14,9 @@ public interface CourseService {
 
     Optional<Course> findById(Long id);
 
-    Optional<Course> findReferenceById(Long id);
-
     Optional<List<Quiz>> findAllQuizzesByCourseId(Long id);
 
     Optional<List<Course>> findAll();
-
-    Optional<List<Course>> findAllByTeacherId(Number teacherId);
-
 
     Boolean removeStudentFromCourse(Long studentId, Long courseId);
 

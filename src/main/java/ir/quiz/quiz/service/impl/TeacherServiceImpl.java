@@ -8,9 +8,9 @@ import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.mapper.TeacherRequestMapper;
 import ir.quiz.quiz.mapper.TeacherResponseMapper;
 import ir.quiz.quiz.mapper.TeacherUpdateRequestMapper;
-import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
+import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.repository.TeacherRepository;
 import ir.quiz.quiz.service.TeacherService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -34,6 +34,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherResponseMapper teacherResponseMapper;
     private final TeacherRequestMapper teacherRequestMapper;
     private final TeacherUpdateRequestMapper teacherUpdateRequestMapper;
+    private final CourseRepository courseRepository;
 
     @Override
     public Boolean save(PersonRequest teacherRequest) {
@@ -74,20 +75,6 @@ public class TeacherServiceImpl implements TeacherService {
         } else {
             throw new TeacherNotFoundException("your username or password is wrong");
         }
-    }
-
-    @Override
-    public Optional<Teacher> findReferenceById(Long id) {
-        return Optional.ofNullable(teacherRepository.getReferenceById(id));
-    }
-
-    @Override
-    public Optional<List<Course>> findTeacherCourses(Long teacherId) {
-        Optional<Teacher> teacher = teacherRepository.findById(teacherId);
-        if (teacher.isEmpty()){
-            throw new TeacherNotFoundException("teacher not found");
-        }
-        return Optional.ofNullable(teacher.get().getCourses());
     }
 
     @Override
