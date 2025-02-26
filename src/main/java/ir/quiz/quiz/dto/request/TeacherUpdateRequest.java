@@ -3,7 +3,6 @@ package ir.quiz.quiz.dto.request;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Status;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;

@@ -17,16 +17,13 @@ import static ir.quiz.quiz.model.Student.TABLE_NAME;
 @AllArgsConstructor
 @Entity
 @Table(name = TABLE_NAME)
-public class Student extends Person {
+public class Student extends User {
     public static final String TABLE_NAME = "students";
 
-    @ManyToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "fk_students_courses",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private List<Course> courses;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
 }

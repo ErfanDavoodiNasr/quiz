@@ -1,12 +1,11 @@
 package ir.quiz.quiz.dto.response;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
 
-
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
+@Builder
 @Data
-public class OwnerResponse extends UserResponse {
+public class OwnerResponse {
+    private String username;
+    private String password;
 }
