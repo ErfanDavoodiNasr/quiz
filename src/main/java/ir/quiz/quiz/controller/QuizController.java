@@ -52,5 +52,4 @@ public class QuizController {
         return quiz.isPresent() ? ResponseEntity.ok(quiz.get()) : ResponseEntity.status(404).body(new MessageResponse("no quiz found"));
     }
 
-
 }

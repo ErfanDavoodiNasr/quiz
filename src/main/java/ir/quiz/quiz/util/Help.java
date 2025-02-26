@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 public class Help {
 
     public static void checkTimeIsValid(LocalDateTime startAt, LocalDateTime endAt) {
-        if (
-                startAt.isBefore(LocalDateTime.now()) || endAt.isBefore(startAt)
-        ) {
-            throw new InvalidDateException("please enter valid time");
+        if (startAt.isBefore(LocalDateTime.now())) {
+            throw new InvalidDateException("start time is before now");
+        } else if (endAt.isBefore(startAt)) {
+            throw new InvalidDateException("end time is before start time");
         }
     }
 }
