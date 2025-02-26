@@ -1,6 +1,7 @@
 package ir.quiz.quiz.service;
 
 import ir.quiz.quiz.dto.request.QuizRequest;
+import ir.quiz.quiz.dto.request.QuizUpdateRequest;
 import ir.quiz.quiz.model.Quiz;
 
 import java.util.List;
@@ -11,11 +12,11 @@ public interface QuizService {
 
     Optional<Quiz> findById(Long id);
 
-    Optional<Quiz> findByCourseId(Long courseId);
-
-    Optional<Quiz> findReferenceById(Long id);
-
-    Optional<List<Quiz>> findAllByCourseId(Number courseId);
+    Optional<List<Quiz>> findAllByCourseIdAndTeacherId(Long courseId, Long teacherId);
 
     Optional<List<Quiz>> findAll();
+
+    Boolean remove(Long id);
+
+    Quiz update(QuizUpdateRequest quizUpdateRequest);
 }

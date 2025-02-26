@@ -42,7 +42,7 @@ public class Quiz extends BaseModel<Long> {
     @JoinColumn(nullable = false, name = "course_id")
     private Course course;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(nullable = false, name = "teacher_id")
     private Teacher teacher;
 }

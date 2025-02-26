@@ -2,9 +2,11 @@ package ir.quiz.quiz.service.impl;
 
 
 import ir.quiz.quiz.dto.request.CourseRequest;
+import ir.quiz.quiz.exception.CourseNotFoundException;
 import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.model.Course;
+import ir.quiz.quiz.model.Quiz;
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.repository.CourseRepository;
@@ -66,6 +68,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Optional<Course> findReferenceById(Long id) {
         return Optional.ofNullable(courseRepository.getReferenceById(id));
+    }
+
+    @Override
+    public Optional<List<Quiz>> findAllQuizzesByCourseId(Long id) {
+        Optional<Course> course = courseRepository.findById(id);
+        if (course.isEmpty()){
+            throw new CourseNotFoundException("course not found");
+        }
+        return Optional.ofNullable(course.get().getQuizzes());
     }
 
     @Override

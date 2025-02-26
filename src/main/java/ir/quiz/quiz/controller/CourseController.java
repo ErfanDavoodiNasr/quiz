@@ -3,6 +3,7 @@ package ir.quiz.quiz.controller;
 import ir.quiz.quiz.dto.request.CourseRequest;
 import ir.quiz.quiz.dto.response.MessageResponse;
 import ir.quiz.quiz.model.Course;
+import ir.quiz.quiz.model.Quiz;
 import ir.quiz.quiz.service.CourseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class CourseController {
     }
 
 
-    @GetMapping("/find_all_courses")
+    @GetMapping
     public ResponseEntity<?> findAll() {
         Optional<List<Course>> result = courseService.findAll();
         if (result.isEmpty()) {
@@ -37,8 +38,8 @@ public class CourseController {
     }
 
 
-    @GetMapping("/find_course_by_id")
-    public ResponseEntity<?> findById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable("id") Long id) {
         Optional<Course> result = courseService.findById(id);
         if (result.isEmpty()) {
             return ResponseEntity.status(404).body(new MessageResponse("no course found"));
@@ -80,5 +81,14 @@ public class CourseController {
     public ResponseEntity<?> removeStudentFromCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
         Boolean result = courseService.removeStudentFromCourse(studentId, courseId);
         return result ? ResponseEntity.ok(new MessageResponse("remove student from course was successful")) : ResponseEntity.badRequest().body(new MessageResponse("there is some problem please try again"));
+    }
+
+    @GetMapping("/find_all_course_quizzes")
+    public ResponseEntity<?> findAllCourseQuizzes(@RequestParam("courseId") Long courseId){
+        Optional<List<Quiz>> courseQuizzes = courseService.findAllQuizzesByCourseId(courseId);
+        if (courseQuizzes.isEmpty()){
+            return ResponseEntity.status(404).body(new MessageResponse("no quiz found"));
+        }
+        return ResponseEntity.ok(courseQuizzes.get());
     }
 }

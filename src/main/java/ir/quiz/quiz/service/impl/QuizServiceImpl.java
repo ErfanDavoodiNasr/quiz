@@ -1,13 +1,18 @@
 package ir.quiz.quiz.service.impl;
 
 import ir.quiz.quiz.dto.request.QuizRequest;
+import ir.quiz.quiz.dto.request.QuizUpdateRequest;
+import ir.quiz.quiz.exception.QuizNotFoundException;
 import ir.quiz.quiz.mapper.QuizRequestMapper;
 import ir.quiz.quiz.model.Quiz;
+import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.repository.QuizRepository;
 import ir.quiz.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +24,7 @@ public class QuizServiceImpl implements QuizService {
 
     private final QuizRepository quizRepository;
     private final QuizRequestMapper quizRequestMapper;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
     public Boolean save(QuizRequest quizRequest) {
@@ -37,28 +43,45 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Optional<Quiz> findByCourseId(Long courseId) {
-        return quizRepository.findByCourse_Id(courseId);
-    }
-
-    @Override
-    public Optional<Quiz> findReferenceById(Long id) {
-        if (id != null) {
-            return Optional.ofNullable(quizRepository.getReferenceById(id));
+    public Optional<List<Quiz>> findAllByCourseIdAndTeacherId(Long courseId, Long teacherId) {
+        Optional<List<Quiz>> quizzes = quizRepository.findAllByCourse_IdAndTeacher_Id(courseId, teacherId);
+        if (quizzes.isEmpty()){
+            throw new QuizNotFoundException("no quiz found");
         }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<List<Quiz>> findAllByCourseId(Number courseId) {
-        if (courseId != null) {
-            return quizRepository.findAllByCourse_Id(courseId);
-        }
-        return Optional.empty();
+        return quizzes;
     }
 
     @Override
     public Optional<List<Quiz>> findAll() {
         return Optional.ofNullable(quizRepository.findAll());
+    }
+
+    @Override
+    public Boolean remove(Long id) {
+        Quiz quiz = quizRepository.getReferenceById(id);
+        quizRepository.delete(quiz);
+        Optional<Quiz> quiz2 = quizRepository.findById(id);
+        return quiz2.isEmpty() ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    public Quiz update(QuizUpdateRequest quizUpdateRequest) {
+        Optional<Quiz> quiz = quizRepository.findById(quizUpdateRequest.getId());
+        if (quiz.isEmpty()){
+            throw new QuizNotFoundException("no quiz found");
+        }
+        Quiz finalQuiz = convertDtoToEntity(quizUpdateRequest, quiz);
+        return quizRepository.save(finalQuiz);
+    }
+
+    private Quiz convertDtoToEntity(QuizUpdateRequest quizUpdateRequest, Optional<Quiz> quiz) {
+        return Quiz.builder()
+                .title(quizUpdateRequest.getTitle())
+                .description(quizUpdateRequest.getDescription())
+                .endAt(LocalDateTime.parse(quizUpdateRequest.getEndAt(), formatter))
+                .startAt(LocalDateTime.parse(quizUpdateRequest.getStartAt(), formatter))
+                .course(quiz.get().getCourse())
+                .teacher(quiz.get().getTeacher())
+                .build();
     }
 }

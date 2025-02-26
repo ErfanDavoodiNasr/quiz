@@ -4,6 +4,7 @@ import ir.quiz.quiz.dto.request.PersonRequest;
 import ir.quiz.quiz.dto.request.TeacherUpdateRequest;
 import ir.quiz.quiz.dto.response.MessageResponse;
 import ir.quiz.quiz.dto.search.TeacherSearch;
+import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.service.TeacherService;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/teachers")
@@ -32,6 +34,15 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.update(teacherUpdateRequest));
     }
 
+    @GetMapping("/teacher_courses")
+    public ResponseEntity<?> findTeacherCourses(@RequestParam("teacherId") Long teacherId){
+        Optional<List<Course>> teacherCourses = teacherService.findTeacherCourses(teacherId);
+        if (teacherCourses.isEmpty()){
+            return ResponseEntity.status(404).body(new MessageResponse("no course found"));
+        }
+        return ResponseEntity.ok(teacherCourses.get());
+    }
+
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestBody TeacherSearch teacherSearch) {
         List<Teacher> teachers = teacherService.findAll(teacherSearch);
@@ -40,6 +51,4 @@ public class TeacherController {
         }
         return ResponseEntity.ok(teachers);
     }
-
 }
-

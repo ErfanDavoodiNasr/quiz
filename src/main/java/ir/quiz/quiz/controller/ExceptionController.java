@@ -2,10 +2,7 @@ package ir.quiz.quiz.controller;
 
 
 import ir.quiz.quiz.dto.response.MessageResponse;
-import ir.quiz.quiz.exception.InvalidDateException;
-import ir.quiz.quiz.exception.OwnerNotFoundException;
-import ir.quiz.quiz.exception.StudentNotFoundException;
-import ir.quiz.quiz.exception.TeacherNotFoundException;
+import ir.quiz.quiz.exception.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,6 +36,11 @@ public class ExceptionController {
 
     @ExceptionHandler(value = InvalidDateException.class)
     public ResponseEntity<MessageResponse> invalidDateException(InvalidDateException e) {
+        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = CourseNotFoundException.class)
+    public ResponseEntity<MessageResponse> courseNotFoundException(CourseNotFoundException e) {
         return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
 
