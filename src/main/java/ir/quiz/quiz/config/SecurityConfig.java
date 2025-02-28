@@ -24,7 +24,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_URLS).permitAll()
-                        .requestMatchers(OWNER_URLS).hasAuthority("ROLE_OWNER")
+                        .requestMatchers(TEACHER_URLS).hasRole("TEACHER")
+                        .requestMatchers(STUDENT_URLS).hasRole("STUDENT")
+                        .requestMatchers(OWNER_URLS).hasRole("OWNER")
                         .anyRequest().authenticated())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable);

@@ -1,6 +1,9 @@
-package ir.quiz.quiz.model;
+package ir.quiz.quiz.model.quiz;
 
 
+import ir.quiz.quiz.model.BaseModel;
+import ir.quiz.quiz.model.Course;
+import ir.quiz.quiz.model.Teacher;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,8 +12,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
-import static ir.quiz.quiz.model.Quiz.TABLE_NAME;
+import static ir.quiz.quiz.model.quiz.Quiz.TABLE_NAME;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -45,4 +49,8 @@ public class Quiz extends BaseModel<Long> {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     private Course course;
+
+    @ManyToMany
+    @JoinColumn(nullable = false)
+    private Set<QuizQuestion> quizQuestions;
 }

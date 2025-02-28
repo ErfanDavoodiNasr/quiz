@@ -4,7 +4,7 @@ import ir.quiz.quiz.dto.request.QuizRequest;
 import ir.quiz.quiz.dto.request.QuizUpdateRequest;
 import ir.quiz.quiz.exception.QuizNotFoundException;
 import ir.quiz.quiz.mapper.QuizRequestMapper;
-import ir.quiz.quiz.model.Quiz;
+import ir.quiz.quiz.model.quiz.Quiz;
 import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.repository.QuizRepository;
 import ir.quiz.quiz.repository.TeacherRepository;
@@ -34,6 +34,7 @@ public class QuizServiceImpl implements QuizService {
         Quiz quiz = quizRequestMapper.convertDtoToEntity(quizRequest);
         quiz.setCourse(courseRepository.findById(quizRequest.getCourseId()).get());
         quiz.setTeacher(teacherRepository.findById(quizRequest.getTeacherId()).get());
+        // todo
         checkTimeIsValid(quiz.getStartAt(), quiz.getEndAt());
         Quiz result = quizRepository.save(quiz);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
@@ -82,6 +83,7 @@ public class QuizServiceImpl implements QuizService {
 
     private Quiz convertDtoToEntity(QuizUpdateRequest quizUpdateRequest, Optional<Quiz> quiz) {
         return Quiz.builder()
+                .id(quiz.get().getId())
                 .title(quizUpdateRequest.getTitle())
                 .description(quizUpdateRequest.getDescription())
                 .endAt(LocalDateTime.parse(quizUpdateRequest.getEndAt(), formatter))

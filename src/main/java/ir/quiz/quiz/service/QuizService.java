@@ -2,7 +2,7 @@ package ir.quiz.quiz.service;
 
 import ir.quiz.quiz.dto.request.QuizRequest;
 import ir.quiz.quiz.dto.request.QuizUpdateRequest;
-import ir.quiz.quiz.model.Quiz;
+import ir.quiz.quiz.model.quiz.Quiz;
 
 import java.util.List;
 import java.util.Optional;

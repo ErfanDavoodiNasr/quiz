@@ -2,8 +2,9 @@ package ir.quiz.quiz.controller;
 
 
 import ir.quiz.quiz.dto.request.QuizRequest;
+import ir.quiz.quiz.dto.request.QuizUpdateRequest;
 import ir.quiz.quiz.dto.response.MessageResponse;
-import ir.quiz.quiz.model.Quiz;
+import ir.quiz.quiz.model.quiz.Quiz;
 import ir.quiz.quiz.service.QuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,11 @@ public class QuizController {
     public ResponseEntity<?> save(@RequestBody @Valid QuizRequest quizRequest) {
         Boolean result = quizService.save(quizRequest);
         return result ? ResponseEntity.ok(new MessageResponse("quiz saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody @Valid QuizUpdateRequest quizRequest) {
+        return ResponseEntity.ok(quizService.update(quizRequest));
     }
 
     @DeleteMapping
