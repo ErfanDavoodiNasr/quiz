@@ -23,7 +23,7 @@ public abstract class Question extends BaseModel<Long> {
     public static final String TABLE_NAME = "questions";
     public static final String QUESTION_TEXT = "question_text";
 
-    @Column(nullable = false , length = 50)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column(name = QUESTION_TEXT, nullable = false)

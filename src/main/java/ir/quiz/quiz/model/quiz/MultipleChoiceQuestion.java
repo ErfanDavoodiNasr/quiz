@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,5 +19,5 @@ public class MultipleChoiceQuestion extends Question {
 
     @OneToMany
     @JoinColumn(nullable = false)
-    private List<Option> options;
+    private Set<QuestionOption> questionOptions;
 }

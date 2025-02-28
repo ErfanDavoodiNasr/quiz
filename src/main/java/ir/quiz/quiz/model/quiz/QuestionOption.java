@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import static ir.quiz.quiz.model.quiz.Option.TABLE_NAME;
+import static ir.quiz.quiz.model.quiz.QuestionOption.TABLE_NAME;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -17,12 +17,13 @@ import static ir.quiz.quiz.model.quiz.Option.TABLE_NAME;
 @NoArgsConstructor
 @Entity
 @Table(name = TABLE_NAME)
-public class Option extends BaseModel<Long> {
+public class QuestionOption extends BaseModel<Long> {
     public static final String TABLE_NAME = "options";
+    public static final String iS_CORRECT = "is_correct";
 
     @Column(nullable = false)
     private String text;
 
-    @Column(nullable = false)
+    @Column(name = iS_CORRECT, nullable = false)
     private Boolean isCorrect;
 }

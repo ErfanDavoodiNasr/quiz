@@ -1,7 +1,10 @@
 package ir.quiz.quiz.model.quiz;
 
 import ir.quiz.quiz.model.BaseModel;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,6 +24,6 @@ public class QuizQuestion extends BaseModel<Long> {
     @Column(columnDefinition = "TEXT")
     private String answer;
 
-    @Column
+    @Column(nullable = false)
     private Double score;
 }
