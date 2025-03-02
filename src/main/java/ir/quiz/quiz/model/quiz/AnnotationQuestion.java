@@ -12,6 +12,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @Entity
-public class DescriptiveQuestion extends Question {
+public class AnnotationQuestion extends Question {
 
 }
