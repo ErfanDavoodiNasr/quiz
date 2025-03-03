@@ -2,8 +2,12 @@ package ir.quiz.quiz.service.impl;
 
 import ir.quiz.quiz.dto.request.QuizRequest;
 import ir.quiz.quiz.dto.request.QuizUpdateRequest;
+import ir.quiz.quiz.exception.CourseNotFoundException;
 import ir.quiz.quiz.exception.QuizNotFoundException;
+import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.mapper.QuizRequestMapper;
+import ir.quiz.quiz.model.Course;
+import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.quiz.Quiz;
 import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.repository.QuizRepository;
@@ -32,12 +36,29 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Boolean save(QuizRequest quizRequest) {
         Quiz quiz = quizRequestMapper.convertDtoToEntity(quizRequest);
-        quiz.setCourse(courseRepository.findById(quizRequest.getCourseId()).get());
-        quiz.setTeacher(teacherRepository.findById(quizRequest.getTeacherId()).get());
-        // todo
+        Optional<Course> course = checkCourseIsExist(quizRequest);
+        Optional<Teacher> teacher = checkTeacherIsExist(quizRequest);
+        quiz.setCourse(course.get());
+        quiz.setTeacher(teacher.get());
         checkTimeIsValid(quiz.getStartAt(), quiz.getEndAt());
         Quiz result = quizRepository.save(quiz);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    private Optional<Teacher> checkTeacherIsExist(QuizRequest quizRequest) {
+        Optional<Teacher> teacher = teacherRepository.findById(quizRequest.getTeacherId());
+        if (teacher.isEmpty()) {
+            throw new TeacherNotFoundException("no teacher found");
+        }
+        return teacher;
+    }
+
+    private Optional<Course> checkCourseIsExist(QuizRequest quizRequest) {
+        Optional<Course> course = courseRepository.findById(quizRequest.getCourseId());
+        if (course.isEmpty()) {
+            throw new CourseNotFoundException("no course found");
+        }
+        return course;
     }
 
     @Override
@@ -50,6 +71,11 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Optional<List<Quiz>> findAllByCourseIdAndTeacherId(Long courseId, Long teacherId) {
+        Optional<List<Quiz>> quizzes = checkQuizIsExist(courseId, teacherId);
+        return quizzes;
+    }
+
+    private Optional<List<Quiz>> checkQuizIsExist(Long courseId, Long teacherId) {
         Optional<List<Quiz>> quizzes = quizRepository.findAllByCourse_IdAndTeacher_Id(courseId, teacherId);
         if (quizzes.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
@@ -73,12 +99,17 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Quiz update(QuizUpdateRequest quizUpdateRequest) {
+        Optional<Quiz> quiz = checkQuizIsExist(quizUpdateRequest);
+        Quiz finalQuiz = convertDtoToEntity(quizUpdateRequest, quiz);
+        return quizRepository.save(finalQuiz);
+    }
+
+    private Optional<Quiz> checkQuizIsExist(QuizUpdateRequest quizUpdateRequest) {
         Optional<Quiz> quiz = quizRepository.findById(quizUpdateRequest.getId());
         if (quiz.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
         }
-        Quiz finalQuiz = convertDtoToEntity(quizUpdateRequest, quiz);
-        return quizRepository.save(finalQuiz);
+        return quiz;
     }
 
     private Quiz convertDtoToEntity(QuizUpdateRequest quizUpdateRequest, Optional<Quiz> quiz) {

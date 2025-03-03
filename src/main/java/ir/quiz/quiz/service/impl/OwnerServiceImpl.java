@@ -20,14 +20,19 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public Optional<OwnerResponse> findByUsernameAndPassword(String username, String password) {
-        Optional<OwnerResponse> owner = ownerRepository.findByUsername(username);
-        if (owner.isEmpty()) {
-            throw new OwnerNotFoundException("owner not found");
-        }
+        Optional<OwnerResponse> owner = checkOwnerIsExist(username);
         if (bCryptPasswordEncoder.matches(password, owner.get().getPassword())) {
             return owner;
         } else {
             throw new StudentNotFoundException("your username or password is wrong");
         }
+    }
+
+    private Optional<OwnerResponse> checkOwnerIsExist(String username) {
+        Optional<OwnerResponse> owner = ownerRepository.findByUsername(username);
+        if (owner.isEmpty()) {
+            throw new OwnerNotFoundException("owner not found");
+        }
+        return owner;
     }
 }

@@ -35,15 +35,20 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Optional<StudentResponse> findByUsernameAndPassword(String username, String password) {
-        Optional<Student> studentOptional = studentRepository.findByUsername(username);
-        if (studentOptional.isEmpty()) {
-            throw new StudentNotFoundException("student not found");
-        }
+        Optional<Student> studentOptional = checkStudentIsExist(studentRepository.findByUsername(username));
         if (bCryptPasswordEncoder.matches(password, studentOptional.get().getPassword())) {
             return Optional.ofNullable(studentResponseMapper.convertEntityToDto(studentOptional.get()));
         } else {
             throw new StudentNotFoundException("your username or password is wrong");
         }
+    }
+
+    private Optional<Student> checkStudentIsExist(Optional<Student> studentRepository) {
+        Optional<Student> studentOptional = studentRepository;
+        if (studentOptional.isEmpty()) {
+            throw new StudentNotFoundException("student not found");
+        }
+        return studentOptional;
     }
 
     @Override
@@ -118,10 +123,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student updateStatus(Long id, Status status) {
-        Optional<Student> student = studentRepository.findById(id);
-        if (student.isEmpty()) {
-            throw new StudentNotFoundException("student not found");
-        }
+        Optional<Student> student = checkStudentIsExist(studentRepository.findById(id));
         student.get().setStatus(status);
         return studentRepository.save(student.get());
     }

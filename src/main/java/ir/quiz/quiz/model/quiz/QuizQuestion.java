@@ -19,7 +19,7 @@ public class QuizQuestion extends BaseModel<Long> {
 
     @OneToOne
     @JoinColumn(nullable = false)
-    private Question questions;
+    private Question question;
 
     @Column(columnDefinition = "TEXT")
     private String answer;

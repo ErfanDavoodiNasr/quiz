@@ -56,25 +56,27 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Teacher updateStatus(Long id, Status status) {
-        Optional<Teacher> teacher = teacherRepository.findById(id);
-        if (teacher.isEmpty()) {
-            throw new TeacherNotFoundException("teacher not found");
-        }
+        Optional<Teacher> teacher = checkTeacherIsExist(teacherRepository.findById(id));
         teacher.get().setStatus(status);
         return teacherRepository.save(teacher.get());
     }
 
     @Override
     public Optional<TeacherResponse> findByUsernameAndPassword(String username, String password) {
-        Optional<Teacher> teacherOptional = teacherRepository.findByUsername(username);
-        if (teacherOptional.isEmpty()) {
-            throw new TeacherNotFoundException("teacher not found");
-        }
+        Optional<Teacher> teacherOptional = checkTeacherIsExist(teacherRepository.findByUsername(username));
         if (bCryptPasswordEncoder.matches(password, teacherOptional.get().getPassword())) {
             return Optional.ofNullable(teacherResponseMapper.convertEntityToDto(teacherOptional.get()));
         } else {
             throw new TeacherNotFoundException("your username or password is wrong");
         }
+    }
+
+    private Optional<Teacher> checkTeacherIsExist(Optional<Teacher> teacherRepository) {
+        Optional<Teacher> teacherOptional = teacherRepository;
+        if (teacherOptional.isEmpty()) {
+            throw new TeacherNotFoundException("teacher not found");
+        }
+        return teacherOptional;
     }
 
     @Override

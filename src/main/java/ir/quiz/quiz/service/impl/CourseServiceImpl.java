@@ -66,6 +66,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Optional<List<Course>> findALlTeacherCourses(Long teacherId) {
+        Optional<List<Course>> courses = checkCourseIsExist(teacherId);
+        return courses;
+    }
+
+    private Optional<List<Course>> checkCourseIsExist(Long teacherId) {
         Optional<List<Course>> courses = courseRepository.findAllByTeacher_Id(teacherId);
         if (courses.isEmpty()) {
             throw new CourseNotFoundException("no course found");

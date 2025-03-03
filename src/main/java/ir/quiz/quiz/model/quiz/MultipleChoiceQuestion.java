@@ -1,5 +1,6 @@
 package ir.quiz.quiz.model.quiz;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Entity
 public class MultipleChoiceQuestion extends Question {
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(nullable = false)
     private Set<QuestionOption> questionOptions;
 }
