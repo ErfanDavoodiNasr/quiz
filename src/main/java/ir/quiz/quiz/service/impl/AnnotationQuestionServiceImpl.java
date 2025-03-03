@@ -34,17 +34,21 @@ public class AnnotationQuestionServiceImpl implements AnnotationQuestionService 
     }
 
     @Override
-    public Long save(AnnotationQuestionRequest annotationQuestion) {
+    public AnnotationQuestion save(AnnotationQuestionRequest annotationQuestion) {
         Optional<Course> course = checkCourseIsExist(annotationQuestion);
         Optional<Teacher> teacher = checkTeacherIsExist(annotationQuestion);
         AnnotationQuestion result = convertDtoToEntity(annotationQuestion, teacher, course);
-        result = annotationQuestionRepository.save(result);
-        return result.getId() != null ? result.getId() : null;
+        return annotationQuestionRepository.save(result);
     }
 
     @Override
     public Optional<List<AnnotationQuestion>> findAll() {
         return Optional.ofNullable(annotationQuestionRepository.findAll());
+    }
+
+    @Override
+    public Optional<AnnotationQuestion> findById(Long id) {
+        return annotationQuestionRepository.findById(id);
     }
 
     private Optional<Course> checkCourseIsExist(AnnotationQuestionRequest annotationQuestion) {

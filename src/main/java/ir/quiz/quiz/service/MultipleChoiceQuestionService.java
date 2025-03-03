@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MultipleChoiceQuestionService {
-    Long save(MultipleChoiceQuestionRequest multipleChoiceQuestion);
+    MultipleChoiceQuestion save(MultipleChoiceQuestionRequest multipleChoiceQuestion);
 
     Optional<List<MultipleChoiceQuestion>> findAll();
 
     Boolean addOptionTOQuestion(QuestionOptionRequest optionRequest);
+
+    Optional<MultipleChoiceQuestion> findById(Long id);
 }

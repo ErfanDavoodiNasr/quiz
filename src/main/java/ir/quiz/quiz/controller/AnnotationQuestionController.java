@@ -27,7 +27,7 @@ public class AnnotationQuestionController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid AnnotationQuestionRequest annotationQuestionRequest) {
-        Long result = annotationQuestionService.save(annotationQuestionRequest);
+        AnnotationQuestion result = annotationQuestionService.save(annotationQuestionRequest);
         return result != null ? ResponseEntity.ok(new MessageResponse("question saves successfully")) : ResponseEntity.status(500).body("there is some problem please try again");
     }
 

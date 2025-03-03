@@ -1,10 +1,10 @@
 package ir.quiz.quiz.controller;
 
 
-import ir.quiz.quiz.dto.request.QuizRequest;
-import ir.quiz.quiz.dto.request.QuizUpdateRequest;
+import ir.quiz.quiz.dto.request.*;
 import ir.quiz.quiz.dto.response.MessageResponse;
 import ir.quiz.quiz.model.quiz.Quiz;
+import ir.quiz.quiz.model.quiz.QuestionType;
 import ir.quiz.quiz.service.QuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +56,40 @@ public class QuizController {
     public ResponseEntity<?> quizzesByTeacherIdAndCourseId(@RequestParam("courseId") Long courseId, @RequestParam("teacherId") Long teacherId) {
         Optional<List<Quiz>> result = quizService.findAllByCourseIdAndTeacherId(courseId, teacherId);
         return result.isPresent() ? ResponseEntity.ok(result.get()) : ResponseEntity.status(404).body(new MessageResponse("no quiz found"));
+    }
+
+
+    @PostMapping("/add-ready-question-to-quiz")
+    public ResponseEntity<?> addReadyQuestionToQuiz(
+            @RequestParam(value = "questionId",required = true) Long questionId,
+            @RequestParam(value = "quizId",required = true) Long quizId,
+            @RequestParam(value = "questionType",required = true) QuestionType questionType,
+            @RequestParam(value = "score",required = true) Double score
+            ){
+        Boolean result = quizService.addReadyQuestionToQuiz(questionId, quizId, score, questionType);
+        return result ? ResponseEntity.ok(new MessageResponse("question saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
+    }
+
+    @PostMapping("/add-new-multiple-question-to-quiz")
+    public ResponseEntity<?> addNewMultipleQuestionToQuiz(
+            @RequestBody @Valid MultipleChoiceQuestionRequest multipleChoiceQuestionRequest,
+            @RequestParam(value = "quizId",required = true) Long quizId,
+            @RequestParam(value = "questionType",required = true) QuestionType questionType,
+            @RequestParam(value = "score",required = true) Double score
+    ){
+        Boolean result = quizService.addNewMultipleQuestionToQuiz(multipleChoiceQuestionRequest, quizId, score, questionType);
+        return result ? ResponseEntity.ok(new MessageResponse("question saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
+    }
+
+    @PostMapping("/add-new-annotation-question-to-quiz")
+    public ResponseEntity<?> addNewAnnotationQuestionToQuiz(
+            @RequestBody @Valid AnnotationQuestionRequest annotationQuestionRequest,
+            @RequestParam(value = "quizId",required = true) Long quizId,
+            @RequestParam(value = "questionType",required = true) QuestionType questionType,
+            @RequestParam(value = "score",required = true) Double score
+    ){
+        Boolean result = quizService.addNewAnnotationQuestionToQuiz(annotationQuestionRequest, quizId, score, questionType);
+        return result ? ResponseEntity.ok(new MessageResponse("question saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
 }

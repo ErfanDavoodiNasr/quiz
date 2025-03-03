@@ -30,7 +30,7 @@ public class MultipleChoiceQuestionController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid MultipleChoiceQuestionRequest multipleChoiceQuestionRequest) {
-        Long result = multipleChoiceQuestionService.save(multipleChoiceQuestionRequest);
+        MultipleChoiceQuestion result = multipleChoiceQuestionService.save(multipleChoiceQuestionRequest);
         return result != null ? ResponseEntity.ok(new MessageResponse("question saves successfully")) : ResponseEntity.status(500).body("there is some problem please try again");
     }
 

@@ -1,17 +1,22 @@
 package ir.quiz.quiz.service.impl;
 
+import ir.quiz.quiz.dto.request.AnnotationQuestionRequest;
+import ir.quiz.quiz.dto.request.MultipleChoiceQuestionRequest;
 import ir.quiz.quiz.dto.request.QuizRequest;
 import ir.quiz.quiz.dto.request.QuizUpdateRequest;
 import ir.quiz.quiz.exception.CourseNotFoundException;
+import ir.quiz.quiz.exception.QuestionNotFoundException;
 import ir.quiz.quiz.exception.QuizNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.mapper.QuizRequestMapper;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Teacher;
-import ir.quiz.quiz.model.quiz.Quiz;
+import ir.quiz.quiz.model.quiz.*;
 import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.repository.QuizRepository;
 import ir.quiz.quiz.repository.TeacherRepository;
+import ir.quiz.quiz.service.AnnotationQuestionService;
+import ir.quiz.quiz.service.MultipleChoiceQuestionService;
 import ir.quiz.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +36,9 @@ public class QuizServiceImpl implements QuizService {
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
     private final QuizRequestMapper quizRequestMapper;
+    private final MultipleChoiceQuestionService multipleChoiceQuestionService;
+    private final AnnotationQuestionService annotationQuestionService;
+    private final QuizService quizService;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
@@ -43,6 +51,11 @@ public class QuizServiceImpl implements QuizService {
         checkTimeIsValid(quiz.getStartAt(), quiz.getEndAt());
         Quiz result = quizRepository.save(quiz);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    public Quiz save(Quiz quiz) {
+        return quizRepository.save(quiz);
     }
 
     private Optional<Teacher> checkTeacherIsExist(QuizRequest quizRequest) {
@@ -104,11 +117,88 @@ public class QuizServiceImpl implements QuizService {
         return quizRepository.save(finalQuiz);
     }
 
-    private Optional<Quiz> checkQuizIsExist(QuizUpdateRequest quizUpdateRequest) {
-        Optional<Quiz> quiz = quizRepository.findById(quizUpdateRequest.getId());
+    @Override
+    public Boolean addReadyQuestionToQuiz(Long questionId, Long quizId, Double score, QuestionType questionType) {
+        Optional<Quiz> quiz = checkQuizIsExist(quizService.findById(quizId));
+        if (questionType == QuestionType.MULTIPLE){
+            return addMultipleQuestion(questionId, score, quiz);
+        } else if (questionType == QuestionType.ANNOTATION) {
+            return addAnnotationQuiz(questionId, score, quiz);
+        }else {
+            return Boolean.FALSE;
+        }
+    }
+
+    @Override
+    public Boolean addNewMultipleQuestionToQuiz(MultipleChoiceQuestionRequest multipleChoiceQuestionRequest,Long quizId, Double score, QuestionType questionType) {
+        MultipleChoiceQuestion question = multipleChoiceQuestionService.save(multipleChoiceQuestionRequest);
+        QuizQuestion quizQuestion = QuizQuestion.builder()
+                .score(score)
+                .question(question)
+                .build();
+
+        Optional<Quiz> quiz = quizService.findById(quizId);
+        if (quiz.isEmpty()){
+            throw new QuizNotFoundException("no quiz found");
+        }
+        boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
+        return quizRepository.save(quiz.get()).getQuizQuestions().contains(quizQuestion);
+    }
+
+    @Override
+    public Boolean addNewAnnotationQuestionToQuiz(AnnotationQuestionRequest annotationQuestionRequest, Long quizId, Double score, QuestionType questionType) {
+        AnnotationQuestion question = annotationQuestionService.save(annotationQuestionRequest);
+        QuizQuestion quizQuestion = QuizQuestion.builder()
+                .score(score)
+                .question(question)
+                .build();
+
+        Optional<Quiz> quiz = quizService.findById(quizId);
+        if (quiz.isEmpty()){
+            throw new QuizNotFoundException("no quiz found");
+        }
+        boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
+        return quizRepository.save(quiz.get()).getQuizQuestions().contains(quizQuestion);
+    }
+
+    private Optional<Quiz> checkQuizIsExist(Optional<Quiz> quizService) {
+        Optional<Quiz> quiz = quizService;
         if (quiz.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
         }
+        return quiz;
+    }
+
+    private boolean addMultipleQuestion(Long questionId, Double score, Optional<Quiz> quiz) {
+        Optional<MultipleChoiceQuestion> question = multipleChoiceQuestionService.findById(questionId);
+        if (question.isEmpty()){
+            throw new QuestionNotFoundException("no quiz found");
+        }
+        QuizQuestion quizQuestion = QuizQuestion.builder()
+                .question(question.get())
+                .score(score)
+                .build();
+        boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
+        Quiz result = quizService.save(quiz.get());
+        return result.getQuizQuestions().contains(quizQuestion);
+    }
+
+    private boolean addAnnotationQuiz(Long questionId, Double score, Optional<Quiz> quiz) {
+        Optional<AnnotationQuestion> question = annotationQuestionService.findById(questionId);
+        if (question.isEmpty()){
+            throw new QuestionNotFoundException("no quiz found");
+        }
+        QuizQuestion quizQuestion = QuizQuestion.builder()
+                .question(question.get())
+                .score(score)
+                .build();
+        boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
+        Quiz result = quizService.save(quiz.get());
+        return result.getQuizQuestions().contains(quizQuestion);
+    }
+
+    private Optional<Quiz> checkQuizIsExist(QuizUpdateRequest quizUpdateRequest) {
+        Optional<Quiz> quiz = checkQuizIsExist(quizRepository.findById(quizUpdateRequest.getId()));
         return quiz;
     }
 

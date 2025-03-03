@@ -49,12 +49,11 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     }
 
     @Override
-    public Long save(MultipleChoiceQuestionRequest multipleChoiceQuestion) {
+    public MultipleChoiceQuestion save(MultipleChoiceQuestionRequest multipleChoiceQuestion) {
         Optional<Course> course = checkCourseIsExist(multipleChoiceQuestion);
         Optional<Teacher> teacher = checkTeacherIsExist(multipleChoiceQuestion);
         MultipleChoiceQuestion result = convertDtoToEntity(multipleChoiceQuestion, teacher, course);
-        result = multipleChoiceQuestionRepository.save(result);
-        return result.getId() != null ? result.getId() : null;
+        return multipleChoiceQuestionRepository.save(result);
     }
 
     @Override
@@ -70,6 +69,11 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
         question.get().getQuestionOptions().add(option);
         MultipleChoiceQuestion result = multipleChoiceQuestionRepository.save(question.get());
         return result.getQuestionOptions().contains(option);
+    }
+
+    @Override
+    public Optional<MultipleChoiceQuestion> findById(Long id) {
+        return multipleChoiceQuestionRepository.findById(id);
     }
 
     private Optional<MultipleChoiceQuestion> checkQuestionIsExist(QuestionOptionRequest optionRequest) {
