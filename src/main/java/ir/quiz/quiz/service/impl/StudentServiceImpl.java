@@ -34,7 +34,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentUpdateRequestMapper studentUpdateRequestMapper;
 
     @Override
-    public Optional<StudentResponse> findByUsernameAndPassword(String username, String password) {
+    public Optional<StudentResponse> login(String username, String password) {
         Optional<Student> studentOptional = checkStudentIsExist(studentRepository.findByUsername(username));
         if (bCryptPasswordEncoder.matches(password, studentOptional.get().getPassword())) {
             return Optional.ofNullable(studentResponseMapper.convertEntityToDto(studentOptional.get()));

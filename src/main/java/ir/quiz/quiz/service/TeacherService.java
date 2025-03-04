@@ -17,7 +17,7 @@ public interface TeacherService {
 
     Teacher updateStatus(Long id, Status status);
 
-    Optional<TeacherResponse> findByUsernameAndPassword(String username, String password);
+    Optional<TeacherResponse> login(String username, String password);
 
     List<Teacher> findAll(TeacherSearch search);
 }

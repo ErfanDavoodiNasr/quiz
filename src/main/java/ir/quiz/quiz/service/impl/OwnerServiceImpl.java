@@ -19,7 +19,7 @@ public class OwnerServiceImpl implements OwnerService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public Optional<OwnerResponse> findByUsernameAndPassword(String username, String password) {
+    public Optional<OwnerResponse> login(String username, String password) {
         Optional<OwnerResponse> owner = checkOwnerIsExist(username);
         if (bCryptPasswordEncoder.matches(password, owner.get().getPassword())) {
             return owner;

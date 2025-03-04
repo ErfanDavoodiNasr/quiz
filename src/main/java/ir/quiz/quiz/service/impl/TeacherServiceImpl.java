@@ -62,7 +62,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Optional<TeacherResponse> findByUsernameAndPassword(String username, String password) {
+    public Optional<TeacherResponse> login(String username, String password) {
         Optional<Teacher> teacherOptional = checkTeacherIsExist(teacherRepository.findByUsername(username));
         if (bCryptPasswordEncoder.matches(password, teacherOptional.get().getPassword())) {
             return Optional.ofNullable(teacherResponseMapper.convertEntityToDto(teacherOptional.get()));
