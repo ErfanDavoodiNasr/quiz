@@ -77,10 +77,9 @@ public class QuizController {
     public ResponseEntity<?> addNewMultipleQuestionToQuiz(
             @RequestBody @Valid MultipleChoiceQuestionRequest multipleChoiceQuestionRequest,
             @RequestParam(value = "quizId", required = true) Long quizId,
-            @RequestParam(value = "questionType", required = true) QuestionType questionType,
             @RequestParam(value = "score", required = true) Double score
     ) {
-        Boolean result = quizService.addNewMultipleQuestionToQuiz(multipleChoiceQuestionRequest, quizId, score, questionType);
+        Boolean result = quizService.addNewMultipleQuestionToQuiz(multipleChoiceQuestionRequest, quizId, score);
         return result ? ResponseEntity.ok(new MessageResponse("question saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
@@ -88,10 +87,9 @@ public class QuizController {
     public ResponseEntity<?> addNewAnnotationQuestionToQuiz(
             @RequestBody @Valid AnnotationQuestionRequest annotationQuestionRequest,
             @RequestParam(value = "quizId", required = true) Long quizId,
-            @RequestParam(value = "questionType", required = true) QuestionType questionType,
             @RequestParam(value = "score", required = true) Double score
     ) {
-        Boolean result = quizService.addNewAnnotationQuestionToQuiz(annotationQuestionRequest, quizId, score, questionType);
+        Boolean result = quizService.addNewAnnotationQuestionToQuiz(annotationQuestionRequest, quizId, score);
         return result ? ResponseEntity.ok(new MessageResponse("question saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 

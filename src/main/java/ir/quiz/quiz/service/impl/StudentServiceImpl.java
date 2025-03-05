@@ -8,8 +8,6 @@ import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.mapper.StudentRequestMapper;
 import ir.quiz.quiz.mapper.StudentResponseMapper;
 import ir.quiz.quiz.mapper.StudentUpdateRequestMapper;
-import ir.quiz.quiz.model.Permission;
-import ir.quiz.quiz.model.Role;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.repository.StudentRepository;
@@ -29,7 +27,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final StudentResponseMapper studentResponseMapper;
     private final StudentRequestMapper studentRequestMapper;
     private final StudentUpdateRequestMapper studentUpdateRequestMapper;
@@ -37,7 +34,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Optional<StudentResponse> login(String username, String password) {
         Optional<Student> studentOptional = checkStudentIsExist(studentRepository.findByUsername(username));
-        if (bCryptPasswordEncoder.matches(password, studentOptional.get().getPassword())) {
+        if (studentOptional.get().getPassword().equals(password)) {
             return Optional.ofNullable(studentResponseMapper.convertEntityToDto(studentOptional.get()));
         } else {
             throw new StudentNotFoundException("your username or password is wrong");
@@ -106,10 +103,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Boolean save(PersonRequest studentRequest) {
-        studentRequest.setPassword(bCryptPasswordEncoder.encode(studentRequest.getPassword()));
         Student student = studentRequestMapper.convertDtoToEntity(studentRequest);
         student.setStatus(Status.AWAITING_CONFIRMATION);
-        student.setRole(Role.builder().id(2L).build());
         Student result = studentRepository.save(student);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }
@@ -119,7 +114,6 @@ public class StudentServiceImpl implements StudentService {
         if (studentUpdateRequest == null | studentUpdateRequest.getId() == null) {
             throw new NullPointerException("student can't be null");
         }
-        studentUpdateRequest.setPassword(bCryptPasswordEncoder.encode(studentUpdateRequest.getPassword()));
         return studentRepository.save(studentUpdateRequestMapper.convertDtoToEntity(studentUpdateRequest));
     }
 

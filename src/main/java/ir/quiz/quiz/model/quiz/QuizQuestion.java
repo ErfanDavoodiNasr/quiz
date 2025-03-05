@@ -3,7 +3,6 @@ package ir.quiz.quiz.model.quiz;
 import ir.quiz.quiz.model.BaseModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,9 +18,6 @@ public class QuizQuestion extends BaseModel<Long> {
 
     @OneToOne
     private Question question;
-
-    @Column(columnDefinition = "TEXT")
-    private String answer;
 
     @Column(nullable = false)
     private Double score;

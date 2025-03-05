@@ -15,12 +15,11 @@ import java.util.Optional;
 public class OwnerServiceImpl implements OwnerService {
 
     private final OwnerRepository ownerRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Optional<OwnerResponse> login(String username, String password) {
         Optional<OwnerResponse> owner = checkOwnerIsExist(username);
-        if (bCryptPasswordEncoder.matches(password, owner.get().getPassword())) {
+        if (owner.get().getPassword().equals(password)) {
             return owner;
         } else {
             throw new StudentNotFoundException("your username or password is wrong");

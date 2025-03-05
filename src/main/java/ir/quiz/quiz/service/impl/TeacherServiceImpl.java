@@ -10,7 +10,6 @@ import ir.quiz.quiz.mapper.TeacherResponseMapper;
 import ir.quiz.quiz.mapper.TeacherUpdateRequestMapper;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
-import ir.quiz.quiz.repository.CourseRepository;
 import ir.quiz.quiz.repository.TeacherRepository;
 import ir.quiz.quiz.service.TeacherService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -29,15 +28,12 @@ import java.util.Optional;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
-    private final ir.quiz.quiz.service.impl.BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TeacherResponseMapper teacherResponseMapper;
     private final TeacherRequestMapper teacherRequestMapper;
     private final TeacherUpdateRequestMapper teacherUpdateRequestMapper;
-    private final CourseRepository courseRepository;
 
     @Override
     public Boolean save(PersonRequest teacherRequest) {
-        teacherRequest.setPassword(bCryptPasswordEncoder.encode(teacherRequest.getPassword()));
         Teacher teacher = teacherRequestMapper.convertDtoToEntity(teacherRequest);
         teacher.setStatus(Status.AWAITING_CONFIRMATION);
         Teacher result = teacherRepository.save(teacher);
@@ -49,7 +45,6 @@ public class TeacherServiceImpl implements TeacherService {
         if (teacherUpdateRequest == null || teacherUpdateRequest.getId() == null) {
             throw new NullPointerException("teacher can't be null");
         }
-        teacherUpdateRequest.setPassword(bCryptPasswordEncoder.encode(teacherUpdateRequest.getPassword()));
         return teacherRepository.save(teacherUpdateRequestMapper.convertDtoToEntity(teacherUpdateRequest));
     }
 
@@ -63,7 +58,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Optional<TeacherResponse> login(String username, String password) {
         Optional<Teacher> teacherOptional = checkTeacherIsExist(teacherRepository.findByUsername(username));
-        if (bCryptPasswordEncoder.matches(password, teacherOptional.get().getPassword())) {
+        if (teacherOptional.get().getPassword().equals(password)) {
             return Optional.ofNullable(teacherResponseMapper.convertEntityToDto(teacherOptional.get()));
         } else {
             throw new TeacherNotFoundException("your username or password is wrong");

@@ -8,7 +8,6 @@ import ir.quiz.quiz.exception.CourseNotFoundException;
 import ir.quiz.quiz.exception.QuestionNotFoundException;
 import ir.quiz.quiz.exception.QuizNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
-import ir.quiz.quiz.mapper.QuizRequestMapper;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.quiz.*;
@@ -18,7 +17,6 @@ import ir.quiz.quiz.service.MultipleChoiceQuestionService;
 import ir.quiz.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -130,7 +128,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Boolean addNewMultipleQuestionToQuiz(MultipleChoiceQuestionRequest req, Long quizId, Double score, QuestionType questionType) {
+    public Boolean addNewMultipleQuestionToQuiz(MultipleChoiceQuestionRequest req, Long quizId, Double score) {
         MultipleChoiceQuestion question = convertDtoToEntity(req);
         question = multipleChoiceQuestionRepository.saveAndFlush(question);
         QuizQuestion quizQuestion = QuizQuestion.builder()
@@ -157,7 +155,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Boolean addNewAnnotationQuestionToQuiz(AnnotationQuestionRequest req, Long quizId, Double score, QuestionType questionType) {
+    public Boolean addNewAnnotationQuestionToQuiz(AnnotationQuestionRequest req, Long quizId, Double score) {
         AnnotationQuestion question = convertDtoToEntity(req);
         question = annotationQuestionRepository.saveAndFlush(question);
         QuizQuestion quizQuestion = QuizQuestion.builder()
@@ -234,6 +232,7 @@ public class QuizServiceImpl implements QuizService {
                 .teacher(quiz.get().getTeacher())
                 .build();
     }
+
     private Quiz convertDtoToEntity(QuizRequest quizRequest) {
         return Quiz.builder()
                 .title(quizRequest.getTitle())

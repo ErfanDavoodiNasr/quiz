@@ -27,7 +27,7 @@ public interface QuizService {
 
     Boolean addReadyQuestionToQuiz(Long questionId, Long quizId, Double score, QuestionType questionType);
 
-    Boolean addNewMultipleQuestionToQuiz(MultipleChoiceQuestionRequest multipleChoiceQuestionRequest, Long quizId, Double score, QuestionType questionType);
+    Boolean addNewMultipleQuestionToQuiz(MultipleChoiceQuestionRequest multipleChoiceQuestionRequest, Long quizId, Double score);
 
-    Boolean addNewAnnotationQuestionToQuiz(AnnotationQuestionRequest annotationQuestionRequest, Long quizId, Double score, QuestionType questionType);
+    Boolean addNewAnnotationQuestionToQuiz(AnnotationQuestionRequest annotationQuestionRequest, Long quizId, Double score);
 }
