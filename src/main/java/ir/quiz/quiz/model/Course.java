@@ -35,9 +35,9 @@ public class Course extends BaseModel<Long> {
     @Column(name = END_AT, nullable = false)
     private LocalDateTime endAt;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany
     private List<Student> students;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne
     private Teacher teacher;
 }

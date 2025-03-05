@@ -18,7 +18,6 @@ import lombok.experimental.SuperBuilder;
 public class QuizQuestion extends BaseModel<Long> {
 
     @OneToOne
-    @JoinColumn(nullable = false)
     private Question question;
 
     @Column(columnDefinition = "TEXT")

@@ -44,15 +44,12 @@ public class Quiz extends BaseModel<Long> {
     @Transient
     private Integer duration;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private Teacher teacher;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(nullable = false)
+    @ManyToOne
     private Course course;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
-    @JoinColumn(nullable = false)
+    @ManyToMany
     private Set<QuizQuestion> quizQuestions;
 }

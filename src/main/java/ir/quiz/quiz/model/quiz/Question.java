@@ -30,10 +30,8 @@ public abstract class Question extends BaseModel<Long> {
     private String questionText;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private Teacher teacher;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private Course course;
 }

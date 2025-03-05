@@ -18,6 +18,6 @@ import java.util.Set;
 @Entity
 public class MultipleChoiceQuestion extends Question {
 
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany
     private Set<QuestionOption> questionOptions;
 }
