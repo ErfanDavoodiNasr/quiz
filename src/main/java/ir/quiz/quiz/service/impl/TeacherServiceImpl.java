@@ -18,7 +18,6 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ import java.util.Optional;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ir.quiz.quiz.service.impl.BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TeacherResponseMapper teacherResponseMapper;
     private final TeacherRequestMapper teacherRequestMapper;
     private final TeacherUpdateRequestMapper teacherUpdateRequestMapper;

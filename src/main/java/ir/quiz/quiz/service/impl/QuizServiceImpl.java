@@ -12,14 +12,13 @@ import ir.quiz.quiz.mapper.QuizRequestMapper;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.quiz.*;
-import ir.quiz.quiz.repository.CourseRepository;
-import ir.quiz.quiz.repository.QuizRepository;
-import ir.quiz.quiz.repository.TeacherRepository;
+import ir.quiz.quiz.repository.*;
 import ir.quiz.quiz.service.AnnotationQuestionService;
 import ir.quiz.quiz.service.MultipleChoiceQuestionService;
 import ir.quiz.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,15 +34,16 @@ public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
-    private final QuizRequestMapper quizRequestMapper;
+    private final AnnotationQuestionRepository annotationQuestionRepository;
     private final MultipleChoiceQuestionService multipleChoiceQuestionService;
     private final AnnotationQuestionService annotationQuestionService;
-    private final QuizService quizService;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
+    private final QuizQuestionRepository quizQuestionRepository;
 
     @Override
     public Boolean save(QuizRequest quizRequest) {
-        Quiz quiz = quizRequestMapper.convertDtoToEntity(quizRequest);
+        Quiz quiz = convertDtoToEntity(quizRequest);
         Optional<Course> course = checkCourseIsExist(quizRequest);
         Optional<Teacher> teacher = checkTeacherIsExist(quizRequest);
         quiz.setCourse(course.get());
@@ -119,46 +119,67 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Boolean addReadyQuestionToQuiz(Long questionId, Long quizId, Double score, QuestionType questionType) {
-        Optional<Quiz> quiz = checkQuizIsExist(quizService.findById(quizId));
-        if (questionType == QuestionType.MULTIPLE){
+        Optional<Quiz> quiz = checkQuizIsExist(quizRepository.findById(quizId));
+        if (questionType == QuestionType.MULTIPLE) {
             return addMultipleQuestion(questionId, score, quiz);
         } else if (questionType == QuestionType.ANNOTATION) {
             return addAnnotationQuiz(questionId, score, quiz);
-        }else {
+        } else {
             return Boolean.FALSE;
         }
     }
 
     @Override
-    public Boolean addNewMultipleQuestionToQuiz(MultipleChoiceQuestionRequest multipleChoiceQuestionRequest,Long quizId, Double score, QuestionType questionType) {
-        MultipleChoiceQuestion question = multipleChoiceQuestionService.save(multipleChoiceQuestionRequest);
+    public Boolean addNewMultipleQuestionToQuiz(MultipleChoiceQuestionRequest req, Long quizId, Double score, QuestionType questionType) {
+        MultipleChoiceQuestion question = convertDtoToEntity(req);
+        question = multipleChoiceQuestionRepository.saveAndFlush(question);
         QuizQuestion quizQuestion = QuizQuestion.builder()
                 .score(score)
                 .question(question)
                 .build();
+        quizQuestion = quizQuestionRepository.saveAndFlush(quizQuestion);
+        Optional<Quiz> quiz = quizRepository.findById(quizId);
+        if (quiz.isEmpty()) {
+            throw new QuizNotFoundException("No quiz found with id: " + quizId);
+        }
+        boolean added = quiz.get().getQuizQuestions().add(quizQuestion);
+        quizRepository.save(quiz.get());
+        return added && quiz.get().getQuizQuestions().contains(quizQuestion);
+    }
 
-        Optional<Quiz> quiz = quizService.findById(quizId);
-        if (quiz.isEmpty()){
+    private MultipleChoiceQuestion convertDtoToEntity(MultipleChoiceQuestionRequest req) {
+        return MultipleChoiceQuestion.builder()
+                .questionText(req.getQuestionText())
+                .title(req.getTitle())
+                .course(courseRepository.findById(req.getCourseId()).get())
+                .teacher(teacherRepository.findById(req.getTeacherId()).get())
+                .build();
+    }
+
+    @Override
+    public Boolean addNewAnnotationQuestionToQuiz(AnnotationQuestionRequest req, Long quizId, Double score, QuestionType questionType) {
+        AnnotationQuestion question = convertDtoToEntity(req);
+        question = annotationQuestionRepository.saveAndFlush(question);
+        QuizQuestion quizQuestion = QuizQuestion.builder()
+                .score(score)
+                .question(question)
+                .build();
+        quizQuestion = quizQuestionRepository.saveAndFlush(quizQuestion);
+        Optional<Quiz> quiz = quizRepository.findById(quizId);
+        if (quiz.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
         }
         boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
         return quizRepository.save(quiz.get()).getQuizQuestions().contains(quizQuestion);
     }
 
-    @Override
-    public Boolean addNewAnnotationQuestionToQuiz(AnnotationQuestionRequest annotationQuestionRequest, Long quizId, Double score, QuestionType questionType) {
-        AnnotationQuestion question = annotationQuestionService.save(annotationQuestionRequest);
-        QuizQuestion quizQuestion = QuizQuestion.builder()
-                .score(score)
-                .question(question)
+    private AnnotationQuestion convertDtoToEntity(AnnotationQuestionRequest req) {
+        return AnnotationQuestion.builder()
+                .questionText(req.getQuestionText())
+                .title(req.getTitle())
+                .course(courseRepository.findById(req.getCourseId()).get())
+                .teacher(teacherRepository.findById(req.getTeacherId()).get())
                 .build();
-
-        Optional<Quiz> quiz = quizService.findById(quizId);
-        if (quiz.isEmpty()){
-            throw new QuizNotFoundException("no quiz found");
-        }
-        boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
-        return quizRepository.save(quiz.get()).getQuizQuestions().contains(quizQuestion);
     }
 
     private Optional<Quiz> checkQuizIsExist(Optional<Quiz> quizService) {
@@ -171,7 +192,7 @@ public class QuizServiceImpl implements QuizService {
 
     private boolean addMultipleQuestion(Long questionId, Double score, Optional<Quiz> quiz) {
         Optional<MultipleChoiceQuestion> question = multipleChoiceQuestionService.findById(questionId);
-        if (question.isEmpty()){
+        if (question.isEmpty()) {
             throw new QuestionNotFoundException("no quiz found");
         }
         QuizQuestion quizQuestion = QuizQuestion.builder()
@@ -179,13 +200,13 @@ public class QuizServiceImpl implements QuizService {
                 .score(score)
                 .build();
         boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
-        Quiz result = quizService.save(quiz.get());
+        Quiz result = quizRepository.save(quiz.get());
         return result.getQuizQuestions().contains(quizQuestion);
     }
 
     private boolean addAnnotationQuiz(Long questionId, Double score, Optional<Quiz> quiz) {
         Optional<AnnotationQuestion> question = annotationQuestionService.findById(questionId);
-        if (question.isEmpty()){
+        if (question.isEmpty()) {
             throw new QuestionNotFoundException("no quiz found");
         }
         QuizQuestion quizQuestion = QuizQuestion.builder()
@@ -193,7 +214,7 @@ public class QuizServiceImpl implements QuizService {
                 .score(score)
                 .build();
         boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
-        Quiz result = quizService.save(quiz.get());
+        Quiz result = quizRepository.save(quiz.get());
         return result.getQuizQuestions().contains(quizQuestion);
     }
 
@@ -211,6 +232,14 @@ public class QuizServiceImpl implements QuizService {
                 .startAt(LocalDateTime.parse(quizUpdateRequest.getStartAt(), formatter))
                 .course(quiz.get().getCourse())
                 .teacher(quiz.get().getTeacher())
+                .build();
+    }
+    private Quiz convertDtoToEntity(QuizRequest quizRequest) {
+        return Quiz.builder()
+                .title(quizRequest.getTitle())
+                .description(quizRequest.getDescription())
+                .endAt(LocalDateTime.parse(quizRequest.getEndAt(), formatter))
+                .startAt(LocalDateTime.parse(quizRequest.getStartAt(), formatter))
                 .build();
     }
 }

@@ -50,4 +50,37 @@ public abstract class User extends BaseModel<Long> {
 
     @ManyToOne
     private Role role;
+
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        Set<SimpleGrantedAuthority> authorities = new HashSet<>(permissions.size() + role.getPermissions().size());
+//        for (Permission permission : permissions) {
+//            authorities.add(new SimpleGrantedAuthority(permission.getName()));
+//        }
+//        for (Permission permission : role.getPermissions()) {
+//            authorities.add(new SimpleGrantedAuthority(permission.getName()));
+//        }
+//        return authorities;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isEnabled() {
+//        return true;
+//    }
+
 }

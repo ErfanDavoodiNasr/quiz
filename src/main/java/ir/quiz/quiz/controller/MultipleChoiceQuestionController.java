@@ -5,7 +5,6 @@ import ir.quiz.quiz.dto.request.QuestionOptionRequest;
 import ir.quiz.quiz.dto.response.MessageResponse;
 import ir.quiz.quiz.model.quiz.MultipleChoiceQuestion;
 import ir.quiz.quiz.service.MultipleChoiceQuestionService;
-import ir.quiz.quiz.service.QuestionOptionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import java.util.Optional;
 public class MultipleChoiceQuestionController {
 
     private final MultipleChoiceQuestionService multipleChoiceQuestionService;
-    private final QuestionOptionService questionOptionService;
 
 
     @PostMapping

@@ -52,7 +52,7 @@ public class Quiz extends BaseModel<Long> {
     @JoinColumn(nullable = false)
     private Course course;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     @JoinColumn(nullable = false)
     private Set<QuizQuestion> quizQuestions;
 }

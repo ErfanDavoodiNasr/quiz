@@ -14,7 +14,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @Entity
-@Table(name = Permission.TABLE_NAME)
+@Table(name = Role.TABLE_NAME)
 public class Role extends BaseModel<Long> {
     public static final String TABLE_NAME = "roles";
 

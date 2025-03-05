@@ -19,6 +19,5 @@ import java.util.Set;
 public class MultipleChoiceQuestion extends Question {
 
     @OneToMany(cascade = CascadeType.MERGE)
-    @JoinColumn(nullable = false)
     private Set<QuestionOption> questionOptions;
 }

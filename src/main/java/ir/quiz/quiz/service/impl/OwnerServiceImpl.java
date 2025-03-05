@@ -6,7 +6,6 @@ import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.repository.OwnerRepository;
 import ir.quiz.quiz.service.OwnerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

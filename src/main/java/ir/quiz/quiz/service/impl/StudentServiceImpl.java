@@ -8,6 +8,8 @@ import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.mapper.StudentRequestMapper;
 import ir.quiz.quiz.mapper.StudentResponseMapper;
 import ir.quiz.quiz.mapper.StudentUpdateRequestMapper;
+import ir.quiz.quiz.model.Permission;
+import ir.quiz.quiz.model.Role;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.repository.StudentRepository;
@@ -17,7 +19,6 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -108,6 +109,7 @@ public class StudentServiceImpl implements StudentService {
         studentRequest.setPassword(bCryptPasswordEncoder.encode(studentRequest.getPassword()));
         Student student = studentRequestMapper.convertDtoToEntity(studentRequest);
         student.setStatus(Status.AWAITING_CONFIRMATION);
+        student.setRole(Role.builder().id(2L).build());
         Student result = studentRepository.save(student);
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }

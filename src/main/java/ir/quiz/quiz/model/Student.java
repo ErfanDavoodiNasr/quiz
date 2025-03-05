@@ -20,5 +20,4 @@ import static ir.quiz.quiz.model.Student.TABLE_NAME;
 @Table(name = TABLE_NAME)
 public class Student extends User {
     public static final String TABLE_NAME = "students";
-
 }
