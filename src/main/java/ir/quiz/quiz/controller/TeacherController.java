@@ -23,7 +23,8 @@ public class TeacherController {
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody @Valid PersonRequest personRequest) {
-        return ResponseEntity.ok(teacherService.save(personRequest));
+        Boolean result = teacherService.save(personRequest);
+        return result ? ResponseEntity.ok(new MessageResponse("teacher saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
     @PutMapping

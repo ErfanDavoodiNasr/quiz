@@ -32,7 +32,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRequestMapper studentRequestMapper;
     private final StudentUpdateRequestMapper studentUpdateRequestMapper;
     private final PasswordEncoder passwordHashing;
-    private final JwtService jwtService;
+
 
     private Optional<Student> checkStudentIsExist(Optional<Student> studentRepository) {
         Optional<Student> studentOptional = studentRepository;
@@ -95,16 +95,16 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public JwtTokenResponse save(PersonRequest studentRequest) {
+    public Boolean save(PersonRequest studentRequest) {
         Student student = studentRequestMapper.convertDtoToEntity(studentRequest);
         student.setStatus(Status.AWAITING_CONFIRMATION);
         student.setRole(Role.STUDENT);
         student.setPassword(passwordHashing.encode(student.getPassword()));
         Student result = studentRepository.save(student);
         if (result.getId() != null) {
-            return new JwtTokenResponse(jwtService.generateJwtToken(result));
+            return Boolean.TRUE;
         }
-        return null;
+        return Boolean.FALSE;
     }
 
     @Override

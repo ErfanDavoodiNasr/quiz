@@ -33,19 +33,18 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRequestMapper teacherRequestMapper;
     private final TeacherUpdateRequestMapper teacherUpdateRequestMapper;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
 
     @Override
-    public JwtTokenResponse save(PersonRequest teacherRequest) {
+    public Boolean save(PersonRequest teacherRequest) {
         Teacher teacher = teacherRequestMapper.convertDtoToEntity(teacherRequest);
         teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
         teacher.setStatus(Status.AWAITING_CONFIRMATION);
         teacher.setRole(Role.TEACHER);
         Teacher result = teacherRepository.save(teacher);
         if (result.getId() != null) {
-            return new JwtTokenResponse(jwtService.generateJwtToken(result));
+            return Boolean.TRUE;
         }
-        return null;
+        return Boolean.FALSE;
     }
 
     @Override

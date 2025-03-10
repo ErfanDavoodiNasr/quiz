@@ -22,9 +22,10 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    @PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody @Valid PersonRequest personRequest) {
-        return ResponseEntity.ok(studentService.save(personRequest));
+        Boolean result = studentService.save(personRequest);
+        return result ? ResponseEntity.ok(new MessageResponse("student saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
 

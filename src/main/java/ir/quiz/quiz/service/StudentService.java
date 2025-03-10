@@ -10,7 +10,7 @@ import ir.quiz.quiz.model.Student;
 import java.util.List;
 
 public interface StudentService {
-    JwtTokenResponse save(PersonRequest studentRequest);
+    Boolean save(PersonRequest studentRequest);
 
     Student update(StudentUpdateRequest studentUpdateRequest);
 
