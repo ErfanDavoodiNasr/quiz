@@ -1,9 +1,7 @@
 package ir.quiz.quiz.service;
 
-import ir.quiz.quiz.dto.response.OwnerResponse;
-
-import java.util.Optional;
+import ir.quiz.quiz.dto.response.JwtTokenResponse;
 
 public interface OwnerService {
-    Optional<OwnerResponse> login(String username, String password);
+    JwtTokenResponse login(String username, String password);
 }

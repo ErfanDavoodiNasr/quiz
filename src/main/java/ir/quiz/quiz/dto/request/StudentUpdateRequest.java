@@ -5,6 +5,7 @@ import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 
@@ -27,6 +28,7 @@ public class StudentUpdateRequest {
     private String username;
 
     @NotBlank(message = "Password is required and cannot be empty.")
+    @Size(min = 8, max = 50)
     private String password;
 
     private List<Course> courses;

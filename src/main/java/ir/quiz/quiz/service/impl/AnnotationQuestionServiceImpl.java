@@ -1,8 +1,12 @@
 package ir.quiz.quiz.service.impl;
 
 import ir.quiz.quiz.dto.request.AnnotationQuestionRequest;
+import ir.quiz.quiz.dto.request.AnnotationQuestionUpdateRequest;
+import ir.quiz.quiz.dto.response.AnnotationQuestionResponse;
 import ir.quiz.quiz.exception.CourseNotFoundException;
+import ir.quiz.quiz.exception.QuestionNotFoundException;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
+import ir.quiz.quiz.mapper.AnnotationQuestionResponseMapper;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.quiz.AnnotationQuestion;
@@ -23,6 +27,7 @@ public class AnnotationQuestionServiceImpl implements AnnotationQuestionService 
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
     private final AnnotationQuestionRepository annotationQuestionRepository;
+    private final AnnotationQuestionResponseMapper annotationQuestionResponseMapper;
 
     private static AnnotationQuestion convertDtoToEntity(AnnotationQuestionRequest annotationQuestion, Optional<Teacher> teacher, Optional<Course> course) {
         return AnnotationQuestion.builder()
@@ -34,21 +39,67 @@ public class AnnotationQuestionServiceImpl implements AnnotationQuestionService 
     }
 
     @Override
-    public AnnotationQuestion save(AnnotationQuestionRequest annotationQuestion) {
+    public AnnotationQuestionResponse save(AnnotationQuestionRequest annotationQuestion) {
         Optional<Course> course = checkCourseIsExist(annotationQuestion);
         Optional<Teacher> teacher = checkTeacherIsExist(annotationQuestion);
         AnnotationQuestion result = convertDtoToEntity(annotationQuestion, teacher, course);
-        return annotationQuestionRepository.save(result);
+        return annotationQuestionResponseMapper.convertEntityToDto(annotationQuestionRepository.save(result));
     }
 
     @Override
-    public Optional<List<AnnotationQuestion>> findAll() {
-        return Optional.ofNullable(annotationQuestionRepository.findAll());
+    public AnnotationQuestionResponse update(AnnotationQuestionUpdateRequest req) {
+        Optional<AnnotationQuestion> question = annotationQuestionRepository.findById(req.getId());
+        if (question.isEmpty()) {
+            throw new QuestionNotFoundException("no question found");
+        }
+        Optional<Course> course = courseRepository.findById(req.getCourseId());
+        if (course.isEmpty()) {
+            throw new CourseNotFoundException("no course found");
+        }
+        Optional<Teacher> teacher = teacherRepository.findById(req.getTeacherId());
+        if (teacher.isEmpty()) {
+            throw new TeacherNotFoundException("no teacher found");
+        }
+        question.get().setQuestionText(req.getQuestionText());
+        question.get().setTitle(req.getTitle());
+        question.get().setCourse(course.get());
+        question.get().setTeacher(teacher.get());
+        AnnotationQuestion result = annotationQuestionRepository.save(question.get());
+        return annotationQuestionResponseMapper.convertEntityToDto(result);
     }
 
     @Override
-    public Optional<AnnotationQuestion> findById(Long id) {
-        return annotationQuestionRepository.findById(id);
+    public Boolean remove(Long id) {
+        try {
+            Optional<AnnotationQuestion> question = annotationQuestionRepository.findById(id);
+            if (question.isEmpty()) {
+                throw new QuestionNotFoundException("no question found");
+            }
+            question.get().setCourse(null);
+            question.get().setTeacher(null);
+            annotationQuestionRepository.delete(question.get());
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            return Boolean.FALSE;
+        }
+    }
+
+    @Override
+    public Optional<List<AnnotationQuestionResponse>> findAll() {
+        List<AnnotationQuestion> result = annotationQuestionRepository.findAll();
+        if (result.isEmpty()) {
+            throw new QuestionNotFoundException("no annotation question found");
+        }
+        return Optional.ofNullable(annotationQuestionResponseMapper.convertEntityToDto(result));
+    }
+
+    @Override
+    public Optional<AnnotationQuestionResponse> findById(Long id) {
+        Optional<AnnotationQuestion> question = annotationQuestionRepository.findById(id);
+        if (question.isEmpty()) {
+            throw new QuestionNotFoundException("no question found");
+        }
+        return Optional.of(annotationQuestionResponseMapper.convertEntityToDto(question.get()));
     }
 
     private Optional<Course> checkCourseIsExist(AnnotationQuestionRequest annotationQuestion) {

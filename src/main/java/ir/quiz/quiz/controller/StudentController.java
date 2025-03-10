@@ -8,6 +8,7 @@ import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +22,9 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    @PostMapping
+    @PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@RequestBody @Valid PersonRequest personRequest) {
-        Boolean result = studentService.save(personRequest);
-        return result ? ResponseEntity.ok(new MessageResponse("student saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
+        return ResponseEntity.ok(studentService.save(personRequest));
     }
 
 

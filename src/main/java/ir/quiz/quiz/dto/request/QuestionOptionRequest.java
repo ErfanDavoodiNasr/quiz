@@ -8,7 +8,7 @@ import lombok.Data;
 @Builder
 @Data
 public class QuestionOptionRequest {
-    @NotNull
+
     private Long questionId;
 
     @NotBlank

@@ -1,5 +1,6 @@
 package ir.quiz.quiz;
 
+import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,14 +14,15 @@ public class QuizApplication {
         SpringApplication.run(QuizApplication.class, args);
     }
 
-//    @Bean
-//    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 
     @Bean
     public Dotenv dotenv() {
         return Dotenv.load();
+    }
+
+    @Bean
+    public Gson gson() {
+        return new Gson();
     }
 
 }

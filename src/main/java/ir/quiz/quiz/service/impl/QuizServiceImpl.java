@@ -12,8 +12,6 @@ import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.quiz.*;
 import ir.quiz.quiz.repository.*;
-import ir.quiz.quiz.service.AnnotationQuestionService;
-import ir.quiz.quiz.service.MultipleChoiceQuestionService;
 import ir.quiz.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,8 +31,6 @@ public class QuizServiceImpl implements QuizService {
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
     private final AnnotationQuestionRepository annotationQuestionRepository;
-    private final MultipleChoiceQuestionService multipleChoiceQuestionService;
-    private final AnnotationQuestionService annotationQuestionService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
     private final QuizQuestionRepository quizQuestionRepository;
@@ -138,7 +134,7 @@ public class QuizServiceImpl implements QuizService {
         quizQuestion = quizQuestionRepository.saveAndFlush(quizQuestion);
         Optional<Quiz> quiz = quizRepository.findById(quizId);
         if (quiz.isEmpty()) {
-            throw new QuizNotFoundException("No quiz found with id: " + quizId);
+            throw new QuizNotFoundException("no quiz found");
         }
         boolean added = quiz.get().getQuizQuestions().add(quizQuestion);
         quizRepository.save(quiz.get());
@@ -189,7 +185,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     private boolean addMultipleQuestion(Long questionId, Double score, Optional<Quiz> quiz) {
-        Optional<MultipleChoiceQuestion> question = multipleChoiceQuestionService.findById(questionId);
+        Optional<MultipleChoiceQuestion> question = multipleChoiceQuestionRepository.findById(questionId);
         if (question.isEmpty()) {
             throw new QuestionNotFoundException("no quiz found");
         }
@@ -203,7 +199,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     private boolean addAnnotationQuiz(Long questionId, Double score, Optional<Quiz> quiz) {
-        Optional<AnnotationQuestion> question = annotationQuestionService.findById(questionId);
+        Optional<AnnotationQuestion> question = annotationQuestionRepository.findById(questionId);
         if (question.isEmpty()) {
             throw new QuestionNotFoundException("no quiz found");
         }

@@ -34,6 +34,16 @@ public class ExceptionController {
         return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(value = AwaitingConfirmationException.class)
+    public ResponseEntity<MessageResponse> awaitingConfirmationException(AwaitingConfirmationException e) {
+        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public ResponseEntity<MessageResponse> userNotFoundException(UserNotFoundException e) {
+        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+
     @ExceptionHandler(value = InvalidDateException.class)
     public ResponseEntity<MessageResponse> invalidDateException(InvalidDateException e) {
         return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));

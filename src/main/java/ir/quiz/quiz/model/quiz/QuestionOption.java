@@ -1,9 +1,7 @@
 package ir.quiz.quiz.model.quiz;
 
 import ir.quiz.quiz.model.BaseModel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -26,4 +24,8 @@ public class QuestionOption extends BaseModel<Long> {
 
     @Column(name = iS_CORRECT, nullable = false)
     private Boolean isCorrect;
+
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    private MultipleChoiceQuestion multipleChoiceQuestion;
 }

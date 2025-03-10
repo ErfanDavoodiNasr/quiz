@@ -1,6 +1,5 @@
 package ir.quiz.quiz.dto.response;
 
-import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Status;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,6 +12,6 @@ import java.util.List;
 @SuperBuilder
 @Data
 public class TeacherResponse extends UserResponse {
-    private List<Course> courses;
+    private List<CourseResponse> courses;
     private Status status;
 }

@@ -18,7 +18,7 @@ import static ir.quiz.quiz.model.quiz.Question.TABLE_NAME;
 @Entity
 @Table(name = TABLE_NAME)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Question extends BaseModel<Long> {
+public class Question extends BaseModel<Long> {
 
     public static final String TABLE_NAME = "questions";
     public static final String QUESTION_TEXT = "question_text";

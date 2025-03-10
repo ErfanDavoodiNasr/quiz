@@ -1,13 +1,14 @@
 package ir.quiz.quiz.service.impl;
 
+import ir.quiz.quiz.config.JwtService;
 import ir.quiz.quiz.dto.request.PersonRequest;
 import ir.quiz.quiz.dto.request.TeacherUpdateRequest;
-import ir.quiz.quiz.dto.response.TeacherResponse;
+import ir.quiz.quiz.dto.response.JwtTokenResponse;
 import ir.quiz.quiz.dto.search.TeacherSearch;
 import ir.quiz.quiz.exception.TeacherNotFoundException;
 import ir.quiz.quiz.mapper.TeacherRequestMapper;
-import ir.quiz.quiz.mapper.TeacherResponseMapper;
 import ir.quiz.quiz.mapper.TeacherUpdateRequestMapper;
+import ir.quiz.quiz.model.Role;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.repository.TeacherRepository;
@@ -17,6 +18,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,16 +30,22 @@ import java.util.Optional;
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
-    private final TeacherResponseMapper teacherResponseMapper;
     private final TeacherRequestMapper teacherRequestMapper;
     private final TeacherUpdateRequestMapper teacherUpdateRequestMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Override
-    public Boolean save(PersonRequest teacherRequest) {
+    public JwtTokenResponse save(PersonRequest teacherRequest) {
         Teacher teacher = teacherRequestMapper.convertDtoToEntity(teacherRequest);
+        teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
         teacher.setStatus(Status.AWAITING_CONFIRMATION);
+        teacher.setRole(Role.TEACHER);
         Teacher result = teacherRepository.save(teacher);
-        return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+        if (result.getId() != null) {
+            return new JwtTokenResponse(jwtService.generateJwtToken(result));
+        }
+        return null;
     }
 
     @Override
@@ -45,7 +53,9 @@ public class TeacherServiceImpl implements TeacherService {
         if (teacherUpdateRequest == null || teacherUpdateRequest.getId() == null) {
             throw new NullPointerException("teacher can't be null");
         }
-        return teacherRepository.save(teacherUpdateRequestMapper.convertDtoToEntity(teacherUpdateRequest));
+        Teacher teacher = teacherUpdateRequestMapper.convertDtoToEntity(teacherUpdateRequest);
+        teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
+        return teacherRepository.save(teacher);
     }
 
     @Override
@@ -53,16 +63,6 @@ public class TeacherServiceImpl implements TeacherService {
         Optional<Teacher> teacher = checkTeacherIsExist(teacherRepository.findById(id));
         teacher.get().setStatus(status);
         return teacherRepository.save(teacher.get());
-    }
-
-    @Override
-    public Optional<TeacherResponse> login(String username, String password) {
-        Optional<Teacher> teacherOptional = checkTeacherIsExist(teacherRepository.findByUsername(username));
-        if (teacherOptional.get().getPassword().equals(password)) {
-            return Optional.ofNullable(teacherResponseMapper.convertEntityToDto(teacherOptional.get()));
-        } else {
-            throw new TeacherNotFoundException("your username or password is wrong");
-        }
     }
 
     private Optional<Teacher> checkTeacherIsExist(Optional<Teacher> teacherRepository) {

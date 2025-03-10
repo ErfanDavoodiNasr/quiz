@@ -7,8 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 
 import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 
@@ -21,7 +25,7 @@ import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 @NoArgsConstructor
 @Inheritance(strategy = SINGLE_TABLE)
 @Table(name = "users")
-public abstract class User extends BaseModel<Long> {
+public abstract class User extends BaseModel<Long> implements UserDetails {
 
     public static final String FIRST_NAME = "first_name";
     public static final String LAST_NAME = "last_name";
@@ -41,46 +45,32 @@ public abstract class User extends BaseModel<Long> {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToMany
-    @JoinTable(
-            name = "fk_users_permissions",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private List<Permission> permissions;
-
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
     private Role role;
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        Set<SimpleGrantedAuthority> authorities = new HashSet<>(permissions.size() + role.getPermissions().size());
-//        for (Permission permission : permissions) {
-//            authorities.add(new SimpleGrantedAuthority(permission.getName()));
-//        }
-//        for (Permission permission : role.getPermissions()) {
-//            authorities.add(new SimpleGrantedAuthority(permission.getName()));
-//        }
-//        return authorities;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Set.of(new SimpleGrantedAuthority("ROLE_" + role));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
 }

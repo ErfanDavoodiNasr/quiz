@@ -2,11 +2,13 @@ package ir.quiz.quiz.dto.response;
 
 
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
+@SuperBuilder
 @Data
 public class MessageResponse {
     private String message;

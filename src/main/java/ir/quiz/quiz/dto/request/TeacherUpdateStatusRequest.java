@@ -4,7 +4,9 @@ package ir.quiz.quiz.dto.request;
 import ir.quiz.quiz.model.Status;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 @Data
 public class TeacherUpdateStatusRequest {
 

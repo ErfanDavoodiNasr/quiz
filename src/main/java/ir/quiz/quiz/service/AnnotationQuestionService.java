@@ -1,15 +1,20 @@
 package ir.quiz.quiz.service;
 
 import ir.quiz.quiz.dto.request.AnnotationQuestionRequest;
-import ir.quiz.quiz.model.quiz.AnnotationQuestion;
+import ir.quiz.quiz.dto.request.AnnotationQuestionUpdateRequest;
+import ir.quiz.quiz.dto.response.AnnotationQuestionResponse;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AnnotationQuestionService {
-    AnnotationQuestion save(AnnotationQuestionRequest annotationQuestion);
+    AnnotationQuestionResponse save(AnnotationQuestionRequest annotationQuestion);
 
-    Optional<List<AnnotationQuestion>> findAll();
+    AnnotationQuestionResponse update(AnnotationQuestionUpdateRequest annotationQuestionUpdateRequest);
 
-    Optional<AnnotationQuestion> findById(Long id);
+    Boolean remove(Long id);
+
+    Optional<List<AnnotationQuestionResponse>> findAll();
+
+    Optional<AnnotationQuestionResponse> findById(Long id);
 }

@@ -2,17 +2,14 @@ package ir.quiz.quiz.controller;
 
 
 import ir.quiz.quiz.dto.request.AnnotationQuestionRequest;
+import ir.quiz.quiz.dto.response.AnnotationQuestionResponse;
 import ir.quiz.quiz.dto.response.MessageResponse;
-import ir.quiz.quiz.model.quiz.AnnotationQuestion;
 import ir.quiz.quiz.service.AnnotationQuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +24,20 @@ public class AnnotationQuestionController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody @Valid AnnotationQuestionRequest annotationQuestionRequest) {
-        AnnotationQuestion result = annotationQuestionService.save(annotationQuestionRequest);
+        AnnotationQuestionResponse result = annotationQuestionService.save(annotationQuestionRequest);
         return result != null ? ResponseEntity.ok(new MessageResponse("question saves successfully")) : ResponseEntity.status(500).body("there is some problem please try again");
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> remove(@RequestParam("id") Long id) {
+        Boolean result = annotationQuestionService.remove(id);
+        return result ? ResponseEntity.ok(new MessageResponse("question removed successfully")) : ResponseEntity.status(500).body("there is some problem please try again");
     }
 
 
     @GetMapping
     public ResponseEntity<?> findAllAnnotationQuestion() {
-        Optional<List<AnnotationQuestion>> result = annotationQuestionService.findAll();
+        Optional<List<AnnotationQuestionResponse>> result = annotationQuestionService.findAll();
         return result.isPresent() ? ResponseEntity.ok(result.get()) : ResponseEntity.status(404).body(new MessageResponse("no question found"));
     }
 }

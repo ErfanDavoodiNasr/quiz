@@ -1,13 +1,14 @@
 package ir.quiz.quiz.service.impl;
 
+import ir.quiz.quiz.config.JwtService;
 import ir.quiz.quiz.dto.request.PersonRequest;
 import ir.quiz.quiz.dto.request.StudentUpdateRequest;
-import ir.quiz.quiz.dto.response.StudentResponse;
+import ir.quiz.quiz.dto.response.JwtTokenResponse;
 import ir.quiz.quiz.dto.search.StudentSearch;
 import ir.quiz.quiz.exception.StudentNotFoundException;
 import ir.quiz.quiz.mapper.StudentRequestMapper;
-import ir.quiz.quiz.mapper.StudentResponseMapper;
 import ir.quiz.quiz.mapper.StudentUpdateRequestMapper;
+import ir.quiz.quiz.model.Role;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.repository.StudentRepository;
@@ -17,6 +18,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,19 +29,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
-    private final StudentResponseMapper studentResponseMapper;
     private final StudentRequestMapper studentRequestMapper;
     private final StudentUpdateRequestMapper studentUpdateRequestMapper;
-
-    @Override
-    public Optional<StudentResponse> login(String username, String password) {
-        Optional<Student> studentOptional = checkStudentIsExist(studentRepository.findByUsername(username));
-        if (studentOptional.get().getPassword().equals(password)) {
-            return Optional.ofNullable(studentResponseMapper.convertEntityToDto(studentOptional.get()));
-        } else {
-            throw new StudentNotFoundException("your username or password is wrong");
-        }
-    }
+    private final PasswordEncoder passwordHashing;
+    private final JwtService jwtService;
 
     private Optional<Student> checkStudentIsExist(Optional<Student> studentRepository) {
         Optional<Student> studentOptional = studentRepository;
@@ -102,11 +95,16 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Boolean save(PersonRequest studentRequest) {
+    public JwtTokenResponse save(PersonRequest studentRequest) {
         Student student = studentRequestMapper.convertDtoToEntity(studentRequest);
         student.setStatus(Status.AWAITING_CONFIRMATION);
+        student.setRole(Role.STUDENT);
+        student.setPassword(passwordHashing.encode(student.getPassword()));
         Student result = studentRepository.save(student);
-        return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+        if (result.getId() != null) {
+            return new JwtTokenResponse(jwtService.generateJwtToken(result));
+        }
+        return null;
     }
 
     @Override
@@ -114,7 +112,9 @@ public class StudentServiceImpl implements StudentService {
         if (studentUpdateRequest == null | studentUpdateRequest.getId() == null) {
             throw new NullPointerException("student can't be null");
         }
-        return studentRepository.save(studentUpdateRequestMapper.convertDtoToEntity(studentUpdateRequest));
+        Student student = studentUpdateRequestMapper.convertDtoToEntity(studentUpdateRequest);
+        student.setPassword(passwordHashing.encode(student.getPassword()));
+        return studentRepository.save(student);
     }
 
     @Override
