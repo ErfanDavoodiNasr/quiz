@@ -18,10 +18,8 @@ import ir.quiz.quiz.repository.MultipleChoiceQuestionRepository;
 import ir.quiz.quiz.repository.QuestionOptionRepository;
 import ir.quiz.quiz.repository.TeacherRepository;
 import ir.quiz.quiz.service.MultipleChoiceQuestionService;
-import ir.quiz.quiz.service.QuestionOptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +30,6 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
     private final MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
-    private final QuestionOptionService questionOptionService;
     private final QuestionOptionRepository questionOptionRepository;
     private final MultipleChoiceQuestionResponseMapper multipleChoiceQuestionResponseMapper;
 
@@ -130,6 +127,24 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
             throw new QuestionNotFoundException("no question found");
         }
         return Optional.ofNullable(multipleChoiceQuestionResponseMapper.convertEntityToDto(question.get()));
+    }
+
+    @Override
+    public Optional<List<MultipleChoiceQuestionResponse>> findAllByCourseIdAndTeacherId(Number courseId, Number teacherId) {
+        Optional<List<MultipleChoiceQuestionResponse>> result = multipleChoiceQuestionRepository.findAllByCourseIdAndTeacherId(courseId, teacherId);
+        if (result.isEmpty()){
+            throw new QuestionNotFoundException("no question found");
+        }
+        return result;
+    }
+
+    @Override
+    public Optional<List<MultipleChoiceQuestionResponse>> findAllByTeacherId(Number teacherId) {
+        Optional<List<MultipleChoiceQuestionResponse>> result = multipleChoiceQuestionRepository.findAllByTeacherId(teacherId);
+        if (result.isEmpty()){
+            throw new QuestionNotFoundException("no question found");
+        }
+        return result;
     }
 
     private Optional<MultipleChoiceQuestion> checkQuestionIsExist(QuestionOptionRequest optionRequest) {

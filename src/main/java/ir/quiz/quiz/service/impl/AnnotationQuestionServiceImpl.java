@@ -102,6 +102,24 @@ public class AnnotationQuestionServiceImpl implements AnnotationQuestionService 
         return Optional.of(annotationQuestionResponseMapper.convertEntityToDto(question.get()));
     }
 
+    @Override
+    public Optional<List<AnnotationQuestionResponse>> findAllByCourseIdAndTeacherId(Number courseId, Number teacherId) {
+        Optional<List<AnnotationQuestionResponse>> result = annotationQuestionRepository.findAllByCourseIdAndTeacherId(courseId, teacherId);
+        if (result.isEmpty()){
+            throw new QuestionNotFoundException("no question found");
+        }
+        return result;
+    }
+
+    @Override
+    public Optional<List<AnnotationQuestionResponse>> findAllByTeacherId(Number teacherId) {
+        Optional<List<AnnotationQuestionResponse>> result = annotationQuestionRepository.findAllByTeacherId(teacherId);
+        if (result.isEmpty()){
+            throw new QuestionNotFoundException("no question found");
+        }
+        return result;
+    }
+
     private Optional<Course> checkCourseIsExist(AnnotationQuestionRequest annotationQuestion) {
         Optional<Course> course = courseRepository.findById(annotationQuestion.getCourseId());
         if (course.isEmpty()) {
