@@ -12,8 +12,4 @@ public class AnnotationQuestionResponse {
     private String title;
 
     private String questionText;
-
-    private TeacherResponse teacher;
-
-    private CourseResponse course;
 }

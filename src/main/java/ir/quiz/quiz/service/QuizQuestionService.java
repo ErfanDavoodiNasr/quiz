@@ -10,5 +10,4 @@ public interface QuizQuestionService {
     QuizQuestionResponse update(QuizQuestionUpdateRequest quizQuestionUpdateRequest);
 
     Boolean remove(Long id);
-
 }

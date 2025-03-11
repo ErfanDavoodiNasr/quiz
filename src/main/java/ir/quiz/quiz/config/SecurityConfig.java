@@ -15,32 +15,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-
     public static final String[] PUBLIC_URLS = {"/", "/login/**", "/api/students/save", "/api/teachers/save"};
-    public static final String[] STUDENT_URLS = {"api/students/**"};
-    public static final String[] TEACHER_URLS = {"api/courses/**", "api/quizzes/**", "api/annotation-questions/**", "api/multiple-choice-questions/**", "api/teachers/**"};
+    public static final String[] STUDENT_URLS = {"/api/students/**"};
+    public static final String[] TEACHER_URLS = {"/api/courses/**", "/api/quizzes/**", "/api/annotation-questions/**", "/api/multiple-choice-questions/**", "/api/teachers/**"};
+
     private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers(PUBLIC_URLS).permitAll()
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/**").hasRole("OWNER")
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers(TEACHER_URLS).hasRole("TEACHER")
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers(STUDENT_URLS).hasRole("STUDENT")
-                .anyRequest().authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+        http.csrf().disable()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PUBLIC_URLS).permitAll()
+                        .requestMatchers(TEACHER_URLS).hasAnyRole("TEACHER", "OWNER")
+                        .requestMatchers(STUDENT_URLS).hasAnyRole("STUDENT", "OWNER")
+                        .anyRequest().hasRole("OWNER")
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

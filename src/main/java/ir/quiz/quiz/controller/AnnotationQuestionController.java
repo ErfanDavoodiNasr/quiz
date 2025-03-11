@@ -42,9 +42,9 @@ public class AnnotationQuestionController {
     }
 
 
-    @GetMapping
+    @GetMapping("/find-all-course-teacher")
     public ResponseEntity<?> findAllByCourseIdAndTeacherId(@RequestParam("courseId") Long courseId, @RequestParam("teacherId") Long teacherId) {
-        Optional<List<AnnotationQuestionResponse>> result = annotationQuestionService.findAllByCourseIdAndTeacherId(courseId,teacherId);
+        Optional<List<AnnotationQuestionResponse>> result = annotationQuestionService.findAllByCourseIdAndTeacherId(courseId, teacherId);
         return result.isPresent() ? ResponseEntity.ok(result.get()) : ResponseEntity.status(404).body(new MessageResponse("no question found"));
     }
 }

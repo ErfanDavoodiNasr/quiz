@@ -8,11 +8,16 @@ import java.util.List;
 
 @SuperBuilder
 @Data
-public class CourseResponse {
-    List<StudentResponse> students;
+public class CourseStudentResponse {
     private Long id;
+
     private String name;
+
     private LocalDateTime startAt;
+
     private LocalDateTime endAt;
+
     private TeacherResponse teacher;
+
+    private List<QuizResponse> quizzes;
 }

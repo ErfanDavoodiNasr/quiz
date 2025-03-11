@@ -4,18 +4,23 @@ import ir.quiz.quiz.dto.request.AnnotationQuestionRequest;
 import ir.quiz.quiz.dto.request.MultipleChoiceQuestionRequest;
 import ir.quiz.quiz.dto.request.QuizRequest;
 import ir.quiz.quiz.dto.request.QuizUpdateRequest;
-import ir.quiz.quiz.exception.CourseNotFoundException;
-import ir.quiz.quiz.exception.QuestionNotFoundException;
-import ir.quiz.quiz.exception.QuizNotFoundException;
-import ir.quiz.quiz.exception.TeacherNotFoundException;
+import ir.quiz.quiz.dto.response.MultipleQuizQuestionResponsePage;
+import ir.quiz.quiz.dto.response.QuizQuestionResponsePage;
+import ir.quiz.quiz.exception.*;
+import ir.quiz.quiz.mapper.MultipleQuizQuestionResponsePageMapper;
+import ir.quiz.quiz.mapper.QuizQuestionResponsePageMapper;
 import ir.quiz.quiz.model.Course;
+import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.model.Teacher;
 import ir.quiz.quiz.model.quiz.*;
 import ir.quiz.quiz.repository.*;
 import ir.quiz.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -34,6 +39,10 @@ public class QuizServiceImpl implements QuizService {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
     private final QuizQuestionRepository quizQuestionRepository;
+    private final QuizQuestionAnswerRepository quizQuestionAnswerRepository;
+    private final StudentRepository studentRepository;
+    private final QuizQuestionResponsePageMapper quizQuestionResponsePageMapper;
+    private final MultipleQuizQuestionResponsePageMapper multipleQuizQuestionResponsePageMapper;
 
     @Override
     public Boolean save(QuizRequest quizRequest) {
@@ -132,10 +141,7 @@ public class QuizServiceImpl implements QuizService {
                 .question(question)
                 .build();
         quizQuestion = quizQuestionRepository.saveAndFlush(quizQuestion);
-        Optional<Quiz> quiz = quizRepository.findById(quizId);
-        if (quiz.isEmpty()) {
-            throw new QuizNotFoundException("no quiz found");
-        }
+        Optional<Quiz> quiz = getQuiz(quizRepository.findById(quizId));
         boolean added = quiz.get().getQuizQuestions().add(quizQuestion);
         quizRepository.save(quiz.get());
         return added && quiz.get().getQuizQuestions().contains(quizQuestion);
@@ -159,12 +165,132 @@ public class QuizServiceImpl implements QuizService {
                 .question(question)
                 .build();
         quizQuestion = quizQuestionRepository.saveAndFlush(quizQuestion);
+        Optional<Quiz> quiz = getQuiz(quizRepository.findById(quizId));
+        boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
+        return quizRepository.save(quiz.get()).getQuizQuestions().contains(quizQuestion);
+    }
+
+    @Override
+    public List<QuizQuestionResponsePage> seeAnnotationQuizQuestion(Long studentId, Long quizId, Pageable pageable) {
+        Optional<Quiz> quiz = getQuiz(quizRepository.findById(quizId));
+        Optional<Student> student = getStudent(studentId);
+        if (!quiz.get().getStudents().contains(student.get())) {
+            quiz.get().getStudents().add(StudentInQuiz.builder().student(student.get()).isSubmit(Boolean.FALSE).build());
+        }
+        quizRepository.saveAndFlush(quiz.get());
+        Optional<Page<Quiz>> result = quizRepository.findById(quizId, pageable);
+        List<QuizQuestionResponsePage> quizQuestionResponsePages = quizQuestionResponsePageMapper.convertEntityToDto(result.get().getContent().getFirst().getQuizQuestions());
+
+        for (QuizQuestionResponsePage q : quizQuestionResponsePages) {
+            q.setDuration(Duration.between(LocalDateTime.now(), quiz.get().getEndAt()).getSeconds());
+            q.setTotalIndex(quiz.get().getQuizQuestions().size());
+        }
+        return quizQuestionResponsePages;
+    }
+
+    @Override
+    public List<MultipleQuizQuestionResponsePage> seeMultipleChoiceQuizQuestion(Long studentId, Long quizId, Pageable pageable) {
+        Optional<Quiz> quiz = getQuiz(quizRepository.findById(quizId));
+        Optional<Student> student = getStudent(studentId);
+        if (!quiz.get().getStudents().contains(student.get())) {
+            quiz.get().getStudents().add(StudentInQuiz.builder().student(student.get()).isSubmit(Boolean.FALSE).build());
+        }
+        quizRepository.saveAndFlush(quiz.get());
+        Optional<Page<Quiz>> result = quizRepository.findById(quizId, pageable);
+        List<MultipleQuizQuestionResponsePage> quizQuestionResponsePages = multipleQuizQuestionResponsePageMapper.convertEntityToDto(result.get().getContent().getFirst().getQuizQuestions());
+        for (MultipleQuizQuestionResponsePage q : quizQuestionResponsePages) {
+            q.setDuration(Duration.between(LocalDateTime.now(), quiz.get().getEndAt()).getSeconds());
+            q.setTotalIndex(quiz.get().getQuizQuestions().size());
+        }
+        return quizQuestionResponsePages;
+    }
+
+    public Boolean answerAnnotationQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (student.isEmpty()) {
+            throw new StudentNotFoundException("no student found");
+        }
         Optional<Quiz> quiz = quizRepository.findById(quizId);
         if (quiz.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
         }
-        boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
-        return quizRepository.save(quiz.get()).getQuizQuestions().contains(quizQuestion);
+        for (StudentInQuiz s : quiz.get().getStudents()) {
+            if (s.getStudent().equals(student.get())) {
+                if (s.getIsSubmit()) {
+                    throw new RuntimeException("you submit this quiz before");
+                }
+            }
+        }
+        Optional<QuizQuestion> quizQuestion = quizQuestionRepository.findById(quizQuestionId);
+        if (quizQuestion.isEmpty()) {
+            throw new QuizNotFoundException("no question found");
+        }
+        QuizQuestionAnswer questionAnswer = QuizQuestionAnswer.builder()
+                .student(student.get())
+                .quizQuestion(quizQuestion.get())
+                .userAnswer(answer)
+                .build();
+        QuizQuestionAnswer result = quizQuestionAnswerRepository.save(questionAnswer);
+        return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    public Boolean answerMultipleQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (student.isEmpty()) {
+            throw new StudentNotFoundException("no student found");
+        }
+        Optional<Quiz> quiz = quizRepository.findById(quizId);
+        if (quiz.isEmpty()) {
+            throw new QuizNotFoundException("no quiz found");
+        }
+        for (StudentInQuiz s : quiz.get().getStudents()) {
+            if (s.getStudent().equals(student.get())) {
+                if (s.getIsSubmit()) {
+                    throw new RuntimeException("you submit this quiz before");
+                }
+            }
+        }
+        Optional<QuizQuestion> quizQuestion = quizQuestionRepository.findById(quizQuestionId);
+        if (quizQuestion.isEmpty()) {
+            throw new QuizNotFoundException("no question found");
+        }
+        MultipleChoiceQuestion question = (MultipleChoiceQuestion) quizQuestion.get().getQuestion();
+        QuizQuestionAnswer questionAnswer = null;
+        for (QuestionOption option : question.getOptions()) {
+            if (option.getText().equalsIgnoreCase(answer)) {
+                questionAnswer = QuizQuestionAnswer.builder()
+                        .student(student.get())
+                        .quizQuestion(quizQuestion.get())
+                        .userAnswer(answer)
+                        .score(quizQuestion.get().getScore())
+                        .build();
+            }
+        }
+        if (questionAnswer == null) {
+            throw new RuntimeException("you entered invalid option");
+        }
+        QuizQuestionAnswer result = quizQuestionAnswerRepository.save(questionAnswer);
+        return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    private Optional<Quiz> getQuiz(Optional<Quiz> quizRepository) {
+        Optional<Quiz> quiz = quizRepository;
+        if (quiz.isEmpty()) {
+            throw new QuizNotFoundException("no quiz found");
+        }
+        if (quiz.get().getEndAt().isAfter(LocalDateTime.now())) {
+            throw new RuntimeException("quiz time is over");
+        }
+        return quiz;
+    }
+
+    private Optional<Student> getStudent(Long studentId) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (student.isEmpty()) {
+            throw new StudentNotFoundException("no student found");
+        }
+        return student;
     }
 
     private AnnotationQuestion convertDtoToEntity(AnnotationQuestionRequest req) {
@@ -177,10 +303,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     private Optional<Quiz> checkQuizIsExist(Optional<Quiz> quizService) {
-        Optional<Quiz> quiz = quizService;
-        if (quiz.isEmpty()) {
-            throw new QuizNotFoundException("no quiz found");
-        }
+        Optional<Quiz> quiz = getQuiz(quizService);
         return quiz;
     }
 

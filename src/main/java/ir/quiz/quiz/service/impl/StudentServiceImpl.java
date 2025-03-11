@@ -1,16 +1,20 @@
 package ir.quiz.quiz.service.impl;
 
-import ir.quiz.quiz.config.JwtService;
 import ir.quiz.quiz.dto.request.PersonRequest;
 import ir.quiz.quiz.dto.request.StudentUpdateRequest;
-import ir.quiz.quiz.dto.response.JwtTokenResponse;
+import ir.quiz.quiz.dto.response.CourseStudentResponse;
+import ir.quiz.quiz.dto.response.QuizResponse;
 import ir.quiz.quiz.dto.search.StudentSearch;
 import ir.quiz.quiz.exception.StudentNotFoundException;
+import ir.quiz.quiz.mapper.CourseResponseStudentMapper;
+import ir.quiz.quiz.mapper.QuizResponseMapper;
 import ir.quiz.quiz.mapper.StudentRequestMapper;
 import ir.quiz.quiz.mapper.StudentUpdateRequestMapper;
+import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Role;
 import ir.quiz.quiz.model.Status;
 import ir.quiz.quiz.model.Student;
+import ir.quiz.quiz.model.quiz.Quiz;
 import ir.quiz.quiz.repository.StudentRepository;
 import ir.quiz.quiz.service.StudentService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -21,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +38,8 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRequestMapper studentRequestMapper;
     private final StudentUpdateRequestMapper studentUpdateRequestMapper;
     private final PasswordEncoder passwordHashing;
+    private final CourseResponseStudentMapper courseResponseStudentMapper;
+    private final QuizResponseMapper quizResponseMapper;
 
 
     private Optional<Student> checkStudentIsExist(Optional<Student> studentRepository) {
@@ -54,6 +62,40 @@ public class StudentServiceImpl implements StudentService {
                     return predicates.isEmpty() ? null : cb.and(predicates.toArray(new Predicate[0]));
                 }
         );
+    }
+
+    @Override
+    public Optional<List<CourseStudentResponse>> findAllStudentCourses(Long studentId) {
+        Optional<Student> student = checkStudentIsExist(studentId);
+        return Optional.ofNullable(courseResponseStudentMapper.convertEntityToDto(student.get().getCourses()));
+    }
+
+    @Override
+    public Optional<List<QuizResponse>> findAllStudentQuizzes(Long studentId) {
+        Optional<Student> student = checkStudentIsExist(studentId);
+        List<Quiz> quizzes = new ArrayList<>();
+
+        for (Course cours : student.get().getCourses()) {
+            for (Quiz quiz : cours.getQuizzes()) {
+                if (quiz.getEndAt().isAfter(LocalDateTime.now())) {
+                    quizzes.add(quiz);
+                }
+            }
+        }
+
+        List<QuizResponse> result = quizResponseMapper.convertEntityToDto(quizzes);
+        for (QuizResponse q : result) {
+            q.setDuration(Duration.between(q.getStartAt(), q.getEndAt()).getSeconds());
+        }
+        return Optional.ofNullable(result);
+    }
+
+    private Optional<Student> checkStudentIsExist(Long studentId) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (student.isEmpty()) {
+            throw new StudentNotFoundException("no student found");
+        }
+        return student;
     }
 
     private void fillStatusPredicates(List<Predicate> predicates, Root<Student> root, CriteriaBuilder cb, Status status) {

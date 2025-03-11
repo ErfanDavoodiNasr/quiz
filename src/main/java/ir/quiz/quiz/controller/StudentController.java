@@ -8,7 +8,6 @@ import ir.quiz.quiz.model.Student;
 import ir.quiz.quiz.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +40,16 @@ public class StudentController {
             return ResponseEntity.status(404).body(new MessageResponse("student not found"));
         }
         return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/student-courses")
+    public ResponseEntity<?> findALlStudentCourses(@RequestParam("studentId") Long studentId) {
+        return ResponseEntity.ok(studentService.findAllStudentCourses(studentId).get());
+
+    }
+
+    @GetMapping("/student-quizzes")
+    public ResponseEntity<?> findAllStudentQuizzes(@RequestParam("studentId") Long studentId) {
+        return ResponseEntity.ok(studentService.findAllStudentQuizzes(studentId));
     }
 }

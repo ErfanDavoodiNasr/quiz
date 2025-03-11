@@ -11,6 +11,7 @@ import ir.quiz.quiz.model.quiz.Quiz;
 import ir.quiz.quiz.service.QuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -91,6 +92,28 @@ public class QuizController {
     ) {
         Boolean result = quizService.addNewAnnotationQuestionToQuiz(annotationQuestionRequest, quizId, score);
         return result ? ResponseEntity.ok(new MessageResponse("question saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
+    }
+
+
+    @GetMapping("/see-questions")
+    public ResponseEntity<?> seeMultipleQuizQuestions(
+            @RequestParam("studentId") Long studentId,
+            @RequestParam("quizId") Long quizId,
+            @RequestParam("questionType") QuestionType questionType,
+            Pageable pageable) {
+        if (questionType == QuestionType.MULTIPLE) {
+            return ResponseEntity.ok(quizService.seeMultipleChoiceQuizQuestion(studentId, quizId, pageable));
+        } else if (questionType == QuestionType.ANNOTATION) {
+            return ResponseEntity.ok(quizService.seeAnnotationQuizQuestion(studentId, quizId, pageable));
+        } else {
+            return ResponseEntity.badRequest().body(new MessageResponse("enter valid question type"));
+        }
+    }
+
+
+    @PostMapping("/submit-annotation-question")
+    public ResponseEntity<?> submitAnnotationQuestion() {
+        return null;
     }
 
 }

@@ -1,7 +1,6 @@
 package ir.quiz.quiz.controller;
 
 import ir.quiz.quiz.dto.request.MultipleChoiceQuestionRequest;
-import ir.quiz.quiz.dto.response.AnnotationQuestionResponse;
 import ir.quiz.quiz.dto.response.MessageResponse;
 import ir.quiz.quiz.dto.response.MultipleChoiceQuestionResponse;
 import ir.quiz.quiz.service.MultipleChoiceQuestionService;
@@ -42,9 +41,9 @@ public class MultipleChoiceQuestionController {
         return result.isPresent() ? ResponseEntity.ok(result.get()) : ResponseEntity.status(404).body(new MessageResponse("no question found"));
     }
 
-    @GetMapping("")
+    @GetMapping("/find-all-course-teacher")
     public ResponseEntity<?> findAllByCourseIdAndTeacherId(@RequestParam("courseId") Long courseId, @RequestParam("teacherId") Long teacherId) {
-        Optional<List<MultipleChoiceQuestionResponse>> result = multipleChoiceQuestionService.findAllByCourseIdAndTeacherId(courseId,teacherId);
+        Optional<List<MultipleChoiceQuestionResponse>> result = multipleChoiceQuestionService.findAllByCourseIdAndTeacherId(courseId, teacherId);
         return result.isPresent() ? ResponseEntity.ok(result.get()) : ResponseEntity.status(404).body(new MessageResponse("no question found"));
     }
 }

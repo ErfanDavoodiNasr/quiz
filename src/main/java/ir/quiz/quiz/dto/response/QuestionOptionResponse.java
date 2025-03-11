@@ -10,6 +10,4 @@ public class QuestionOptionResponse {
     private String text;
 
     private Boolean isCorrect;
-
-    private QuestionResponse multipleChoiceQuestion;
 }

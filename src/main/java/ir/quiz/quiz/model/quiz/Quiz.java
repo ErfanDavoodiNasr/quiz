@@ -12,7 +12,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 import static ir.quiz.quiz.model.quiz.Quiz.TABLE_NAME;
 
@@ -41,9 +41,6 @@ public class Quiz extends BaseModel<Long> {
     @Column(name = END_AT, nullable = false)
     private LocalDateTime endAt;
 
-    @Transient
-    private Integer duration;
-
     @ManyToOne
     private Teacher teacher;
 
@@ -51,5 +48,15 @@ public class Quiz extends BaseModel<Long> {
     private Course course;
 
     @ManyToMany
-    private Set<QuizQuestion> quizQuestions;
+    private List<QuizQuestion> quizQuestions;
+
+    @OneToMany
+    @JoinTable(
+            name = "student_in_quiz",
+            joinColumns = {@JoinColumn(name = "quiz_id")},
+            inverseJoinColumns = {@JoinColumn(name = "student_id")}
+    )
+    private List<StudentInQuiz> students;
+
+
 }

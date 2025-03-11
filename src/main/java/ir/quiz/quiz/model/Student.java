@@ -2,12 +2,15 @@ package ir.quiz.quiz.model;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 import static ir.quiz.quiz.model.Student.TABLE_NAME;
 
@@ -20,4 +23,8 @@ import static ir.quiz.quiz.model.Student.TABLE_NAME;
 @Table(name = TABLE_NAME)
 public class Student extends User {
     public static final String TABLE_NAME = "students";
+
+
+    @ManyToMany(mappedBy = "students")
+    List<Course> courses;
 }

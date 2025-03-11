@@ -3,7 +3,6 @@ package ir.quiz.quiz.service;
 import ir.quiz.quiz.dto.request.MultipleChoiceQuestionRequest;
 import ir.quiz.quiz.dto.request.MultipleChoiceQuestionUpdateRequest;
 import ir.quiz.quiz.dto.request.QuestionOptionRequest;
-import ir.quiz.quiz.dto.response.AnnotationQuestionResponse;
 import ir.quiz.quiz.dto.response.MultipleChoiceQuestionResponse;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public interface MultipleChoiceQuestionService {
 
     Optional<MultipleChoiceQuestionResponse> findById(Long id);
 
-    Optional<List<MultipleChoiceQuestionResponse>> findAllByCourseIdAndTeacherId(Number courseId, Number teacherId);
+    Optional<List<MultipleChoiceQuestionResponse>> findAllByCourseIdAndTeacherId(Long courseId, Long teacherId);
 
-    Optional<List<MultipleChoiceQuestionResponse>> findAllByTeacherId(Number teacherId);
+    Optional<List<MultipleChoiceQuestionResponse>> findAllByTeacherId(Long teacherId);
 }

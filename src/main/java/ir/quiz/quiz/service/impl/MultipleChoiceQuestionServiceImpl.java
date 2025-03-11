@@ -20,6 +20,7 @@ import ir.quiz.quiz.repository.TeacherRepository;
 import ir.quiz.quiz.service.MultipleChoiceQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -130,21 +131,21 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     }
 
     @Override
-    public Optional<List<MultipleChoiceQuestionResponse>> findAllByCourseIdAndTeacherId(Number courseId, Number teacherId) {
-        Optional<List<MultipleChoiceQuestionResponse>> result = multipleChoiceQuestionRepository.findAllByCourseIdAndTeacherId(courseId, teacherId);
-        if (result.isEmpty()){
+    public Optional<List<MultipleChoiceQuestionResponse>> findAllByCourseIdAndTeacherId(Long courseId, Long teacherId) {
+        Optional<List<MultipleChoiceQuestion>> result = multipleChoiceQuestionRepository.findAllByCourse_IdAndTeacher_Id(courseId, teacherId);
+        if (result.isEmpty()) {
             throw new QuestionNotFoundException("no question found");
         }
-        return result;
+        return Optional.ofNullable(multipleChoiceQuestionResponseMapper.convertEntityToDto(result.get()));
     }
 
     @Override
-    public Optional<List<MultipleChoiceQuestionResponse>> findAllByTeacherId(Number teacherId) {
-        Optional<List<MultipleChoiceQuestionResponse>> result = multipleChoiceQuestionRepository.findAllByTeacherId(teacherId);
-        if (result.isEmpty()){
+    public Optional<List<MultipleChoiceQuestionResponse>> findAllByTeacherId(Long teacherId) {
+        Optional<List<MultipleChoiceQuestion>> result = multipleChoiceQuestionRepository.findAllByTeacher_Id(teacherId);
+        if (result.isEmpty()) {
             throw new QuestionNotFoundException("no question found");
         }
-        return result;
+        return Optional.ofNullable(multipleChoiceQuestionResponseMapper.convertEntityToDto(result.get()));
     }
 
     private Optional<MultipleChoiceQuestion> checkQuestionIsExist(QuestionOptionRequest optionRequest) {

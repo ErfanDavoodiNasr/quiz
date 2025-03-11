@@ -103,21 +103,21 @@ public class AnnotationQuestionServiceImpl implements AnnotationQuestionService 
     }
 
     @Override
-    public Optional<List<AnnotationQuestionResponse>> findAllByCourseIdAndTeacherId(Number courseId, Number teacherId) {
-        Optional<List<AnnotationQuestionResponse>> result = annotationQuestionRepository.findAllByCourseIdAndTeacherId(courseId, teacherId);
-        if (result.isEmpty()){
+    public Optional<List<AnnotationQuestionResponse>> findAllByCourseIdAndTeacherId(Long courseId, Long teacherId) {
+        Optional<List<AnnotationQuestion>> result = annotationQuestionRepository.findAllByCourse_IdAndTeacher_Id(courseId, teacherId);
+        if (result.isEmpty()) {
             throw new QuestionNotFoundException("no question found");
         }
-        return result;
+        return Optional.ofNullable(annotationQuestionResponseMapper.convertEntityToDto(result.get()));
     }
 
     @Override
-    public Optional<List<AnnotationQuestionResponse>> findAllByTeacherId(Number teacherId) {
-        Optional<List<AnnotationQuestionResponse>> result = annotationQuestionRepository.findAllByTeacherId(teacherId);
-        if (result.isEmpty()){
+    public Optional<List<AnnotationQuestionResponse>> findAllByTeacherId(Long teacherId) {
+        Optional<List<AnnotationQuestion>> result = annotationQuestionRepository.findAllByTeacher_Id(teacherId);
+        if (result.isEmpty()) {
             throw new QuestionNotFoundException("no question found");
         }
-        return result;
+        return Optional.ofNullable(annotationQuestionResponseMapper.convertEntityToDto(result.get()));
     }
 
     private Optional<Course> checkCourseIsExist(AnnotationQuestionRequest annotationQuestion) {
