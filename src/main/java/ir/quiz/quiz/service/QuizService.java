@@ -4,6 +4,8 @@ import ir.quiz.quiz.dto.request.AnnotationQuestionRequest;
 import ir.quiz.quiz.dto.request.MultipleChoiceQuestionRequest;
 import ir.quiz.quiz.dto.request.QuizRequest;
 import ir.quiz.quiz.dto.request.QuizUpdateRequest;
+import ir.quiz.quiz.dto.response.QuizQuestionAnswerResponse;
+import ir.quiz.quiz.dto.response.StudentCertificate;
 import ir.quiz.quiz.model.quiz.QuestionType;
 import ir.quiz.quiz.model.quiz.Quiz;
 
@@ -36,4 +38,12 @@ public interface QuizService {
     Boolean answerQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer);
 
     Boolean submitQuiz(Long quizId, Long StudentId);
+
+    Boolean removeQuestionFromQuiz(Long questionId, Long quizId);
+
+    Optional<List<QuizQuestionAnswerResponse>> getStudentQuiz(Long quizId);
+
+    Boolean setScoreForQuiz(Long id, Long questionId, Double score);
+
+    Optional<List<StudentCertificate>> getStudentCertificate(Long quizId);
 }

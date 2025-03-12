@@ -47,11 +47,10 @@ public class Quiz extends BaseModel<Long> {
     @ManyToOne
     private Course course;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "quiz")
     private List<QuizQuestion> quizQuestions;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "quiz")
     private List<StudentInQuiz> students;
-
 
 }

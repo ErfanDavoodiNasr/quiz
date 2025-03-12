@@ -77,10 +77,11 @@ public class QuizController {
 
     @DeleteMapping("remove-question-from-quiz")
     public ResponseEntity<?> removeQuestionFromQuiz(
-            @RequestParam("questionId") Long questionId
+            @RequestParam("questionId") Long questionId,
+            @RequestParam("quizId") Long quizId
     ){
-        return null;
-        // todo
+        Boolean result = quizService.removeQuestionFromQuiz(questionId, quizId);
+        return result ? ResponseEntity.ok(new MessageResponse("question saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
     @PostMapping("/add-new-multiple-question-to-quiz")

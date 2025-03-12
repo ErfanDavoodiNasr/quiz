@@ -3,6 +3,7 @@ package ir.quiz.quiz.model.quiz;
 import ir.quiz.quiz.model.BaseModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,4 +22,7 @@ public class QuizQuestion extends BaseModel<Long> {
 
     @Column
     private Double score;
+
+    @ManyToOne
+    private Quiz quiz;
 }

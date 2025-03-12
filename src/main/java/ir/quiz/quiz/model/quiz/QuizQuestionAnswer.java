@@ -30,6 +30,9 @@ public class QuizQuestionAnswer extends BaseModel<Long> {
     private QuizQuestion quizQuestion;
 
     @ManyToOne
+    private Quiz quiz;
+
+    @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
 }

@@ -23,8 +23,8 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
 
     private static void checkUserIsAccepted(Optional<User> user) {
-        if (user.get().getStatus() == Status.AWAITING_CONFIRMATION) {
-            throw new AwaitingConfirmationException("user status is awaiting confirmation");
+        if (user.get().getStatus() != Status.ACCEPTED) {
+            throw new AwaitingConfirmationException("user status is " + user.get().getStatus());
         }
     }
 
