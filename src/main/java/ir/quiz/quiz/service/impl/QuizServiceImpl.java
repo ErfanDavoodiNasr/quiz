@@ -19,6 +19,7 @@ import ir.quiz.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.cert.TrustAnchor;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +32,7 @@ import static ir.quiz.quiz.util.Help.checkTimeIsValid;
 @RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
 
+    private final StudentInQuizRepository studentInQuizRepository;
     private final QuizRepository quizRepository;
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
@@ -173,10 +175,16 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public List<?> seeQuizQuestion(Long studentId, Long quizId, Integer index) {
         Optional<Quiz> quiz = getQuiz(quizRepository.findById(quizId));
+
         Optional<Student> student = getStudent(studentId);
-        if (!quiz.get().getStudents().contains(student.get())) {
-            quiz.get().getStudents().add(StudentInQuiz.builder().student(student.get()).isSubmit(Boolean.FALSE).build());
-            quizRepository.saveAndFlush(quiz.get());
+        int counter = 0;
+        for (StudentInQuiz studentInQuiz : studentInQuizRepository.findAll()) {
+            if (studentInQuiz.getStudent().equals(student.get())){
+                counter++;
+            }
+        }
+        if (counter == 0){
+            studentInQuizRepository.save(StudentInQuiz.builder().student(student.get()).isSubmit(Boolean.FALSE).build());
         }
         Optional<Quiz> result = quizRepository.findById(quizId);
         Question question = result.get().getQuizQuestions().get(index).getQuestion();
@@ -187,6 +195,7 @@ public class QuizServiceImpl implements QuizService {
             return List.of(quizQuestionResponsePages);
         } else if (question instanceof MultipleChoiceQuestion) {
             MultipleQuizQuestionResponsePage quizQuestionResponsePages = multipleQuizQuestionResponsePageMapper.convertEntityToDto((MultipleChoiceQuestion) result.get().getQuizQuestions().get(index).getQuestion());
+            quizQuestionResponsePages.setId(result.get().getQuizQuestions().get(index).getId());
             quizQuestionResponsePages.setQuestion(questionResponseMapper.convertEntityToDto(result.get().getQuizQuestions().get(index).getQuestion()));
             quizQuestionResponsePages.setScore(result.get().getQuizQuestions().get(index).getScore());
             quizQuestionResponsePages.setDuration(Duration.between(LocalDateTime.now(), quiz.get().getEndAt()).getSeconds());
@@ -197,7 +206,8 @@ public class QuizServiceImpl implements QuizService {
         }
     }
 
-    public Boolean answerAnnotationQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer) {
+    @Override
+    public Boolean answerQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer) {
         Optional<Quiz> quiz = quizRepository.findById(quizId);
         if (quiz.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
@@ -220,73 +230,51 @@ public class QuizServiceImpl implements QuizService {
         if (quizQuestion.isEmpty()) {
             throw new QuizNotFoundException("no question found");
         }
-        QuizQuestionAnswer questionAnswer = QuizQuestionAnswer.builder()
-                .student(student.get())
-                .quizQuestion(quizQuestion.get())
-                .userAnswer(answer)
-                .build();
-        QuizQuestionAnswer result = quizQuestionAnswerRepository.save(questionAnswer);
-        return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
-    }
-
-    @Override
-    public Boolean answerMultipleQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer) {
-        Optional<Student> student = studentRepository.findById(studentId);
-        if (student.isEmpty()) {
-            throw new StudentNotFoundException("no student found");
-        }
-        Optional<Quiz> quiz = quizRepository.findById(quizId);
-        if (quiz.isEmpty()) {
-            throw new QuizNotFoundException("no quiz found");
-        }
-        for (StudentInQuiz s : quiz.get().getStudents()) {
-            if (s.getStudent().equals(student.get())) {
-                if (s.getIsSubmit()) {
-                    throw new RuntimeException("you submit this quiz before");
+        if (quizQuestion.get().getQuestion() instanceof AnnotationQuestion) {
+            QuizQuestionAnswer questionAnswer = QuizQuestionAnswer.builder()
+                    .student(student.get())
+                    .quizQuestion(quizQuestion.get())
+                    .userAnswer(answer)
+                    .build();
+            QuizQuestionAnswer result = quizQuestionAnswerRepository.save(questionAnswer);
+            return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+        } else {
+            MultipleChoiceQuestion question = (MultipleChoiceQuestion) quizQuestion.get().getQuestion();
+            QuizQuestionAnswer questionAnswer = null;
+            for (QuestionOption option : question.getOptions()) {
+                if (option.getText().equalsIgnoreCase(answer)) {
+                    questionAnswer = QuizQuestionAnswer.builder()
+                            .student(student.get())
+                            .quizQuestion(quizQuestion.get())
+                            .userAnswer(answer)
+                            .score(quizQuestion.get().getScore())
+                            .build();
                 }
             }
-        }
-        Optional<QuizQuestion> quizQuestion = quizQuestionRepository.findById(quizQuestionId);
-        if (quizQuestion.isEmpty()) {
-            throw new QuizNotFoundException("no question found");
-        }
-        MultipleChoiceQuestion question = (MultipleChoiceQuestion) quizQuestion.get().getQuestion();
-        QuizQuestionAnswer questionAnswer = null;
-        for (QuestionOption option : question.getOptions()) {
-            if (option.getText().equalsIgnoreCase(answer)) {
+            if (questionAnswer == null) {
+                throw new RuntimeException("you entered invalid option");
+            }else{
                 questionAnswer = QuizQuestionAnswer.builder()
                         .student(student.get())
                         .quizQuestion(quizQuestion.get())
                         .userAnswer(answer)
-                        .score(quizQuestion.get().getScore())
+                        .score(0.0)
                         .build();
             }
+            QuizQuestionAnswer result = quizQuestionAnswerRepository.save(questionAnswer);
+            return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
         }
-        if (questionAnswer == null) {
-            throw new RuntimeException("you entered invalid option");
-        }
-        QuizQuestionAnswer result = quizQuestionAnswerRepository.save(questionAnswer);
-        return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
     public Boolean submitQuiz(Long quizId, Long studentId) {
-        Optional<Student> student = studentRepository.findById(studentId);
-        if (student.isEmpty()) {
-            throw new StudentNotFoundException("no student found");
+        Optional<StudentInQuiz> student = studentInQuizRepository.findByQuiz_IdAndStudent_Id(quizId, studentId);
+        if (student.isEmpty()){
+            throw new RuntimeException("this user didn't enter to quiz");
         }
-        Optional<Quiz> quiz = quizRepository.findById(quizId);
-        if (quiz.isEmpty()) {
-            throw new QuizNotFoundException("no quiz found");
-        }
-        for (StudentInQuiz s : quiz.get().getStudents()) {
-            if (s.getStudent().equals(student.get())) {
-                throw new RuntimeException("you submit this quiz before");
-            }
-        }
-        quiz.get().getStudents().add(StudentInQuiz.builder().isSubmit(Boolean.TRUE).student(student.get()).build());
-        Quiz result = quizRepository.save(quiz.get());
-        return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+        student.get().setIsSubmit(Boolean.TRUE);
+        StudentInQuiz result = studentInQuizRepository.saveAndFlush(student.get());
+        return result.getIsSubmit().equals(Boolean.TRUE);
     }
 
     private Optional<Quiz> getQuiz(Optional<Quiz> quizRepository) {

@@ -3,10 +3,7 @@ package ir.quiz.quiz.model.quiz;
 
 import ir.quiz.quiz.model.BaseModel;
 import ir.quiz.quiz.model.Student;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -30,4 +27,7 @@ public class StudentInQuiz extends BaseModel<Long> {
 
     @Column(name = IS_SUBMIT)
     private Boolean isSubmit;
+
+    @ManyToOne
+    private Quiz quiz;
 }

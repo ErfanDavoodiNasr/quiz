@@ -63,6 +63,12 @@ public class ExceptionController {
         return ResponseEntity.badRequest().body(new MessageResponse(errors.toString()));
     }
 
+
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<MessageResponse> runtimeException(RuntimeException e) {
+        return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+    }
+
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<MessageResponse> exception(Exception e) {
         e.printStackTrace();

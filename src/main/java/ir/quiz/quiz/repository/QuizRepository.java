@@ -14,5 +14,4 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Optional<List<Quiz>> findAllByCourse_IdAndTeacher_Id(Number courseId, Number teacherId);
 
     Optional<Page<Quiz>> findById(Number id, Pageable pageable);
-
 }

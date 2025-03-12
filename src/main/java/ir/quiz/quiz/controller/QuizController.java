@@ -105,7 +105,7 @@ public class QuizController {
 
 
     @GetMapping("/see-questions")
-    public ResponseEntity<?> seeMultipleQuizQuestions(
+    public ResponseEntity<?> seeQuestions(
             @RequestParam("studentId") Long studentId,
             @RequestParam("quizId") Long quizId,
             @RequestParam(value = "index" ,required = false) Integer index) {
@@ -114,6 +114,17 @@ public class QuizController {
         }else{
             return ResponseEntity.ok(quizService.seeQuizQuestion(studentId,quizId,index));
         }
+    }
+
+    @PostMapping("/answer-question")
+    public ResponseEntity<?> answerQuestion(
+            @RequestParam("studentId") Long studentId,
+            @RequestParam("quizQuestionId") Long quizQuestionId,
+            @RequestParam("quizId") Long quizId,
+            @RequestParam("answer") String answer
+    ){
+        Boolean result = quizService.answerQuestion(studentId, quizQuestionId, quizId, answer);
+        return result ? ResponseEntity.ok(new MessageResponse("answer saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
 
