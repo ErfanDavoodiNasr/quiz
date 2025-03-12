@@ -34,9 +34,7 @@ public interface QuizService {
 
     Boolean addNewAnnotationQuestionToQuiz(AnnotationQuestionRequest annotationQuestionRequest, Long quizId, Double score);
 
-    List<QuizQuestionResponsePage> seeAnnotationQuizQuestion(Long studentId, Long quizId, Pageable pageable);
-
-    List<MultipleQuizQuestionResponsePage> seeMultipleChoiceQuizQuestion(Long studentId, Long quizId, Pageable pageable);
+    List<?> seeQuizQuestion(Long studentId, Long quizId, Integer index);
 
     Boolean answerAnnotationQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer);
 

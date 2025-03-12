@@ -48,14 +48,14 @@ public class Quiz extends BaseModel<Long> {
     private Course course;
 
     @ManyToMany
+    @JoinTable(
+            name = "quizzes_questions",
+            joinColumns = {@JoinColumn(name = "quiz_id")},
+            inverseJoinColumns = {@JoinColumn(name = "question_id")}
+    )
     private List<QuizQuestion> quizQuestions;
 
     @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "student_in_quiz",
-            joinColumns = {@JoinColumn(name = "quiz_id")},
-            inverseJoinColumns = {@JoinColumn(name = "student_id")}
-    )
     private List<StudentInQuiz> students;
 
 

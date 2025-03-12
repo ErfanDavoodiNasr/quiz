@@ -11,6 +11,7 @@ import ir.quiz.quiz.model.quiz.Quiz;
 import ir.quiz.quiz.service.QuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,7 @@ public class QuizController {
     private final QuizService quizService;
 
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<?> save(@RequestBody @Valid QuizRequest quizRequest) {
         Boolean result = quizService.save(quizRequest);
         return result ? ResponseEntity.ok(new MessageResponse("quiz saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
@@ -74,6 +75,14 @@ public class QuizController {
         return result ? ResponseEntity.ok(new MessageResponse("question saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
+    @DeleteMapping("remove-question-from-quiz")
+    public ResponseEntity<?> removeQuestionFromQuiz(
+            @RequestParam("questionId") Long questionId
+    ){
+        return null;
+        // todo
+    }
+
     @PostMapping("/add-new-multiple-question-to-quiz")
     public ResponseEntity<?> addNewMultipleQuestionToQuiz(
             @RequestBody @Valid MultipleChoiceQuestionRequest multipleChoiceQuestionRequest,
@@ -99,14 +108,11 @@ public class QuizController {
     public ResponseEntity<?> seeMultipleQuizQuestions(
             @RequestParam("studentId") Long studentId,
             @RequestParam("quizId") Long quizId,
-            @RequestParam("questionType") QuestionType questionType,
-            Pageable pageable) {
-        if (questionType == QuestionType.MULTIPLE) {
-            return ResponseEntity.ok(quizService.seeMultipleChoiceQuizQuestion(studentId, quizId, pageable));
-        } else if (questionType == QuestionType.ANNOTATION) {
-            return ResponseEntity.ok(quizService.seeAnnotationQuizQuestion(studentId, quizId, pageable));
-        } else {
-            return ResponseEntity.badRequest().body(new MessageResponse("enter valid question type"));
+            @RequestParam(value = "index" ,required = false) Integer index) {
+        if (index == null){
+            return ResponseEntity.ok(quizService.seeQuizQuestion(studentId,quizId,0));
+        }else{
+            return ResponseEntity.ok(quizService.seeQuizQuestion(studentId,quizId,index));
         }
     }
 

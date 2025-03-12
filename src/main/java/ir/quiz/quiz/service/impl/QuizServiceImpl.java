@@ -8,6 +8,7 @@ import ir.quiz.quiz.dto.response.MultipleQuizQuestionResponsePage;
 import ir.quiz.quiz.dto.response.QuizQuestionResponsePage;
 import ir.quiz.quiz.exception.*;
 import ir.quiz.quiz.mapper.MultipleQuizQuestionResponsePageMapper;
+import ir.quiz.quiz.mapper.QuestionResponseMapper;
 import ir.quiz.quiz.mapper.QuizQuestionResponsePageMapper;
 import ir.quiz.quiz.model.Course;
 import ir.quiz.quiz.model.Student;
@@ -16,8 +17,6 @@ import ir.quiz.quiz.model.quiz.*;
 import ir.quiz.quiz.repository.*;
 import ir.quiz.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -43,6 +42,7 @@ public class QuizServiceImpl implements QuizService {
     private final StudentRepository studentRepository;
     private final QuizQuestionResponsePageMapper quizQuestionResponsePageMapper;
     private final MultipleQuizQuestionResponsePageMapper multipleQuizQuestionResponsePageMapper;
+    private final QuestionResponseMapper questionResponseMapper;
 
     @Override
     public Boolean save(QuizRequest quizRequest) {
@@ -171,48 +171,43 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<QuizQuestionResponsePage> seeAnnotationQuizQuestion(Long studentId, Long quizId, Pageable pageable) {
+    public List<?> seeQuizQuestion(Long studentId, Long quizId, Integer index) {
         Optional<Quiz> quiz = getQuiz(quizRepository.findById(quizId));
         Optional<Student> student = getStudent(studentId);
         if (!quiz.get().getStudents().contains(student.get())) {
             quiz.get().getStudents().add(StudentInQuiz.builder().student(student.get()).isSubmit(Boolean.FALSE).build());
+            quizRepository.saveAndFlush(quiz.get());
         }
-        quizRepository.saveAndFlush(quiz.get());
-        Optional<Page<Quiz>> result = quizRepository.findById(quizId, pageable);
-        List<QuizQuestionResponsePage> quizQuestionResponsePages = quizQuestionResponsePageMapper.convertEntityToDto(result.get().getContent().getFirst().getQuizQuestions());
-
-        for (QuizQuestionResponsePage q : quizQuestionResponsePages) {
-            q.setDuration(Duration.between(LocalDateTime.now(), quiz.get().getEndAt()).getSeconds());
-            q.setTotalIndex(quiz.get().getQuizQuestions().size());
+        Optional<Quiz> result = quizRepository.findById(quizId);
+        Question question = result.get().getQuizQuestions().get(index).getQuestion();
+        if (question instanceof AnnotationQuestion) {
+            QuizQuestionResponsePage quizQuestionResponsePages = quizQuestionResponsePageMapper.convertEntityToDto(result.get().getQuizQuestions().get(index));
+            quizQuestionResponsePages.setDuration(Duration.between(LocalDateTime.now(), quiz.get().getEndAt()).getSeconds());
+            quizQuestionResponsePages.setTotalIndex(quiz.get().getQuizQuestions().size());
+            return List.of(quizQuestionResponsePages);
+        } else if (question instanceof MultipleChoiceQuestion) {
+            MultipleQuizQuestionResponsePage quizQuestionResponsePages = multipleQuizQuestionResponsePageMapper.convertEntityToDto((MultipleChoiceQuestion) result.get().getQuizQuestions().get(index).getQuestion());
+            quizQuestionResponsePages.setQuestion(questionResponseMapper.convertEntityToDto(result.get().getQuizQuestions().get(index).getQuestion()));
+            quizQuestionResponsePages.setScore(result.get().getQuizQuestions().get(index).getScore());
+            quizQuestionResponsePages.setDuration(Duration.between(LocalDateTime.now(), quiz.get().getEndAt()).getSeconds());
+            quizQuestionResponsePages.setTotalIndex(quiz.get().getQuizQuestions().size());
+            return List.of(quizQuestionResponsePages);
+        } else {
+            throw new RuntimeException("there is some problem");
         }
-        return quizQuestionResponsePages;
-    }
-
-    @Override
-    public List<MultipleQuizQuestionResponsePage> seeMultipleChoiceQuizQuestion(Long studentId, Long quizId, Pageable pageable) {
-        Optional<Quiz> quiz = getQuiz(quizRepository.findById(quizId));
-        Optional<Student> student = getStudent(studentId);
-        if (!quiz.get().getStudents().contains(student.get())) {
-            quiz.get().getStudents().add(StudentInQuiz.builder().student(student.get()).isSubmit(Boolean.FALSE).build());
-        }
-        quizRepository.saveAndFlush(quiz.get());
-        Optional<Page<Quiz>> result = quizRepository.findById(quizId, pageable);
-        List<MultipleQuizQuestionResponsePage> quizQuestionResponsePages = multipleQuizQuestionResponsePageMapper.convertEntityToDto(result.get().getContent().getFirst().getQuizQuestions());
-        for (MultipleQuizQuestionResponsePage q : quizQuestionResponsePages) {
-            q.setDuration(Duration.between(LocalDateTime.now(), quiz.get().getEndAt()).getSeconds());
-            q.setTotalIndex(quiz.get().getQuizQuestions().size());
-        }
-        return quizQuestionResponsePages;
     }
 
     public Boolean answerAnnotationQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer) {
-        Optional<Student> student = studentRepository.findById(studentId);
-        if (student.isEmpty()) {
-            throw new StudentNotFoundException("no student found");
-        }
         Optional<Quiz> quiz = quizRepository.findById(quizId);
         if (quiz.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
+        }
+        if (quiz.get().getEndAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("quiz time is over");
+        }
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (student.isEmpty()) {
+            throw new StudentNotFoundException("no student found");
         }
         for (StudentInQuiz s : quiz.get().getStudents()) {
             if (s.getStudent().equals(student.get())) {
@@ -299,8 +294,8 @@ public class QuizServiceImpl implements QuizService {
         if (quiz.isEmpty()) {
             throw new QuizNotFoundException("no quiz found");
         }
-        if (quiz.get().getEndAt().isAfter(LocalDateTime.now())) {
-            throw new RuntimeException("quiz time is over");
+        if (quiz.get().getStartAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("you can't enter to quiz right now");
         }
         return quiz;
     }
@@ -336,8 +331,9 @@ public class QuizServiceImpl implements QuizService {
                 .question(question.get())
                 .score(score)
                 .build();
+        quizQuestion = quizQuestionRepository.save(quizQuestion);
         boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
-        Quiz result = quizRepository.save(quiz.get());
+        Quiz result = quizRepository.saveAndFlush(quiz.get());
         return result.getQuizQuestions().contains(quizQuestion);
     }
 
@@ -350,8 +346,9 @@ public class QuizServiceImpl implements QuizService {
                 .question(question.get())
                 .score(score)
                 .build();
+        quizQuestion = quizQuestionRepository.save(quizQuestion);
         boolean add = quiz.get().getQuizQuestions().add(quizQuestion);
-        Quiz result = quizRepository.save(quiz.get());
+        Quiz result = quizRepository.saveAndFlush(quiz.get());
         return result.getQuizQuestions().contains(quizQuestion);
     }
 

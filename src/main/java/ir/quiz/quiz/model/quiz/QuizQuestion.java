@@ -19,6 +19,6 @@ public class QuizQuestion extends BaseModel<Long> {
     @OneToOne
     private Question question;
 
-    @Column(nullable = false)
+    @Column
     private Double score;
 }

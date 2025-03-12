@@ -21,13 +21,13 @@ public class QuestionOptionController {
     private final MultipleChoiceQuestionService multipleChoiceQuestionService;
     private final QuestionOptionService questionOptionService;
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<?> save(@RequestBody @Valid QuestionOptionRequest req) {
         Boolean result = questionOptionService.save(req);
         return result ? ResponseEntity.ok(new MessageResponse("option saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
-    @PutMapping
+    @PutMapping("")
     public ResponseEntity<?> update(@RequestBody @Valid QuestionOptionUpdateRequest req) {
         QuestionOptionResponse result = questionOptionService.update(req);
         return ResponseEntity.ok(result);

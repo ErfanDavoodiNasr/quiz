@@ -54,12 +54,22 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
 
     @Override
     public MultipleChoiceQuestionResponse save(MultipleChoiceQuestionRequest multipleChoiceQuestion) {
+        int counter = 0;
+        for (QuestionOptionRequest questionOption : multipleChoiceQuestion.getOptions()) {
+            if (questionOption.getIsCorrect()){
+                counter ++;
+            }
+        }
+        if (counter != 1 || counter > 1){
+            throw new RuntimeException("at least you have add two option and 1 true option");
+        }
         Optional<Course> course = checkCourseIsExist(multipleChoiceQuestion);
         Optional<Teacher> teacher = checkTeacherIsExist(multipleChoiceQuestion);
         MultipleChoiceQuestion result = convertDtoToEntity(multipleChoiceQuestion, teacher, course);
         MultipleChoiceQuestion question = multipleChoiceQuestionRepository.saveAndFlush(result);
         if (question.getId() != null) {
             List<QuestionOptionRequest> questionOptions = multipleChoiceQuestion.getOptions();
+
             for (QuestionOptionRequest questionOption : questionOptions) {
                 questionOption.setQuestionId(question.getId());
                 Boolean a = addOptionTOQuestion(questionOption);
