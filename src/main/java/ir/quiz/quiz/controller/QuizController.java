@@ -111,9 +111,13 @@ public class QuizController {
     }
 
 
-    @PostMapping("/submit-annotation-question")
-    public ResponseEntity<?> submitAnnotationQuestion() {
-        return null;
+    @PostMapping("/submit-quiz")
+    public ResponseEntity<?> submitQuiz(
+            @RequestParam("quizId") Long quizId,
+            @RequestParam("studentId") Long studentId
+    ) {
+        Boolean result = quizService.submitQuiz(quizId, studentId);
+        return result ? ResponseEntity.ok(new MessageResponse("you quiz submitted successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
 
 }

@@ -50,7 +50,7 @@ public class Quiz extends BaseModel<Long> {
     @ManyToMany
     private List<QuizQuestion> quizQuestions;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "student_in_quiz",
             joinColumns = {@JoinColumn(name = "quiz_id")},

@@ -274,6 +274,26 @@ public class QuizServiceImpl implements QuizService {
         return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
     }
 
+    @Override
+    public Boolean submitQuiz(Long quizId, Long studentId) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (student.isEmpty()) {
+            throw new StudentNotFoundException("no student found");
+        }
+        Optional<Quiz> quiz = quizRepository.findById(quizId);
+        if (quiz.isEmpty()) {
+            throw new QuizNotFoundException("no quiz found");
+        }
+        for (StudentInQuiz s : quiz.get().getStudents()) {
+            if (s.getStudent().equals(student.get())) {
+                throw new RuntimeException("you submit this quiz before");
+            }
+        }
+        quiz.get().getStudents().add(StudentInQuiz.builder().isSubmit(Boolean.TRUE).student(student.get()).build());
+        Quiz result = quizRepository.save(quiz.get());
+        return result.getId() != null ? Boolean.TRUE : Boolean.FALSE;
+    }
+
     private Optional<Quiz> getQuiz(Optional<Quiz> quizRepository) {
         Optional<Quiz> quiz = quizRepository;
         if (quiz.isEmpty()) {

@@ -41,4 +41,6 @@ public interface QuizService {
     Boolean answerAnnotationQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer);
 
     Boolean answerMultipleQuestion(Long studentId, Long quizQuestionId, Long quizId, String answer);
+
+    Boolean submitQuiz(Long quizId, Long StudentId);
 }
