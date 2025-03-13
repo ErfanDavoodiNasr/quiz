@@ -11,8 +11,6 @@ import ir.quiz.quiz.model.quiz.Quiz;
 import ir.quiz.quiz.service.QuizService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -79,7 +77,7 @@ public class QuizController {
     public ResponseEntity<?> removeQuestionFromQuiz(
             @RequestParam("questionId") Long questionId,
             @RequestParam("quizId") Long quizId
-    ){
+    ) {
         Boolean result = quizService.removeQuestionFromQuiz(questionId, quizId);
         return result ? ResponseEntity.ok(new MessageResponse("question saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }
@@ -109,11 +107,11 @@ public class QuizController {
     public ResponseEntity<?> seeQuestions(
             @RequestParam("studentId") Long studentId,
             @RequestParam("quizId") Long quizId,
-            @RequestParam(value = "index" ,required = false) Integer index) {
-        if (index == null){
-            return ResponseEntity.ok(quizService.seeQuizQuestion(studentId,quizId,0));
-        }else{
-            return ResponseEntity.ok(quizService.seeQuizQuestion(studentId,quizId,index));
+            @RequestParam(value = "index", required = false) Integer index) {
+        if (index == null) {
+            return ResponseEntity.ok(quizService.seeQuizQuestion(studentId, quizId, 0));
+        } else {
+            return ResponseEntity.ok(quizService.seeQuizQuestion(studentId, quizId, index));
         }
     }
 
@@ -123,7 +121,7 @@ public class QuizController {
             @RequestParam("quizQuestionId") Long quizQuestionId,
             @RequestParam("quizId") Long quizId,
             @RequestParam("answer") String answer
-    ){
+    ) {
         Boolean result = quizService.answerQuestion(studentId, quizQuestionId, quizId, answer);
         return result ? ResponseEntity.ok(new MessageResponse("answer saved successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
     }

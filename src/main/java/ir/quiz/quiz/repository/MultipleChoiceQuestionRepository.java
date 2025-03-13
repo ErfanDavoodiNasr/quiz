@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface MultipleChoiceQuestionRepository extends JpaRepository<MultipleChoiceQuestion, Long> {
-    Optional<List<MultipleChoiceQuestion>> findAllByCourse_IdAndTeacher_Id(Long courseId, Long teacherId);
+    Optional<List<MultipleChoiceQuestion>> findAllByCourse_IdAndTeacher_Id(Number courseId, Number teacherId);
 
-    Optional<List<MultipleChoiceQuestion>> findAllByTeacher_Id(Long teacherId);
+    Optional<List<MultipleChoiceQuestion>> findAllByTeacher_Id(Number teacherId);
 }

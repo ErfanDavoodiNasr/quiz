@@ -19,6 +19,4 @@ public interface AnnotationQuestionService {
     Optional<AnnotationQuestionResponse> findById(Long id);
 
     Optional<List<AnnotationQuestionResponse>> findAllByCourseIdAndTeacherId(Long courseId, Long teacherId);
-
-    Optional<List<AnnotationQuestionResponse>> findAllByTeacherId(Long teacherId);
 }

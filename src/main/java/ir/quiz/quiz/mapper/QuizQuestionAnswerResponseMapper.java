@@ -6,5 +6,5 @@ import ir.quiz.quiz.model.quiz.QuizQuestionAnswer;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface QuizQuestionAnswerResponseMapper extends BaseMapper<QuizQuestionAnswer, QuizQuestionAnswerResponse>{
+public interface QuizQuestionAnswerResponseMapper extends BaseMapper<QuizQuestionAnswer, QuizQuestionAnswerResponse> {
 }

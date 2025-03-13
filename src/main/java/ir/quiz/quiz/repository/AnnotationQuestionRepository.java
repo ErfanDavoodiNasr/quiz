@@ -9,7 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface AnnotationQuestionRepository extends JpaRepository<AnnotationQuestion, Long> {
-    Optional<List<AnnotationQuestion>> findAllByCourse_IdAndTeacher_Id(Long courseId, Long teacherId);
-
-    Optional<List<AnnotationQuestion>> findAllByTeacher_Id(Long teacherId);
+    Optional<List<AnnotationQuestion>> findAllByCourse_IdAndTeacher_Id(Number courseId, Number teacherId);
 }

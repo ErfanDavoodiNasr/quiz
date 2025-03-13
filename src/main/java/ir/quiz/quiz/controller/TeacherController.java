@@ -46,7 +46,7 @@ public class TeacherController {
     @GetMapping("/see-student-quiz")
     public ResponseEntity<?> getStudentQuiz(
             @RequestParam("quizId") Long quizId
-    ){
+    ) {
         return ResponseEntity.ok(quizService.getStudentQuiz(quizId));
     }
 
@@ -55,7 +55,7 @@ public class TeacherController {
             @RequestParam("answerId") Long answerId,
             @RequestParam("questionId") Long questionId,
             @RequestParam("score") Double score
-    ){
+    ) {
 
         Boolean result = quizService.setScoreForQuiz(answerId, questionId, score);
         return result ? ResponseEntity.ok(new MessageResponse("score changed successfully")) : ResponseEntity.status(500).body(new MessageResponse("there is some problem please try again later"));
@@ -64,7 +64,7 @@ public class TeacherController {
     @GetMapping("/get-student-certificate")
     public ResponseEntity<?> getStudentCertificate(
             @RequestParam("quizId") Long quizId
-    ){
+    ) {
         return ResponseEntity.ok(quizService.getStudentCertificate(quizId));
     }
 }

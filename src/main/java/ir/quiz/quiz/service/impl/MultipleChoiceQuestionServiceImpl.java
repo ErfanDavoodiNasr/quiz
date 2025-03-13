@@ -56,11 +56,11 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     public MultipleChoiceQuestionResponse save(MultipleChoiceQuestionRequest multipleChoiceQuestion) {
         int counter = 0;
         for (QuestionOptionRequest questionOption : multipleChoiceQuestion.getOptions()) {
-            if (questionOption.getIsCorrect()){
-                counter ++;
+            if (questionOption.getIsCorrect()) {
+                counter++;
             }
         }
-        if (counter != 1 || counter > 1){
+        if (counter != 1 || counter > 1) {
             throw new RuntimeException("at least you have add two option and 1 true option");
         }
         Optional<Course> course = checkCourseIsExist(multipleChoiceQuestion);
