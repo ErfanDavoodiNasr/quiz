@@ -6,9 +6,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import static ir.quiz.quiz.model.Course.TABLE_NAME;
+import static ir.quiz.quiz.model.Quiz.TABLE_NAME;
+
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
@@ -18,14 +18,16 @@ import static ir.quiz.quiz.model.Course.TABLE_NAME;
 @AllArgsConstructor
 @Entity
 @Table(name = TABLE_NAME)
-public class Course extends BaseModel<Long> {
-
-    public static final String TABLE_NAME = "courses";
+public class Quiz extends BaseModel<Long> {
+    public static final String TABLE_NAME = "quizzes";
     public static final String START_AT = "start_at";
     public static final String END_AT = "end_at";
 
-    @Column(length = 50)
-    private String name;
+    @Column(nullable = false)
+    private String title;
+
+    @Column
+    private String description;
 
     @Column(name = START_AT, nullable = false)
     private LocalDateTime startAt;
@@ -33,13 +35,14 @@ public class Course extends BaseModel<Long> {
     @Column(name = END_AT, nullable = false)
     private LocalDateTime endAt;
 
-    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "courses")
-    private List<Student> students;
+    @Transient
+    private Integer duration = endAt.getNano() - startAt.getNano();
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "teacher_id")
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(nullable = false, name = "course_id")
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "teacher_id")
     private Teacher teacher;
-
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "course")
-    private List<Quiz> quizzes;
 }
